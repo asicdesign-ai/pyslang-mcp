@@ -87,9 +87,14 @@ being silently ignored.
 Local development setup:
 
 ```bash
+cd /path/to/pyslang-mcp
 python -m venv .venv
 ./.venv/bin/pip install -e '.[dev]'
 ```
+
+Run the editable install from the repository root. If you start in a fresh
+terminal elsewhere, `cd` into the clone first so `pip` resolves the local
+`pyproject.toml`.
 
 Run the server over `stdio`:
 
