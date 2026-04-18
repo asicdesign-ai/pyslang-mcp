@@ -290,6 +290,7 @@ def find_symbol(
     declarations: list[dict[str, Any]] = []
     references: list[dict[str, Any]] = []
     seen_declarations: set[tuple[str, str, str | None]] = set()
+    seen_references: set[tuple[str, str, str | None, str | None]] = set()
 
     for symbol in _design_unit_symbols(bundle):
         _maybe_add_declaration(
@@ -302,24 +303,16 @@ def find_symbol(
         )
 
     def visit(symbol: Any) -> bool:
-        if (
-            include_references
-            and type(symbol).__name__ == "NamedValueExpression"
-            and getattr(symbol, "symbol", None)
-        ):
-            referenced_symbol = symbol.symbol
-            if _matches_symbol(query=query, match_mode=match_mode, symbol=referenced_symbol):
-                references.append(
-                    {
-                        "name": referenced_symbol.name,
-                        "target_kind": referenced_symbol.kind.name,
-                        "target_path": str(
-                            getattr(referenced_symbol, "hierarchicalPath", referenced_symbol.name)
-                        ),
-                        "location": _serialize_range_location(bundle, symbol.sourceRange),
-                        "snippet": _source_snippet(bundle, symbol.sourceRange),
-                    }
+        if include_references:
+            references.extend(
+                _collect_reference_hits(
+                    bundle=bundle,
+                    symbol=symbol,
+                    query=query,
+                    match_mode=match_mode,
+                    seen=seen_references,
                 )
+            )
         if getattr(symbol, "kind", None) and symbol.kind.name == "NamedValue":
             return True
         if getattr(symbol, "name", None):
@@ -590,8 +583,14 @@ def _matches_symbol(query: str, match_mode: MatchMode, symbol: Any) -> bool:
         str(getattr(symbol, "hierarchicalPath", "")),
         str(getattr(symbol, "lexicalPath", "")),
     }
+    return _matches_text(query=query, match_mode=match_mode, candidates=candidates)
+
+
+def _matches_text(query: str, match_mode: MatchMode, candidates: Any) -> bool:
     query_lower = query.lower()
     for candidate in candidates:
+        if candidate is None:
+            continue
         candidate_lower = candidate.lower()
         if match_mode == "exact" and candidate_lower == query_lower:
             return True
@@ -600,6 +599,141 @@ def _matches_symbol(query: str, match_mode: MatchMode, symbol: Any) -> bool:
         if match_mode == "startswith" and candidate_lower.startswith(query_lower):
             return True
     return False
+
+
+def _leaf_type_name(value: str | None) -> str | None:
+    if not value:
+        return None
+    cleaned = value.strip()
+    if "::" in cleaned:
+        cleaned = cleaned.rsplit("::", 1)[-1]
+    if "." in cleaned:
+        cleaned = cleaned.rsplit(".", 1)[-1]
+    cleaned = cleaned.strip()
+    return cleaned or None
+
+
+def _collect_reference_hits(
+    *,
+    bundle: AnalysisBundle,
+    symbol: Any,
+    query: str,
+    match_mode: MatchMode,
+    seen: set[tuple[str, str, str | None, str | None]],
+) -> list[dict[str, Any]]:
+    hits: list[dict[str, Any]] = []
+    symbol_type_name = type(symbol).__name__
+
+    if symbol_type_name == "NamedValueExpression" and getattr(symbol, "symbol", None):
+        referenced_symbol = symbol.symbol
+        if _matches_symbol(query=query, match_mode=match_mode, symbol=referenced_symbol):
+            hit = _make_reference_hit(
+                bundle=bundle,
+                source_kind="named_value",
+                target_symbol=referenced_symbol,
+                location=_serialize_range_location(bundle, symbol.sourceRange),
+                snippet=_source_snippet(bundle, symbol.sourceRange),
+                seen=seen,
+            )
+            if hit is not None:
+                hits.append(hit)
+
+    if symbol_type_name == "WildcardImportSymbol":
+        package_name = getattr(symbol, "packageName", None)
+        if isinstance(package_name, str) and _matches_text(
+            query=query, match_mode=match_mode, candidates={package_name}
+        ):
+            hit = _make_reference_hit(
+                bundle=bundle,
+                source_kind="package_import",
+                target_symbol=getattr(symbol, "package", None) or symbol,
+                location=_serialize_location(bundle, getattr(symbol, "location", None)),
+                snippet=_source_snippet(bundle, getattr(symbol.syntax, "sourceRange", None)),
+                seen=seen,
+            )
+            if hit is not None:
+                hits.append(hit)
+
+    if symbol_type_name == "InstanceSymbol":
+        definition = getattr(symbol, "definition", None)
+        if definition is not None and _matches_symbol(
+            query=query, match_mode=match_mode, symbol=definition
+        ):
+            location = _serialize_location(bundle, getattr(symbol, "location", None))
+            hit = _make_reference_hit(
+                bundle=bundle,
+                source_kind="instance_definition",
+                target_symbol=definition,
+                location=location,
+                snippet=_line_excerpt(bundle, location),
+                seen=seen,
+            )
+            if hit is not None:
+                hits.append(hit)
+
+    declared_type = getattr(symbol, "declaredType", None)
+    declared_type_syntax = getattr(declared_type, "typeSyntax", None)
+    if (
+        symbol_type_name in {"VariableSymbol", "PortSymbol", "TypeAliasType"}
+        and declared_type_syntax
+    ):
+        type_text = str(getattr(symbol, "type", "")) or str(
+            getattr(getattr(declared_type, "type", None), "canonicalType", "")
+        )
+        declared_type_text = _source_snippet(bundle, declared_type_syntax.sourceRange)
+        candidates = {
+            type_text,
+            declared_type_text,
+            _leaf_type_name(type_text),
+            _leaf_type_name(declared_type_text),
+        }
+        if _matches_text(query=query, match_mode=match_mode, candidates=candidates):
+            hit = _make_reference_hit(
+                bundle=bundle,
+                source_kind="declared_type",
+                target_symbol=symbol,
+                location=_serialize_location(bundle, getattr(symbol, "location", None)),
+                snippet=_source_snippet(bundle, declared_type_syntax.sourceRange),
+                seen=seen,
+            )
+            if hit is not None:
+                hits.append(hit)
+
+    return hits
+
+
+def _make_reference_hit(
+    *,
+    bundle: AnalysisBundle,
+    source_kind: str,
+    target_symbol: Any,
+    location: dict[str, Any] | None,
+    snippet: str | None,
+    seen: set[tuple[str, str, str | None, str | None]],
+) -> dict[str, Any] | None:
+    target_path = str(
+        getattr(target_symbol, "hierarchicalPath", getattr(target_symbol, "name", ""))
+    )
+    target_kind = getattr(target_symbol, "kind", None)
+    key = (
+        source_kind,
+        target_path,
+        location["path"] if location else None,
+        snippet,
+    )
+    if key in seen:
+        return None
+    seen.add(key)
+    return {
+        "name": getattr(target_symbol, "name", None),
+        "target_kind": target_kind.name
+        if target_kind is not None
+        else type(target_symbol).__name__,
+        "target_path": target_path,
+        "reference_kind": source_kind,
+        "location": location,
+        "snippet": snippet,
+    }
 
 
 def _maybe_add_declaration(

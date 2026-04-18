@@ -45,6 +45,21 @@ def test_analysis_over_filelist_fixture() -> None:
     assert symbol_hits["summary"]["declaration_count"] >= 1
     assert symbol_hits["summary"]["reference_count"] >= 1
 
+    type_hits = find_symbol(bundle, query="data_t", include_references=True)
+    assert type_hits["summary"]["declaration_count"] >= 1
+    assert type_hits["summary"]["reference_count"] >= 1
+    assert any(ref["reference_kind"] == "declared_type" for ref in type_hits["references"])
+
+    package_hits = find_symbol(bundle, query="types_pkg", include_references=True)
+    assert package_hits["summary"]["declaration_count"] >= 1
+    assert package_hits["summary"]["reference_count"] >= 1
+    assert any(ref["reference_kind"] == "package_import" for ref in package_hits["references"])
+
+    module_hits = find_symbol(bundle, query="child", include_references=True)
+    assert module_hits["summary"]["declaration_count"] >= 1
+    assert module_hits["summary"]["reference_count"] >= 1
+    assert any(ref["reference_kind"] == "instance_definition" for ref in module_hits["references"])
+
     syntax = dump_syntax_tree_summary(bundle)
     assert len(syntax["files"]) == 3
     assert any(file["file"] == "top.sv" for file in syntax["files"])
