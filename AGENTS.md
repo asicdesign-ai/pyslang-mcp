@@ -24,7 +24,8 @@ tight and technically honest.
 
 ## Current Repo Reality
 
-As of 2026-04-18, this repo is still documentation-first.
+As of 2026-04-18, this repo has moved past the documentation-only stage into an
+alpha local implementation.
 
 What exists:
 
@@ -32,19 +33,21 @@ What exists:
 - `README.md`
 - `pyslang-mcp-plan.md`
 - this `AGENTS.md`
-- a local `.venv/` used for research spikes in this machine only
+- `pyproject.toml`
+- `src/pyslang_mcp/`
+- `tests/` with fixture-backed coverage
+- `.github/workflows/ci.yml`
+- a local `.venv/` used for research and validation on this machine only
 
 What does not exist yet:
 
-- `pyproject.toml`
-- `src/pyslang_mcp/`
-- tests
-- CI workflows
 - publish automation
-- a runnable MCP server
+- PyPI release artifacts
+- MCP Registry publication
+- copy-paste client configuration examples for multiple MCP clients
 
-Do not describe this repo as implemented, released, or client-ready. It is not
-there yet.
+Do not describe this repo as released or broadly client-ready. A runnable
+server now exists, but the project is still alpha and unpublished.
 
 ## Product Definition
 
@@ -86,8 +89,8 @@ These are not optional unless the repo direction is explicitly changed.
 
 ## Progress Done So Far
 
-The main completed work so far is planning plus a real `pyslang` / MCP API
-validation spike.
+The main completed work so far is planning, API validation, and a first
+end-to-end local implementation.
 
 ### Planning
 
@@ -133,6 +136,25 @@ The following was validated locally in a virtual environment on Python 3.12:
   `NamedValueExpression.symbol`
 - syntax-tree walking works and is suitable for summary generation
 - `tree.getIncludeDirectives()` returns useful include metadata
+
+### Implemented Alpha Server
+
+The repository now contains:
+
+- `FastMCP` server wiring in `src/pyslang_mcp/server.py`
+- CLI entrypoint in `src/pyslang_mcp/__main__.py`
+- project loader with root safety and `.f` parsing
+- `pyslang` analysis core for diagnostics, units, hierarchy, symbol search, and
+  syntax summaries
+- in-memory cache keyed by project config plus tracked file mtimes
+- fixture-backed unit, integration, and MCP-level tests
+- CI on GitHub Actions for Ubuntu with Python 3.11 and 3.12
+
+The implemented V1 tools match the intended tool list, with one important
+honesty constraint:
+
+- `preprocess_files` returns preprocessing metadata plus source excerpts, not a
+  claimed full standalone-preprocessor output stream
 
 ## Important `pyslang` Notes
 
@@ -181,22 +203,16 @@ Implication:
 
 ## What Still Needs To Be Built
 
-Everything below is still pending:
+The major local implementation pieces now exist. The main remaining work is:
 
-- package scaffold
-- entrypoint and CLI
-- project loader
-- filelist parser
-- analysis core
-- serializers and schemas
-- cache layer
-- MCP tool registration
-- fixtures
-- unit tests
-- integration tests
-- MCP-level tests
-- CI
 - release automation
+- PyPI publishing
+- MCP Registry publication
+- real client configuration examples and docs
+- broader real-world fixture coverage
+- schema hardening / freeze decisions
+- more filelist compatibility coverage
+- platform validation beyond current Linux-focused testing
 
 ## Recommended Build Order
 
@@ -277,18 +293,12 @@ The first alpha should meet these standards:
 
 If you are picking this up fresh, do this next:
 
-1. Create `.gitignore`.
-2. Create `pyproject.toml`.
-3. Scaffold `src/pyslang_mcp/` with:
-   - `__init__.py`
-   - `__main__.py`
-   - `server.py`
-   - `project_loader.py`
-   - `analysis.py`
-   - `serializers.py`
-   - `cache.py`
-   - `types.py`
-4. Add tests and fixtures before exposing all MCP tools.
+1. Add more real-world fixtures, especially nested filelists, additional
+   include-dir patterns, and broken multi-file projects.
+2. Harden and document filelist compatibility boundaries.
+3. Add client setup examples for local `stdio` use.
+4. Add publish automation only after the response schemas and package surface
+   are considered stable enough for a first alpha release.
 5. Keep README and this file aligned with the true implementation status.
 
 ## Working Style
