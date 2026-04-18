@@ -84,6 +84,182 @@ Or choose a transport explicitly:
 ./.venv/bin/python -m pyslang_mcp --transport stdio
 ```
 
+## Local Client Setup
+
+Today, the intended connection model is local `stdio`.
+
+That means:
+
+- the MCP server process runs on the same machine, VM, or dev container that
+  contains the HDL checkout
+- the MCP client launches `pyslang-mcp` as a child process
+- tool calls use `project_root` paths that exist on that same filesystem
+
+This is the same basic pattern used by many local MCP integrations, even when a
+vendor also offers hosted connectors for other products.
+
+### Generic `stdio` Client Configuration
+
+Generic local client configuration:
+
+```json
+{
+  "mcpServers": {
+    "pyslang-mcp": {
+      "command": "/path/to/python",
+      "args": [
+        "-m",
+        "pyslang_mcp",
+        "--transport",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+For a local checkout with the repository virtualenv, that usually means:
+
+```json
+{
+  "mcpServers": {
+    "pyslang-mcp": {
+      "command": "/absolute/path/to/pyslang-mcp/.venv/bin/python",
+      "args": [
+        "-m",
+        "pyslang_mcp",
+        "--transport",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+### Local Install Options
+
+Development checkout:
+
+```bash
+git clone https://github.com/asicdesign-ai/pyslang-mcp.git
+cd pyslang-mcp
+python -m venv .venv
+./.venv/bin/pip install -e '.[dev]'
+```
+
+Then point the MCP client at:
+
+- `command`: `/absolute/path/to/pyslang-mcp/.venv/bin/python`
+- `args`: `["-m", "pyslang_mcp", "--transport", "stdio"]`
+
+Future packaged install target:
+
+```bash
+pip install pyslang-mcp
+```
+
+Then point the MCP client at either:
+
+- `command`: `pyslang-mcp`
+- `args`: `[]`
+
+or:
+
+- `command`: `python`
+- `args`: `["-m", "pyslang_mcp"]`
+
+### Tool Input Rules
+
+- Always provide `project_root`.
+- Provide exactly one of `files` or `filelist`.
+- Paths may be relative to `project_root` or absolute, but they must remain
+  inside `project_root`.
+- `include_dirs`, `defines`, and `top_modules` are optional.
+
+Example `parse_files` payload:
+
+```json
+{
+  "project_root": "/path/to/rtl-project",
+  "files": [
+    "rtl/pkg.sv",
+    "rtl/top.sv"
+  ],
+  "include_dirs": [
+    "include"
+  ],
+  "defines": {
+    "WIDTH": "32"
+  },
+  "top_modules": [
+    "top"
+  ]
+}
+```
+
+Example `parse_filelist` payload:
+
+```json
+{
+  "project_root": "/path/to/rtl-project",
+  "filelist": "compile/project.f"
+}
+```
+
+Example `find_symbol` payload:
+
+```json
+{
+  "project_root": "/path/to/rtl-project",
+  "filelist": "compile/project.f",
+  "query": "payload",
+  "match_mode": "exact",
+  "include_references": true
+}
+```
+
+### Recommended Workflow
+
+1. Start with `parse_filelist` or `parse_files` to confirm the project root,
+   file expansion, include dirs, and defines are what you expect.
+2. Run `get_diagnostics` to see parse or semantic issues early.
+3. Use `list_design_units` and `describe_design_unit` to understand modules and
+   packages.
+4. Use `get_hierarchy` to inspect instantiation structure.
+5. Use `find_symbol` for declaration and reference lookup.
+6. Use `dump_syntax_tree_summary` and `preprocess_files` only when you need
+   syntax or preprocessing context; they are intentionally compact.
+
+### What Clients Should Expect Back
+
+- Responses are JSON dictionaries.
+- Large result lists include truncation metadata.
+- `preprocess_files` is summary-oriented; it does not claim to reproduce a full
+  standalone preprocessed output stream.
+- If a path escapes the declared root, the call fails instead of reading it.
+
+## Remote Deployment Direction
+
+If the goal is to make `pyslang-mcp` feel more like well-known connectable MCPs
+such as GitHub or Google Sheets, treat hosted access as a separate deployment
+product surface, not as an extension of the current local `stdio` mode.
+
+Current state:
+
+- local-first `stdio` server is implemented
+- hosted multi-user deployment is not implemented yet
+
+Recommended hosted direction:
+
+- add a secure HTTP MCP transport
+- require authenticated workspaces
+- isolate every user or repo workspace
+- only analyze files that are present inside the provisioned workspace
+- keep the same read-only tool semantics
+
+See [`REMOTE_DEPLOYMENT.md`](./REMOTE_DEPLOYMENT.md) for the proposed hosted
+architecture, security model, and rollout plan.
+
 ## Development Commands
 
 ```bash
