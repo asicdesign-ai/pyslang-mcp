@@ -1,5 +1,10 @@
 # pyslang-mcp
 
+[![CI](https://github.com/asicdesign-ai/pyslang-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/asicdesign-ai/pyslang-mcp/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
+![Status](https://img.shields.io/badge/status-alpha-orange)
+![Transport](https://img.shields.io/badge/transport-stdio-informational)
+
 `pyslang-mcp` is an alpha-quality, local-first Model Context Protocol server
 for read-only, compiler-backed analysis of Verilog and SystemVerilog projects
 using [`pyslang`](https://pypi.org/project/pyslang/).
@@ -9,9 +14,25 @@ through real parsing and elaboration, not raw text search. This project is a
 semantic analysis MCP, not a simulator, synthesizer, waveform viewer, or code
 generator.
 
-## Status
+> [!IMPORTANT]
+> This repo now contains a runnable alpha implementation, but it is not yet a
+> published or broadly hosted MCP product.
 
-As of 2026-04-18, the repository now contains a runnable implementation:
+## ✨ Why This Exists
+
+AI coding agents can already search HDL repositories as text. That is useful,
+but weak. `pyslang-mcp` exists to answer questions that benefit from a real
+compiler frontend:
+
+- What design units exist?
+- What diagnostics were produced?
+- How do modules instantiate each other?
+- Where is a symbol declared or referenced?
+- How did a filelist, include path, or define actually resolve?
+
+## 🚦 Status
+
+As of 2026-04-18, the repository contains:
 
 - `pyproject.toml` packaging metadata
 - a `FastMCP` server under `src/pyslang_mcp/`
@@ -27,22 +48,20 @@ What is still not done:
 - no claim of frozen long-term schemas yet
 - no promise of full standalone preprocessor fidelity
 
-## Implemented Tools
+## 🧰 Implemented Tools
 
 The current alpha implements these read-only tools:
 
-- `parse_files`
-- `parse_filelist`
-- `get_diagnostics`
-- `list_design_units`
-- `describe_design_unit`
-- `get_hierarchy`
-- `find_symbol`
-- `dump_syntax_tree_summary`
-- `preprocess_files`
-- `get_project_summary`
+| Area | Tools |
+|---|---|
+| Parse / load | `parse_files`, `parse_filelist` |
+| Diagnostics | `get_diagnostics` |
+| Semantic inventory | `list_design_units`, `describe_design_unit` |
+| Structure | `get_hierarchy`, `get_project_summary` |
+| Lookup | `find_symbol` |
+| Syntax / preprocessing summaries | `dump_syntax_tree_summary`, `preprocess_files` |
 
-## Guardrails
+## 🔒 Guardrails
 
 - strict project-root scoping; paths outside the declared root are rejected
 - `stdio` transport first
@@ -51,7 +70,7 @@ The current alpha implements these read-only tools:
 - conservative `preprocess_files` behavior that returns preprocessing metadata
   and excerpts, not a claimed full preprocessed text stream
 
-## Current Filelist Support
+## 🗂️ Current Filelist Support
 
 The implemented `.f` parser intentionally supports a practical subset:
 
@@ -63,7 +82,7 @@ The implemented `.f` parser intentionally supports a practical subset:
 Unsupported directives are reported back in `parse_filelist` output instead of
 being silently ignored.
 
-## Quickstart
+## 🏃 Quickstart
 
 Local development setup:
 
@@ -84,7 +103,7 @@ Or choose a transport explicitly:
 ./.venv/bin/python -m pyslang_mcp --transport stdio
 ```
 
-## Local Client Setup
+## 🧭 Local Client Setup
 
 Today, the intended connection model is local `stdio`.
 
@@ -97,6 +116,29 @@ That means:
 
 This is the same basic pattern used by many local MCP integrations, even when a
 vendor also offers hosted connectors for other products.
+
+### Local Operation At A Glance
+
+```mermaid
+flowchart LR
+    User["🧑 User / Agent"]
+    Client["🧠 MCP Client<br/>Claude / Cursor / IDE"]
+    Server["🧩 pyslang-mcp<br/>local stdio process"]
+    Loader["📁 project_loader.py"]
+    Core["🧪 analysis.py + pyslang"]
+    Repo["📚 Verilog / SystemVerilog repo"]
+    JSON["📦 Stable JSON responses"]
+
+    User --> Client
+    Client <-->|stdio MCP| Server
+    Server --> Loader
+    Loader --> Repo
+    Loader --> Core
+    Core --> Repo
+    Core --> JSON
+    JSON --> Server
+    Server --> Client
+```
 
 ### Generic `stdio` Client Configuration
 
@@ -131,6 +173,53 @@ For a local checkout with the repository virtualenv, that usually means:
         "--transport",
         "stdio"
       ]
+    }
+  }
+}
+```
+
+### Client Examples
+
+#### Claude Desktop
+
+Add a local MCP server entry that points at the repository virtualenv:
+
+```json
+{
+  "mcpServers": {
+    "pyslang-mcp": {
+      "command": "/absolute/path/to/pyslang-mcp/.venv/bin/python",
+      "args": ["-m", "pyslang_mcp", "--transport", "stdio"]
+    }
+  }
+}
+```
+
+#### Cursor
+
+Use the same command/args pattern in Cursor's MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "pyslang-mcp": {
+      "command": "/absolute/path/to/pyslang-mcp/.venv/bin/python",
+      "args": ["-m", "pyslang_mcp", "--transport", "stdio"]
+    }
+  }
+}
+```
+
+#### Generic IDE / Agent Runner
+
+Any MCP client that supports local child-process servers can use:
+
+```json
+{
+  "mcpServers": {
+    "pyslang-mcp": {
+      "command": "/absolute/path/to/pyslang-mcp/.venv/bin/python",
+      "args": ["-m", "pyslang_mcp", "--transport", "stdio"]
     }
   }
 }
@@ -232,13 +321,61 @@ Example `find_symbol` payload:
 
 ### What Clients Should Expect Back
 
-- Responses are JSON dictionaries.
-- Large result lists include truncation metadata.
+- responses are JSON dictionaries
+- large result lists include truncation metadata
 - `preprocess_files` is summary-oriented; it does not claim to reproduce a full
-  standalone preprocessed output stream.
-- If a path escapes the declared root, the call fails instead of reading it.
+  standalone preprocessed output stream
+- if a path escapes the declared root, the call fails instead of reading it
 
-## Remote Deployment Direction
+## 🏗️ Architecture
+
+The implementation is intentionally split into a small analysis core with a thin
+MCP wrapper.
+
+```mermaid
+flowchart TD
+    Main["__main__.py<br/>CLI entrypoint"]
+    Server["server.py<br/>FastMCP tool layer"]
+    Loader["project_loader.py<br/>root checks + filelist parsing"]
+    Analysis["analysis.py<br/>pyslang compilation + queries"]
+    Cache["cache.py<br/>config hash + mtime invalidation"]
+    Ser["serializers.py<br/>stable JSON + truncation"]
+    Types["types.py<br/>shared internal types"]
+    Pyslang["pyslang"]
+
+    Main --> Server
+    Server --> Loader
+    Server --> Analysis
+    Server --> Cache
+    Analysis --> Cache
+    Analysis --> Ser
+    Loader --> Types
+    Analysis --> Types
+    Cache --> Types
+    Analysis --> Pyslang
+```
+
+### Typical Tool Call Flow
+
+```mermaid
+sequenceDiagram
+    participant C as MCP Client
+    participant S as server.py
+    participant L as project_loader.py
+    participant A as analysis.py
+    participant P as pyslang
+
+    C->>S: get_hierarchy(project_root, filelist)
+    S->>L: normalize root + expand filelist
+    L-->>S: ProjectConfig
+    S->>A: build or reuse cached analysis
+    A->>P: parse + elaborate project
+    P-->>A: compilation + symbols
+    A-->>S: hierarchy JSON
+    S-->>C: MCP tool response
+```
+
+## 🌐 Remote Deployment Direction
 
 If the goal is to make `pyslang-mcp` feel more like well-known connectable MCPs
 such as GitHub or Google Sheets, treat hosted access as a separate deployment
@@ -257,10 +394,29 @@ Recommended hosted direction:
 - only analyze files that are present inside the provisioned workspace
 - keep the same read-only tool semantics
 
-See [`REMOTE_DEPLOYMENT.md`](./REMOTE_DEPLOYMENT.md) for the proposed hosted
+### Hosted Direction Diagram
+
+```mermaid
+flowchart LR
+    Client["🌍 Remote MCP Client"]
+    Edge["🛡️ HTTPS + Auth"]
+    Control["🧭 Control Plane<br/>users / orgs / workspaces"]
+    Exec["⚙️ MCP Execution Plane"]
+    Workspace["📦 Isolated Workspace"]
+    Repo["🔐 Repo snapshot / upload"]
+
+    Client --> Edge
+    Edge --> Control
+    Edge --> Exec
+    Control --> Workspace
+    Repo --> Workspace
+    Workspace --> Exec
+```
+
+See [`REMOTE_DEPLOYMENT.md`](./REMOTE_DEPLOYMENT.md) for the hosted
 architecture, security model, and rollout plan.
 
-## Development Commands
+## 🧪 Development Commands
 
 ```bash
 ./.venv/bin/ruff format src tests
@@ -269,39 +425,14 @@ architecture, security model, and rollout plan.
 ./.venv/bin/pytest -q
 ```
 
-## Architecture
+## ⚠️ Known Limitations
 
-The implementation follows the original plan:
+- `preprocess_files` is summary-oriented and intentionally conservative
+- the filelist parser is a useful subset, not full simulator compatibility
+- tool outputs are designed to be stable and compact, but they are still alpha
+- packaging and registry publishing are still pending
 
-- `project_loader.py`
-  - project-root validation
-  - safe path normalization
-  - filelist parsing
-  - include-dir and define handling
-- `analysis.py`
-  - `pyslang` compilation setup
-  - diagnostics extraction
-  - design-unit listing and description
-  - hierarchy traversal
-  - symbol search
-  - syntax and preprocessing summaries
-- `serializers.py`
-  - stable path rendering
-  - truncation helpers
-- `cache.py`
-  - project-config hashing
-  - tracked-file mtime invalidation
-- `server.py`
-  - thin `FastMCP` tool wrappers
-
-## Known Limitations
-
-- `preprocess_files` is summary-oriented and intentionally conservative.
-- The filelist parser is a useful subset, not full simulator compatibility.
-- Tool outputs are designed to be stable and compact, but they are still alpha.
-- Packaging and registry publishing are still pending.
-
-## Roadmap
+## 🗺️ Roadmap
 
 - `M0`: research spike and `pyslang` API validation
 - `M1`: repo scaffold and local runnable server
@@ -313,14 +444,14 @@ The implementation follows the original plan:
 The repository is now through `M3` in local implementation terms, but release
 and publication work is still outstanding.
 
-## References
+## 📚 References
 
 - `pyslang`: <https://pypi.org/project/pyslang/>
 - `slang`: <https://github.com/MikePopoloski/slang>
 - Python MCP SDK: <https://github.com/modelcontextprotocol/python-sdk>
 - MCP Registry: <https://github.com/modelcontextprotocol/registry>
 
-## License
+## 📄 License
 
 This repository is licensed under the Apache 2.0 terms in
 [`LICENSE`](./LICENSE).

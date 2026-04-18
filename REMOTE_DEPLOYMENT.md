@@ -1,12 +1,16 @@
-# Remote Secure Deployment Plan
+# 🌐 Remote Secure Deployment Plan
 
 This document describes how to evolve `pyslang-mcp` from a local `stdio`
 analysis server into a remotely connectable MCP service that feels similar to
 well-known hosted MCP integrations such as GitHub or Google Sheets, while still
-preserving the repo's actual product definition: compiler-backed, read-only HDL
+preserving the repo's real product definition: compiler-backed, read-only HDL
 project analysis.
 
-## Product Boundary
+> [!IMPORTANT]
+> Hosted access should be treated as a separate deployment product surface, not
+> as “just expose the current local process over the network.”
+
+## 🧱 Product Boundary
 
 `pyslang-mcp` is not a SaaS data connector in the same sense as GitHub or
 Google Sheets. Those systems already host the source of truth. This server is
@@ -21,7 +25,7 @@ Implication:
 - a hosted version must provide controlled workspace access, not just expose the
   existing local process over the network
 
-## Goal
+## 🎯 Goal
 
 Provide a remotely connectable MCP endpoint that:
 
@@ -31,7 +35,7 @@ Provide a remotely connectable MCP endpoint that:
 - isolates users, repositories, and workspaces
 - returns the same compact JSON tool outputs as the local server
 
-## Non-Goals
+## 🚫 Non-Goals
 
 - shared host-path access across tenants
 - arbitrary filesystem browsing
@@ -39,7 +43,7 @@ Provide a remotely connectable MCP endpoint that:
 - simulation, synthesis, or waveform support
 - mutable repository actions
 
-## Deployment Model
+## 🧭 Deployment Model
 
 The recommended model is workspace-scoped remote MCP.
 
@@ -53,7 +57,66 @@ High-level flow:
 5. Tool calls include a logical workspace identifier plus project-relative
    inputs.
 
-## Recommended Architecture
+### Hosted Interaction Model
+
+```mermaid
+flowchart LR
+    User["🧑 User / Agent"]
+    Client["🌍 Remote MCP Client"]
+    Edge["🛡️ HTTPS + Auth"]
+    Control["🧭 Control Plane"]
+    Workspace["📦 Isolated Workspace"]
+    Exec["⚙️ MCP Execution Plane"]
+    Repo["🔐 Repo Snapshot / Upload"]
+    JSON["📦 Stable JSON"]
+
+    User --> Client
+    Client --> Edge
+    Edge --> Control
+    Edge --> Exec
+    Control --> Workspace
+    Repo --> Workspace
+    Workspace --> Exec
+    Exec --> JSON
+    JSON --> Client
+```
+
+## 🏗️ Recommended Architecture
+
+### System View
+
+```mermaid
+flowchart TD
+    subgraph CP["🧭 Control Plane"]
+        Gateway["API Gateway"]
+        Auth["Auth Service"]
+        Meta["Workspace Metadata Store"]
+        Queue["Sync / Prewarm Queue"]
+    end
+
+    subgraph DP["📦 Data / Workspace Plane"]
+        Workspace["Per-workspace Storage"]
+        Object["Object Storage / Uploads"]
+        Repo["Repo Mirrors / Clones"]
+    end
+
+    subgraph EP["⚙️ MCP Execution Plane"]
+        Frontend["HTTP MCP Frontend"]
+        Workers["Analysis Workers"]
+        Core["Shared pyslang-mcp core"]
+    end
+
+    Gateway --> Auth
+    Gateway --> Frontend
+    Auth --> Meta
+    Meta --> Queue
+    Queue --> Repo
+    Object --> Workspace
+    Repo --> Workspace
+    Frontend --> Workers
+    Workers --> Core
+    Workers --> Workspace
+```
 
 ### 1. Control Plane
 
@@ -104,7 +167,17 @@ Suggested units:
 - worker pool or per-workspace execution service
 - shared read-only analysis library reused from the current repo
 
-## Security Model
+## 🔐 Security Model
+
+### Security Layers
+
+```mermaid
+flowchart LR
+    A["🔑 Authentication"] --> B["🪪 Authorization"]
+    B --> C["📦 Workspace Isolation"]
+    C --> D["🛡️ Transport Security"]
+    D --> E["🧾 Audit Logging"]
+```
 
 ### Authentication
 
@@ -178,7 +251,7 @@ Do not log:
 - raw credentials
 - secrets found in user repos
 
-## Workspace Provisioning Modes
+## 📁 Workspace Provisioning Modes
 
 Support these in order:
 
@@ -223,7 +296,7 @@ Use case:
 
 - private code without direct VCS integration
 
-## MCP API Shape For Hosted Use
+## 🔌 MCP API Shape For Hosted Use
 
 Keep the semantic tool names the same when possible.
 
@@ -264,7 +337,19 @@ Recommended:
 - use `workspace_id` for hosted mode
 - preserve current `project_root` shape for local mode
 
-## Codebase Changes Needed
+### API Decision Diagram
+
+```mermaid
+flowchart TD
+    Start["Need hosted MCP input shape"] --> A{"Optimize for"}
+    A -->|local parity| B["Keep project_root"]
+    A -->|hosted isolation| C["Add workspace_id"]
+    B --> D["Higher path-handling complexity"]
+    C --> E["Cleaner auth + audit boundary"]
+    E --> F["Recommended hosted design"]
+```
+
+## 🧩 Codebase Changes Needed
 
 The current repo already has the right core split:
 
@@ -292,7 +377,7 @@ To support secure remote deployment, add:
 - `transport_http.py`
   - production HTTP MCP startup path
 
-## Caching Strategy
+## 🧠 Caching Strategy
 
 Local cache logic should be reused, but hosted deployment needs stronger cache
 keys:
@@ -307,7 +392,7 @@ For remote service operation:
 - prefer immutable workspace snapshots keyed by commit
 - avoid cross-tenant cache reuse without explicit hard partitioning
 
-## Operational Controls
+## ⚙️ Operational Controls
 
 Required controls:
 
@@ -324,7 +409,16 @@ Nice to have:
 - tracing around analysis latency
 - metrics for tool popularity and truncation frequency
 
-## Rollout Plan
+## 🗺️ Rollout Plan
+
+### Rollout Overview
+
+```mermaid
+flowchart LR
+    P0["Phase 0<br/>Local stdio"] --> P1["Phase 1<br/>Single-tenant HTTP"]
+    P1 --> P2["Phase 2<br/>Repo-connected hosted workspaces"]
+    P2 --> P3["Phase 3<br/>Multi-tenant managed service"]
+```
 
 ### Phase 0. Keep Local `stdio` First
 
@@ -370,7 +464,7 @@ Goal:
 
 - public hosted product surface
 
-## Recommendation
+## ✅ Recommendation
 
 If the objective is "make this connectable like famous MCPs," the clean path is:
 
