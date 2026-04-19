@@ -330,6 +330,95 @@ Example `pyslang_find_symbol` payload:
 }
 ```
 
+### Example Prompts
+
+Use this MCP when compiler-backed answers beat text search, or when a question
+spans multiple files. These are the prompts where `pyslang_mcp` earns its
+elaboration cost.
+
+#### Uniqueness, absence, and cardinality
+
+grep tells you "I found N matches"; the MCP tells you "the elaborator
+confirms X." Compiler-backed claims grep cannot make:
+
+- *"Is `ecc_error` actually consumed, or is it dead? I need
+  compiler confirmation that every load is an UNCONNECTED sink, not just
+  text matches."*
+- *"Is module `legacy_widget` instantiated anywhere the elaborator sees,
+  even if grep finds its name only in comments?"*
+- *"For signal `fsm_discard`, how many distinct declarations match that
+  exact name across the project?"*
+
+#### Cross-module and hierarchical queries
+
+grep iterates and loses context; the MCP walks the elaborated tree once:
+
+- *"From `top`, walk the instance hierarchy and show me every instance of
+  `sync_fifo_mem` with its hierarchical path and port connections."*
+- *"Describe module `kuku_top`: ports, child instances, declared
+  names."*
+- *"List every top-level instance in the elaborated design and report its
+  depth."*
+
+#### Project health and diagnostics
+
+- *"Parse `compile/project.f` with `+define+DEBUG` and report every error
+  and warning with file/line locations."*
+- *"Group the current diagnostics by file so I can triage which modules
+  are worst."*
+- *"Does this project compile cleanly under pyslang? I want parse plus
+  semantic diagnostics, no text-matching."*
+
+#### Structural inventory
+
+- *"List every design unit in the project grouped by kind (module /
+  interface / package)."*
+- *"Give me the project shape: file count, top instances, diagnostic
+  counts, tracked paths. No deep analysis."*
+
+#### Filelist and preprocessing sanity
+
+- *"Run `pyslang_parse_filelist` on `compile/project.f` and confirm the
+  resolved file set, include paths, defines, and any unsupported
+  directives match what my simulator uses."*
+
+#### Symbol cohort analysis
+
+- *"For module `kuku_top`, list every declared name so I can
+  check whether `ecc_err` is part of a cohort of
+  UNCONNECTED scalars."*
+- *"Where is type `data_t` defined, and what variables or ports declare
+  it?"*
+
+### When Not To Reach For This MCP
+
+Be honest — the MCP pays elaboration cost that plain text tools avoid.
+
+**Plain `grep` / `Read` wins:**
+
+- Single-file questions with known locality ("what does line 42 of this
+  file do?", "is the string `foo_bar` mentioned anywhere?").
+- Comment or docstring lookups ("what's the comment above this
+  function?").
+- Incomplete file sets — parse errors from unresolved cross-module
+  references can silently degrade downstream results (`describe_*` may
+  return empty port lists). If the file set you can supply is not
+  self-contained, grep plus Read give cleaner answers.
+
+**Direct `pyslang` wins:**
+
+- Bespoke analyses with custom visitors: "count `always_ff` blocks that
+  use negedge reset," "build a call graph of tasks inside module X,"
+  "run this custom lint rule." Ten lines of pyslang beats composing
+  tool calls.
+- Expression evaluation in custom scopes, what-if parameter sweeps,
+  incremental re-elaboration.
+
+**Out of charter entirely:**
+
+- Rename / refactor / format / autofix — the MCP is strictly read-only.
+- Testbench generation, synthesis, simulation, waveform analysis.
+
 ### Recommended Workflow
 
 1. Start with `pyslang_parse_filelist` or `pyslang_parse_files` to confirm the
