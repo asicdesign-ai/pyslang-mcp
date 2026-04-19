@@ -33,6 +33,36 @@ tool, grouped by domain, backed by reverse indices so chained queries
 stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
 4× today's.
 
+## Real-World Benchmark Observation (amendment)
+
+On a first real-project benchmark (two files of a production RTL design,
+one "is this signal terminated?" question):
+
+| Approach | Tool calls | Wall-clock |
+|---|---|---|
+| Plain LLM + grep | ~8 | ~5s |
+| `pyslang-mcp` | 3 (`parse_files`, `find_symbol`, `describe_design_unit`) | ~94s (45 + 37 + 12) |
+
+Grep was ~20× faster for that specific question. Two things came out of
+the timing:
+
+1. **The 37s `find_symbol` and 12s `describe_design_unit` are not
+   elaboration cost.** They are the per-call AST walk
+   (`compilation.getRoot().visit(...)` matching every node against
+   query/name/hierarchical_path/lexical_path) and `symbol.syntax.to_json()`
+   materialization. Even on a warm cache, today's implementation is O(N)
+   in AST size **per query**.
+2. **The existing cache only helps when callers re-use identical
+   project args.** Any drift in `files`/`filelist`/`include_dirs` across
+   a session produces a fresh `project_hash` and a full re-elaboration.
+
+Grep wins by design on point lookups with known locality — that's fine
+and unavoidable. The actionable finding is that the MCP is paying O(N)
+algorithmic cost on **its own natural use cases** (whole-project symbol
+and reference queries). Reverse indices and session-scoped project
+handles are therefore a prerequisite to M6-era tool expansion, not a
+later performance polish. This amendment reflects that ordering change.
+
 ## Design Principles
 
 1. **Schema-first.** Every tool has a Pydantic input and output model;
@@ -50,10 +80,68 @@ stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
    later tool calls without re-parsing.
 5. **Honest surfaces.** If `pyslang` cannot do something cleanly, say so
    in the tool description — never silently produce lossy output.
+6. **Degraded-state visibility.** When parse or elaboration hits
+   unresolved cross-module references, report it in every affected
+   tool's response so the agent knows its downstream reasoning is
+   based on incomplete analysis.
 
 ## Target Tool Surface, by Tier
 
-### Tier A — Highest-impact gaps (M6)
+### Tier 0 — Infrastructure prerequisite (M6)
+
+No new tools. This milestone is the index and session plumbing every
+later milestone depends on. Shipping it first is what turns
+`find_symbol` from seconds to milliseconds and makes the rest of the
+plan affordable.
+
+**Reverse indices built after `build_analysis`:**
+
+- `name→[decls]` — exact and case-insensitive name lookup
+- `location→node` — file/line/col reverse lookup into the AST
+- `symbol→[references]` — every AST-accurate reference hit, pre-computed
+- `symbol→[drivers]` / `symbol→[loads]` — driver/load edges by
+  procedural analysis
+- `module→[instantiations]` — reverse map for "who instantiates X"
+- `type→[uses]` — where a type alias or struct is referenced
+
+**Symbol URI scheme:**
+
+- Opaque string IDs: `pyslang://project/<config_hash>/symbol/<hier_path>`
+- Include the config hash so stale URIs from a previous compilation
+  cannot silently resolve.
+- Every tool that currently takes a `symbol_path` also accepts a URI;
+  tools return URIs alongside hierarchical paths.
+
+**Per-tool-args cache:**
+
+- Layer inside `AnalysisCache`:
+  `{(project_hash, tool_name, frozen_args): result}`.
+- Repeated identical queries become free (important for the common
+  agent pattern of "parse → list → describe each unit").
+
+**Prewarm and cache-hit hygiene:**
+
+- A `get_project_summary` or `parse_filelist` call at session start
+  prewarms the bundle.
+- Tool descriptions explicitly state that identical `files`/`filelist`
+  args across a session are required for cache hits.
+- A new `pyslang_query_index_status` tool (ships with M12) exposes
+  bundle freshness, cache hit rate, and index build time so agents can
+  plan their call sequence.
+
+**Degraded-state signal:**
+
+- Every tool response carries a `project_status` field with values
+  `ok` / `degraded` / `incomplete` plus an `unresolved_references`
+  count.
+- When the parse produces significant cross-module errors (the
+  real-world benchmark had 34), agents see a loud `incomplete` status
+  instead of silently consuming an empty `ports: []` as ground truth.
+
+### Tier A — Symbol and type resolution (M7)
+
+Highest-impact tool additions; covers the most-asked second-order
+questions.
 
 **Symbol and type resolution** (6)
 
@@ -82,7 +170,9 @@ stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
 - `pyslang_hier_walk(from_path, depth, filters)` — parameterized
   traversal
 
-### Tier B — Closes the `preprocess_files` honesty caveat (M7)
+### Tier B — Source/PP parity and diagnostics depth (M8)
+
+Closes the `preprocess_files` honesty caveat; diagnostics at scale.
 
 **Source and preprocessing** (4)
 
@@ -100,7 +190,7 @@ stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
 - `pyslang_diag_explain(code)` — `pyslang`-native explanation of a
   diagnostic code
 
-### Tier C — Elaboration semantics (M8)
+### Tier C — Elaboration semantics (M9)
 
 **Parameters / generate / defparam / bind / config** (6)
 
@@ -111,7 +201,7 @@ stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
 - `pyslang_cfg_list_binds(project)`
 - `pyslang_cfg_effective_top(project)`
 
-### Tier D — Procedural, assertions, coverage (M9, M11)
+### Tier D — Procedural, assertions (M10)
 
 **Procedural** (4)
 
@@ -129,14 +219,16 @@ stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
   decomposition
 - `pyslang_sva_disablement(hier_path)` — disable-iff context
 
-**Coverage and random** (4)
+### Tier E — Coverage, random, composition (M11, M12)
+
+**Coverage and random** (4 — M11)
 
 - `pyslang_cov_list_covergroups(scope)`
 - `pyslang_cov_describe_covergroup(hier_path)`
 - `pyslang_cov_list_constraints(class_name)`
 - `pyslang_cov_describe_constraint(hier_path)`
 
-### Tier E — Composition and agent efficiency (M12)
+**Composition and agent efficiency** (3 — M12)
 
 - `pyslang_query_batch([tool_calls])` — multiple read-only calls in one
   round-trip, shared compilation
@@ -149,42 +241,27 @@ stay cheap. Target surface: **~40 tools across 10 namespaces**, roughly
 
 | # | Milestone | Tools added | Why now |
 |---|---|---|---|
-| **M6** | Symbol/type + location nav | 9 | #1 gap; unlocks "go to def / type of X" flows |
-| **M7** | PP parity + diagnostics depth | 7 | Closes `preprocess_files` honesty caveat; diagnostics at scale |
-| **M8** | Elaboration semantics | 6 | The questions simulators answer: generate/param/defparam/bind/config |
-| **M9** | Procedural + assertions | 7 | Needed for RTL review and verification agents |
-| **M10** | Reverse indices + URI scheme | infra | Makes M6–M9 affordable at scale |
+| **M6** | Reverse indices + URI scheme + degraded-state signal | 0 (infra) | Prerequisite for every later milestone; real-world benchmark showed today's tools are O(N) per query |
+| **M7** | Symbol/type + location nav + hierarchy depth | 13 | #1 gap; unlocks "go to def / type of X / port connections" flows on an index-backed core |
+| **M8** | PP parity + diagnostics depth | 7 | Closes `preprocess_files` honesty caveat; diagnostics at scale |
+| **M9** | Elaboration semantics | 6 | The questions simulators answer: generate/param/defparam/bind/config |
+| **M10** | Procedural + assertions | 7 | Needed for RTL review and verification agents |
 | **M11** | Coverage / random / constraints | 4 | Verification-side completeness |
 | **M12** | Batch + agent-planning helpers | 3 | Token efficiency at scale |
 
-**Sequencing rationale.** M6 first because every deep question lands
-there; without it the MCP remains inferior to a REPL for anything
-beyond inventory. M10 is the infrastructure M6–M9 depend on — ship
-indices as an internal detail with M6 and expose them through
-`query_index_status` in M12. M7 closes the one explicit README caveat
-(`preprocess_files` summary-only). M11 and M12 are
-composition/verification layers and can trail the RTL core.
+**Sequencing rationale (amended).** M6 is now infrastructure, not the
+symbol/type tools. The real-world benchmark (Framing section) showed
+that today's 10-tool surface already loses to grep by ~20× on point
+lookups because `find_symbol` and `describe_design_unit` re-walk the
+entire AST per call. Adding more tools on top of the same O(N) core
+compounds the problem. Ship the reverse indices, URI scheme, and
+per-tool-args cache first, let them prove out on the existing 10 tools,
+then layer M7's semantic tools on a foundation that makes them cheap.
 
-## Infrastructure Required
-
-- **Reverse-index pass.** After `build_analysis`, a one-pass walk
-  populates dicts on `AnalysisBundle`. Cost: once per cold cache entry;
-  amortized across every tool call on that bundle.
-- **Symbol URI scheme.** Opaque string IDs so outputs of tool A flow
-  into inputs of tool B without re-parsing paths. URIs include the
-  project config hash so stale URIs from a previous compilation cannot
-  silently resolve.
-- **Per-tool-args cache.** Layered inside `AnalysisCache`:
-  `{(project_hash, tool_name, frozen_args): result}`. Repeated identical
-  queries become free.
-- **Schema freeze policy.** Once a tool ships in a minor, its result
-  model is additive-only. Major bumps for removals. Document at the top
-  of each `schemas.py` model group.
-- **Lexer / preprocessor option surface.** Expose `LexerOptions` and
-  richer `PreprocessorOptions` through the project loader — today it is
-  a subset.
-- **`tools/list` grouping.** Add a custom `x-namespace` field to each
-  tool's annotations so IDE UIs can render collapsible groups.
+M8 closes the one explicit README caveat (`preprocess_files`
+summary-only). M9 adds the simulator-style questions. M10 and M11 fill
+the verification surface. M12 adds composition — meaningful only after
+there are enough tools to compose.
 
 ## Testing and Evaluation
 
@@ -196,11 +273,14 @@ composition/verification layers and can trail the RTL core.
   reverse-index use).
 - The HDL corpus adds fixtures exercising generate blocks, classes,
   SVA, covergroups, interfaces with modports, binds, and configs. The
-  APB timer is the seed for M8; a small UVM-ish verification block is
-  the seed for M9 and M11.
-- Performance benchmark fixture: a 5k-line SV project. Targets: cold
-  tool call under 2s, warm tool call under 100ms, index build under
-  500ms, resident memory under 500MB.
+  APB timer is the seed for M9; a small UVM-ish verification block is
+  the seed for M10 and M11.
+- **Benchmark fixture added with M6.** A 5k-line SV project with a
+  fixed 20-question harness. Measure wall-clock per tool call on cold
+  and warm cache. Gate M6 on: cold `parse_filelist` under 2s, warm
+  `find_symbol` under 100ms, warm `describe_design_unit` under 100ms,
+  index build under 500ms, resident memory under 500MB. Re-run on
+  every milestone to prevent regression.
 
 ## Non-Goals (scope protection)
 
@@ -216,20 +296,35 @@ composition/verification layers and can trail the RTL core.
 The MCP earns its keep when every one of these holds:
 
 1. **A CLI agent with `python` + `pyslang` cannot answer a typical
-   RTL-analysis question faster than the MCP.** Measured on a benchmark
-   set of 20 realistic questions; the MCP should win at least 15.
+   RTL-analysis question faster than the MCP.** Measured on the 20-
+   question benchmark (not point-lookup questions where grep is
+   strictly better). The MCP should win at least 15.
 2. **Every question in `evaluation.xml` chains 2+ tools.** Single-tool
    answers indicate missing composition.
 3. **Cold-query latency on a 5k-line project is under 2s; warm is
-   under 100ms.** Without reverse indices this is unreachable.
-4. **At least 3 MCP clients (Claude Desktop, Cursor, Claude Code) ship
+   under 100ms.** Without reverse indices this is unreachable — M6
+   gates this explicitly.
+4. **Degraded state is impossible to miss.** Any response derived from
+   a compilation with unresolved cross-module references shows
+   `project_status != "ok"`. Tests assert this on a fixture with
+   intentional missing dependencies.
+5. **At least 3 MCP clients (Claude Desktop, Cursor, Claude Code) ship
    a working config.** Coverage is useless without reach.
 
 ## Relationship to Existing Plans
 
 - `pyslang-mcp-plan.md` remains the V1 scope record; this document
-  supersedes it only from M6 onward.
+  supersedes it from M6 onward.
 - `AGENTS.md` V1 tool list is authoritative for the 10 shipped tools.
   As tools in this plan ship, `AGENTS.md` should update alongside.
 - `REMOTE_DEPLOYMENT.md` is orthogonal. Hosted mode reuses whichever
   tool surface the local server exposes.
+
+## Changelog
+
+- **2026-04-19 amendment.** Added real-world benchmark observation
+  (grep ~20× faster on point lookups because today's tools are O(N)
+  per query on a warm cache). Moved the reverse-indices + URI scheme
+  work from M10 to M6 so it ships before any new tools. Added the
+  degraded-state `project_status` signal, the prewarm guidance, and
+  an explicit benchmark fixture gating M6.
