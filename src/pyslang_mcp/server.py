@@ -49,6 +49,20 @@ READ_ONLY_ANNOTATIONS = ToolAnnotations(
     openWorldHint=False,
 )
 
+TOOL_NAME_PREFIX = "pyslang_"
+PUBLIC_TOOL_NAMES = {
+    "parse_files": f"{TOOL_NAME_PREFIX}parse_files",
+    "parse_filelist": f"{TOOL_NAME_PREFIX}parse_filelist",
+    "get_diagnostics": f"{TOOL_NAME_PREFIX}get_diagnostics",
+    "list_design_units": f"{TOOL_NAME_PREFIX}list_design_units",
+    "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
+    "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
+    "find_symbol": f"{TOOL_NAME_PREFIX}find_symbol",
+    "dump_syntax_tree_summary": f"{TOOL_NAME_PREFIX}dump_syntax_tree_summary",
+    "preprocess_files": f"{TOOL_NAME_PREFIX}preprocess_files",
+    "get_project_summary": f"{TOOL_NAME_PREFIX}get_project_summary",
+}
+
 ProjectRootArg = Annotated[
     str,
     Field(
@@ -131,8 +145,9 @@ DesignUnitNameArg = Annotated[
     str,
     Field(
         description=(
-            "Exact, case-sensitive design-unit name. Call `list_design_units` first if you need "
-            "to discover the available names."
+            "Exact, case-sensitive design-unit name. Call "
+            f"`{PUBLIC_TOOL_NAMES['list_design_units']}` first if you need to discover the "
+            "available names."
         )
     ),
 ]
@@ -211,14 +226,22 @@ MaxExcerptLinesArg = Annotated[
 ]
 MaxSummaryDiagnosticsArg = Annotated[
     int,
-    Field(default=50, ge=0, description="Maximum diagnostics to fold into `get_project_summary`."),
+    Field(
+        default=50,
+        ge=0,
+        description=(
+            f"Maximum diagnostics to fold into `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
+        ),
+    ),
 ]
 MaxSummaryUnitsArg = Annotated[
     int,
     Field(
         default=200,
         ge=0,
-        description="Maximum design units to fold into `get_project_summary`.",
+        description=(
+            f"Maximum design units to fold into `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
+        ),
     ),
 ]
 SummaryDepthArg = Annotated[
@@ -226,7 +249,9 @@ SummaryDepthArg = Annotated[
     Field(
         default=6,
         ge=1,
-        description="Maximum hierarchy depth to fold into `get_project_summary`.",
+        description=(
+            f"Maximum hierarchy depth to fold into `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
+        ),
     ),
 ]
 SummaryChildrenArg = Annotated[
@@ -234,7 +259,9 @@ SummaryChildrenArg = Annotated[
     Field(
         default=100,
         ge=0,
-        description="Maximum child instances per node in `get_project_summary`.",
+        description=(
+            f"Maximum child instances per node in `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
+        ),
     ),
 ]
 
@@ -341,7 +368,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
             )
 
     @mcp.tool(
-        name="parse_files",
+        name=PUBLIC_TOOL_NAMES["parse_files"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Parse and elaborate an explicit list of Verilog or SystemVerilog files under a "
@@ -372,7 +399,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="parse_filelist",
+        name=PUBLIC_TOOL_NAMES["parse_filelist"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Parse and elaborate a project filelist under a declared project root. Returns the "
@@ -403,7 +430,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="get_diagnostics",
+        name=PUBLIC_TOOL_NAMES["get_diagnostics"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Return parse and semantic diagnostics for a project described by explicit files or a "
@@ -438,12 +465,13 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="list_design_units",
+        name=PUBLIC_TOOL_NAMES["list_design_units"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "List project-local modules, interfaces, and packages for the analyzed project. Use "
-            "this as the discovery step before `describe_design_unit`; results include stable "
-            "names, kinds, paths, locations, and truncation metadata."
+            "this as the discovery step before "
+            f"`{PUBLIC_TOOL_NAMES['describe_design_unit']}`; results include stable names, "
+            "kinds, paths, locations, and truncation metadata."
         ),
     )
     def list_design_units(
@@ -473,13 +501,14 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="describe_design_unit",
+        name=PUBLIC_TOOL_NAMES["describe_design_unit"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Describe one project-local design unit by exact, case-sensitive name. Start with "
-            "`list_design_units` if you need discovery. The result reports `found` / "
-            "`ambiguous`, candidate matches, and on success a `design_unit` object with ports, "
-            "member-kind counts, child instances, and declared names."
+            f"`{PUBLIC_TOOL_NAMES['list_design_units']}` if you need discovery. The result "
+            "reports `found` / `ambiguous`, candidate matches, and on success a "
+            "`design_unit` object with ports, member-kind counts, child instances, and "
+            "declared names."
         ),
     )
     def describe_design_unit(
@@ -509,7 +538,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="get_hierarchy",
+        name=PUBLIC_TOOL_NAMES["get_hierarchy"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Return the elaborated instance hierarchy rooted at pyslang top instances. Use "
@@ -546,7 +575,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="find_symbol",
+        name=PUBLIC_TOOL_NAMES["find_symbol"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Search declarations and references by symbol name, lexical path, or hierarchical "
@@ -588,7 +617,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="dump_syntax_tree_summary",
+        name=PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Summarize syntax-tree shapes per file without dumping full raw ASTs. Returns each "
@@ -625,7 +654,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="preprocess_files",
+        name=PUBLIC_TOOL_NAMES["preprocess_files"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Return conservative preprocessing metadata and leading source excerpts for analyzed "
@@ -662,7 +691,7 @@ def create_server(cache: AnalysisCache | None = None) -> FastMCP:
         )
 
     @mcp.tool(
-        name="get_project_summary",
+        name=PUBLIC_TOOL_NAMES["get_project_summary"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
             "Return a compact project-wide summary of normalized inputs, diagnostics, design-unit "

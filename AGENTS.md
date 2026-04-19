@@ -53,16 +53,16 @@ server now exists, but the project is still alpha and unpublished.
 
 The intended V1 tools are:
 
-- `parse_files`
-- `parse_filelist`
-- `get_diagnostics`
-- `list_design_units`
-- `describe_design_unit`
-- `get_hierarchy`
-- `find_symbol`
-- `dump_syntax_tree_summary`
-- `preprocess_files`
-- `get_project_summary`
+- `pyslang_parse_files`
+- `pyslang_parse_filelist`
+- `pyslang_get_diagnostics`
+- `pyslang_list_design_units`
+- `pyslang_describe_design_unit`
+- `pyslang_get_hierarchy`
+- `pyslang_find_symbol`
+- `pyslang_dump_syntax_tree_summary`
+- `pyslang_preprocess_files`
+- `pyslang_get_project_summary`
 
 V1 non-goals:
 
@@ -153,7 +153,7 @@ The repository now contains:
 The implemented V1 tools match the intended tool list, with one important
 honesty constraint:
 
-- `preprocess_files` returns preprocessing metadata plus source excerpts, not a
+- `pyslang_preprocess_files` returns preprocessing metadata plus source excerpts, not a
   claimed full standalone-preprocessor output stream
 
 ## Important `pyslang` Notes
@@ -197,7 +197,7 @@ preprocessed file text stream in the exact shape users might expect.
 
 Implication:
 
-- `preprocess_files` should be implemented carefully and honestly.
+- `pyslang_preprocess_files` should be implemented carefully and honestly.
 - It may need to return a preprocessing summary plus safe excerpts first.
 - Do not promise full standalone-preprocessor parity until verified.
 
@@ -287,7 +287,7 @@ The first alpha should meet these standards:
 - Do not depend on MCP Python SDK `main` / v2 behavior unless intentionally
   upgrading the project.
 - Do not commit the local `.venv/`.
-- Do not promise `preprocess_files` fidelity beyond what is actually validated.
+- Do not promise `pyslang_preprocess_files` fidelity beyond what is actually validated.
 
 ## Next Steps For The Next Agent
 

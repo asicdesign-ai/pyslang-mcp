@@ -15,16 +15,16 @@
 - The differentiation should be: Python-native, compiler-backed, token-efficient semantic inspection of local HDL projects.
 
 **V1 Scope**
-- `parse_files`
-- `parse_filelist`
-- `get_diagnostics`
-- `list_design_units`
-- `describe_design_unit`
-- `get_hierarchy`
-- `find_symbol`
-- `dump_syntax_tree_summary`
-- `preprocess_files`
-- `get_project_summary`
+- `pyslang_parse_files`
+- `pyslang_parse_filelist`
+- `pyslang_get_diagnostics`
+- `pyslang_list_design_units`
+- `pyslang_describe_design_unit`
+- `pyslang_get_hierarchy`
+- `pyslang_find_symbol`
+- `pyslang_dump_syntax_tree_summary`
+- `pyslang_preprocess_files`
+- `pyslang_get_project_summary`
 
 **Explicit Non-Goals For V1**
 - Simulation
