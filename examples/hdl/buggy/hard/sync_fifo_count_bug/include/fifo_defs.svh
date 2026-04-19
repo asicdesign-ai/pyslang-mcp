@@ -1,0 +1,1 @@
+`define SYNC_FIFO_DEFAULT_DEPTH 4

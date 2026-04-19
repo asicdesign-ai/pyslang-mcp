@@ -82,6 +82,24 @@ The implemented `.f` parser intentionally supports a practical subset:
 Unsupported directives are reported back in `parse_filelist` output instead of
 being silently ignored.
 
+## 🧪 HDL Example Corpus
+
+The repo now includes a generated HDL corpus under
+[`examples/hdl`](/home/arik/projects/pyslang-mcp/examples/hdl) with:
+
+- clean reference designs from single modules up to small-IP projects
+- intentionally buggy duplicates labeled `easy`, `medium`, and `hard`
+- local validation against both `pyslang` and Verilator
+
+Run the full corpus validator locally:
+
+```bash
+./.venv/bin/python scripts/validate_hdl_examples.py
+```
+
+CI only runs a small smoke subset so the repository keeps representative HDL
+coverage without turning the example corpus into the product.
+
 ## 🏃 Quickstart
 
 Local development setup:
