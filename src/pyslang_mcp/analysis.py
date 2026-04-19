@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Literal
@@ -541,10 +542,12 @@ def _read_line(path: Path, line_number: int) -> str | None:
 
 def _format_diagnostic_message(bundle: AnalysisBundle, diagnostic: Any) -> str:
     message = bundle.diagnostic_engine.getMessage(diagnostic.code)
-    for argument in diagnostic.args:
-        replacement = str(argument)
-        message = message.replace("{}", replacement, 1)
-    return message
+    arguments = [str(argument) for argument in diagnostic.args]
+    try:
+        return message.format(*arguments)
+    except (IndexError, KeyError, ValueError):
+        replacements = iter(arguments)
+        return re.sub(r"(?<!\{)\{\}(?!\})", lambda _: next(replacements, "{}"), message)
 
 
 def _serialize_design_unit_record(bundle: AnalysisBundle, symbol: Any) -> dict[str, Any] | None:

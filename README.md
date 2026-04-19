@@ -54,12 +54,12 @@ The current alpha implements these read-only tools:
 
 | Area | Tools |
 |---|---|
-| Parse / load | `parse_files`, `parse_filelist` |
-| Diagnostics | `get_diagnostics` |
-| Semantic inventory | `list_design_units`, `describe_design_unit` |
-| Structure | `get_hierarchy`, `get_project_summary` |
-| Lookup | `find_symbol` |
-| Syntax / preprocessing summaries | `dump_syntax_tree_summary`, `preprocess_files` |
+| Parse / load | `pyslang_parse_files`, `pyslang_parse_filelist` |
+| Diagnostics | `pyslang_get_diagnostics` |
+| Semantic inventory | `pyslang_list_design_units`, `pyslang_describe_design_unit` |
+| Structure | `pyslang_get_hierarchy`, `pyslang_get_project_summary` |
+| Lookup | `pyslang_find_symbol` |
+| Syntax / preprocessing summaries | `pyslang_dump_syntax_tree_summary`, `pyslang_preprocess_files` |
 
 ## 🔒 Guardrails
 
@@ -67,7 +67,7 @@ The current alpha implements these read-only tools:
 - `stdio` transport first
 - compact JSON responses instead of giant raw compiler dumps
 - in-memory caching keyed by normalized project config plus tracked file mtimes
-- conservative `preprocess_files` behavior that returns preprocessing metadata
+- conservative `pyslang_preprocess_files` behavior that returns preprocessing metadata
   and excerpts, not a claimed full preprocessed text stream
 
 ## 🗂️ Current Filelist Support
@@ -79,7 +79,7 @@ The implemented `.f` parser intentionally supports a practical subset:
 - include directories with `+incdir+...` and `-I`
 - macro defines with `+define+...`
 
-Unsupported directives are reported back in `parse_filelist` output instead of
+Unsupported directives are reported back in `pyslang_parse_filelist` output instead of
 being silently ignored.
 
 ## 🧪 HDL Example Corpus
@@ -288,7 +288,7 @@ or:
   inside `project_root`.
 - `include_dirs`, `defines`, and `top_modules` are optional.
 
-Example `parse_files` payload:
+Example `pyslang_parse_files` payload:
 
 ```json
 {
@@ -309,7 +309,7 @@ Example `parse_files` payload:
 }
 ```
 
-Example `parse_filelist` payload:
+Example `pyslang_parse_filelist` payload:
 
 ```json
 {
@@ -318,7 +318,7 @@ Example `parse_filelist` payload:
 }
 ```
 
-Example `find_symbol` payload:
+Example `pyslang_find_symbol` payload:
 
 ```json
 {
@@ -332,14 +332,16 @@ Example `find_symbol` payload:
 
 ### Recommended Workflow
 
-1. Start with `parse_filelist` or `parse_files` to confirm the project root,
+1. Start with `pyslang_parse_filelist` or `pyslang_parse_files` to confirm the
+   project root,
    file expansion, include dirs, and defines are what you expect.
-2. Run `get_diagnostics` to see parse or semantic issues early.
-3. Use `list_design_units` and `describe_design_unit` to understand modules and
-   packages.
-4. Use `get_hierarchy` to inspect instantiation structure.
-5. Use `find_symbol` for declaration and reference lookup.
-6. Use `dump_syntax_tree_summary` and `preprocess_files` only when you need
+2. Run `pyslang_get_diagnostics` to see parse or semantic issues early.
+3. Use `pyslang_list_design_units` and `pyslang_describe_design_unit` to
+   understand modules and packages.
+4. Use `pyslang_get_hierarchy` to inspect instantiation structure.
+5. Use `pyslang_find_symbol` for declaration and reference lookup.
+6. Use `pyslang_dump_syntax_tree_summary` and `pyslang_preprocess_files` only
+   when you need
    syntax or preprocessing context; they are intentionally compact.
 
 ### What Clients Should Expect Back
@@ -347,8 +349,10 @@ Example `find_symbol` payload:
 - responses are JSON dictionaries
 - large result lists include truncation metadata
 - recoverable input problems return MCP tool errors with structured error payloads
-- `describe_design_unit` returns `found` / `ambiguous` results instead of throwing for normal lookup misses
-- `preprocess_files` is summary-oriented; it does not claim to reproduce a full
+- `pyslang_describe_design_unit` returns `found` / `ambiguous` results instead
+  of throwing for normal lookup misses
+- `pyslang_preprocess_files` is summary-oriented; it does not claim to
+  reproduce a full
   standalone preprocessed output stream
 - if a path escapes the declared root, the tool returns an error instead of reading it
 
@@ -390,7 +394,7 @@ sequenceDiagram
     participant A as analysis.py
     participant P as pyslang
 
-    C->>S: get_hierarchy(project_root, filelist)
+    C->>S: pyslang_get_hierarchy(project_root, filelist)
     S->>L: normalize root + expand filelist
     L-->>S: ProjectConfig
     S->>A: build or reuse cached analysis
@@ -452,8 +456,8 @@ architecture, security model, and rollout plan.
 
 ## ⚠️ Known Limitations
 
-- `preprocess_files` is summary-oriented and intentionally conservative
-- `find_symbol` currently re-walks the elaborated design per query; it is useful today but not yet indexed for larger corpora
+- `pyslang_preprocess_files` is summary-oriented and intentionally conservative
+- `pyslang_find_symbol` currently re-walks the elaborated design per query; it is useful today but not yet indexed for larger corpora
 - the filelist parser is a useful subset, not full simulator compatibility
 - tool outputs are designed to be stable and compact, but they are still alpha
 - packaging and registry publishing are still pending

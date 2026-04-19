@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any, cast
 
 from pyslang_mcp.analysis import (
+    _format_diagnostic_message,
     build_analysis,
     describe_design_unit,
     dump_syntax_tree_summary,
@@ -90,3 +93,13 @@ def test_diagnostics_on_broken_fixture() -> None:
     assert diagnostics["summary"]["total"] == 1
     assert diagnostics["diagnostics"][0]["severity"] == "error"
     assert "missing_symbol" in diagnostics["diagnostics"][0]["message"]
+
+
+def test_format_diagnostic_message_preserves_escaped_braces() -> None:
+    diagnostic_engine = SimpleNamespace(getMessage=lambda _code: "literal {{}} before {} after")
+    bundle = SimpleNamespace(diagnostic_engine=diagnostic_engine)
+    diagnostic = SimpleNamespace(code="TEST", args=["payload"])
+
+    message = _format_diagnostic_message(cast(Any, bundle), cast(Any, diagnostic))
+
+    assert message == "literal {} before payload after"
