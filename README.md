@@ -54,12 +54,12 @@ The current alpha implements these read-only tools:
 
 | Area | Tools |
 |---|---|
-| Parse / load | `parse_files`, `parse_filelist` |
-| Diagnostics | `get_diagnostics` |
-| Semantic inventory | `list_design_units`, `describe_design_unit` |
-| Structure | `get_hierarchy`, `get_project_summary` |
-| Lookup | `find_symbol` |
-| Syntax / preprocessing summaries | `dump_syntax_tree_summary`, `preprocess_files` |
+| Parse / load | `pyslang_parse_files`, `pyslang_parse_filelist` |
+| Diagnostics | `pyslang_get_diagnostics` |
+| Semantic inventory | `pyslang_list_design_units`, `pyslang_describe_design_unit` |
+| Structure | `pyslang_get_hierarchy`, `pyslang_get_project_summary` |
+| Lookup | `pyslang_find_symbol` |
+| Syntax / preprocessing summaries | `pyslang_dump_syntax_tree_summary`, `pyslang_preprocess_files` |
 
 ## 🔒 Guardrails
 
@@ -67,7 +67,7 @@ The current alpha implements these read-only tools:
 - `stdio` transport first
 - compact JSON responses instead of giant raw compiler dumps
 - in-memory caching keyed by normalized project config plus tracked file mtimes
-- conservative `preprocess_files` behavior that returns preprocessing metadata
+- conservative `pyslang_preprocess_files` behavior that returns preprocessing metadata
   and excerpts, not a claimed full preprocessed text stream
 
 ## 🗂️ Current Filelist Support
@@ -79,7 +79,7 @@ The implemented `.f` parser intentionally supports a practical subset:
 - include directories with `+incdir+...` and `-I`
 - macro defines with `+define+...`
 
-Unsupported directives are reported back in `parse_filelist` output instead of
+Unsupported directives are reported back in `pyslang_parse_filelist` output instead of
 being silently ignored.
 
 ## 🧪 HDL Example Corpus
@@ -288,7 +288,7 @@ or:
   inside `project_root`.
 - `include_dirs`, `defines`, and `top_modules` are optional.
 
-Example `parse_files` payload:
+Example `pyslang_parse_files` payload:
 
 ```json
 {
@@ -309,7 +309,7 @@ Example `parse_files` payload:
 }
 ```
 
-Example `parse_filelist` payload:
+Example `pyslang_parse_filelist` payload:
 
 ```json
 {
@@ -318,7 +318,7 @@ Example `parse_filelist` payload:
 }
 ```
 
-Example `find_symbol` payload:
+Example `pyslang_find_symbol` payload:
 
 ```json
 {
@@ -330,16 +330,107 @@ Example `find_symbol` payload:
 }
 ```
 
+### Example Prompts
+
+Use this MCP when compiler-backed answers beat text search, or when a question
+spans multiple files. These are the prompts where `pyslang_mcp` earns its
+elaboration cost.
+
+#### Uniqueness, absence, and cardinality
+
+grep tells you "I found N matches"; the MCP tells you "the elaborator
+confirms X." Compiler-backed claims grep cannot make:
+
+- *"Is `ecc_error` actually consumed, or is it dead? I need
+  compiler confirmation that every load is an UNCONNECTED sink, not just
+  text matches."*
+- *"Is module `legacy_widget` instantiated anywhere the elaborator sees,
+  even if grep finds its name only in comments?"*
+- *"For signal `fsm_discard`, how many distinct declarations match that
+  exact name across the project?"*
+
+#### Cross-module and hierarchical queries
+
+grep iterates and loses context; the MCP walks the elaborated tree once:
+
+- *"From `top`, walk the instance hierarchy and show me every instance of
+  `sync_fifo_mem` with its hierarchical path and port connections."*
+- *"Describe module `kuku_top`: ports, child instances, declared
+  names."*
+- *"List every top-level instance in the elaborated design and report its
+  depth."*
+
+#### Project health and diagnostics
+
+- *"Parse `compile/project.f` with `+define+DEBUG` and report every error
+  and warning with file/line locations."*
+- *"Group the current diagnostics by file so I can triage which modules
+  are worst."*
+- *"Does this project compile cleanly under pyslang? I want parse plus
+  semantic diagnostics, no text-matching."*
+
+#### Structural inventory
+
+- *"List every design unit in the project grouped by kind (module /
+  interface / package)."*
+- *"Give me the project shape: file count, top instances, diagnostic
+  counts, tracked paths. No deep analysis."*
+
+#### Filelist and preprocessing sanity
+
+- *"Run `pyslang_parse_filelist` on `compile/project.f` and confirm the
+  resolved file set, include paths, defines, and any unsupported
+  directives match what my simulator uses."*
+
+#### Symbol cohort analysis
+
+- *"For module `kuku_top`, list every declared name so I can
+  check whether `ecc_err` is part of a cohort of
+  UNCONNECTED scalars."*
+- *"Where is type `data_t` defined, and what variables or ports declare
+  it?"*
+
+### When Not To Reach For This MCP
+
+Be honest — the MCP pays elaboration cost that plain text tools avoid.
+
+**Plain `grep` / `Read` wins:**
+
+- Single-file questions with known locality ("what does line 42 of this
+  file do?", "is the string `foo_bar` mentioned anywhere?").
+- Comment or docstring lookups ("what's the comment above this
+  function?").
+- Incomplete file sets — parse errors from unresolved cross-module
+  references can silently degrade downstream results (`describe_*` may
+  return empty port lists). If the file set you can supply is not
+  self-contained, grep plus Read give cleaner answers.
+
+**Direct `pyslang` wins:**
+
+- Bespoke analyses with custom visitors: "count `always_ff` blocks that
+  use negedge reset," "build a call graph of tasks inside module X,"
+  "run this custom lint rule." Ten lines of pyslang beats composing
+  tool calls.
+- Expression evaluation in custom scopes, what-if parameter sweeps,
+  incremental re-elaboration.
+
+**Out of charter entirely:**
+
+- Rename / refactor / format / autofix — the MCP is strictly read-only.
+- Testbench generation, synthesis, simulation, waveform analysis.
+
 ### Recommended Workflow
 
-1. Start with `parse_filelist` or `parse_files` to confirm the project root,
+1. Start with `pyslang_parse_filelist` or `pyslang_parse_files` to confirm the
+   project root,
    file expansion, include dirs, and defines are what you expect.
-2. Run `get_diagnostics` to see parse or semantic issues early.
-3. Use `list_design_units` and `describe_design_unit` to understand modules and
-   packages.
-4. Use `get_hierarchy` to inspect instantiation structure.
-5. Use `find_symbol` for declaration and reference lookup.
-6. Use `dump_syntax_tree_summary` and `preprocess_files` only when you need
+2. Run `pyslang_get_diagnostics` to see parse or semantic issues early.
+3. Use `pyslang_list_design_units` and `pyslang_describe_design_unit` to
+   understand modules and packages.
+4. Use `pyslang_get_hierarchy` to inspect instantiation structure.
+5. Use `pyslang_find_symbol` for declaration and reference lookup.
+6. Use `pyslang_dump_syntax_tree_summary` and `pyslang_preprocess_files` only
+   when you need
    syntax or preprocessing context; they are intentionally compact.
 
 ### What Clients Should Expect Back
@@ -349,8 +440,10 @@ Example `find_symbol` payload:
 - every successful tool response carries `project_status` so clients can tell
   `ok` from `degraded` or `incomplete` analysis
 - recoverable input problems return MCP tool errors with structured error payloads
-- `describe_design_unit` returns `found` / `ambiguous` results instead of throwing for normal lookup misses
-- `preprocess_files` is summary-oriented; it does not claim to reproduce a full
+- `pyslang_describe_design_unit` returns `found` / `ambiguous` results instead
+  of throwing for normal lookup misses
+- `pyslang_preprocess_files` is summary-oriented; it does not claim to
+  reproduce a full
   standalone preprocessed output stream
 - if a path escapes the declared root, the tool returns an error instead of reading it
 
@@ -392,7 +485,7 @@ sequenceDiagram
     participant A as analysis.py
     participant P as pyslang
 
-    C->>S: get_hierarchy(project_root, filelist)
+    C->>S: pyslang_get_hierarchy(project_root, filelist)
     S->>L: normalize root + expand filelist
     L-->>S: ProjectConfig
     S->>A: build or reuse cached analysis
@@ -454,8 +547,8 @@ architecture, security model, and rollout plan.
 
 ## ⚠️ Known Limitations
 
-- `preprocess_files` is summary-oriented and intentionally conservative
-- `find_symbol` currently re-walks the elaborated design per query; it is useful today but not yet indexed for larger corpora
+- `pyslang_preprocess_files` is summary-oriented and intentionally conservative
+- `pyslang_find_symbol` currently re-walks the elaborated design per query; it is useful today but not yet indexed for larger corpora
 - the filelist parser is a useful subset, not full simulator compatibility
 - tool outputs are designed to be stable and compact, but they are still alpha
 - packaging and registry publishing are still pending

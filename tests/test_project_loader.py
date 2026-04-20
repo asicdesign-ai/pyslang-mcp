@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import textwrap
 from pathlib import Path
 
 import pytest
@@ -49,3 +50,35 @@ def test_filelist_strips_inline_comments_without_whitespace(tmp_path: Path) -> N
     config = load_project_from_filelist(project_root=root, filelist="project.f")
 
     assert [path.name for path in config.files] == ["top.sv"]
+
+
+def test_filelist_reports_unsupported_library_tokens(tmp_path: Path) -> None:
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "lib").mkdir()
+    (root / "top.sv").write_text("module top; endmodule\n", encoding="utf-8")
+    (root / "vendor.sv").write_text("module vendor; endmodule\n", encoding="utf-8")
+    (root / "project.f").write_text(
+        textwrap.dedent(
+            """\
+            -y lib
+            +libext+
+            +libext+.sv+.v
+            -v vendor.sv
+            top.sv
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    config = load_project_from_filelist(project_root=root, filelist="project.f")
+
+    assert [path.name for path in config.files] == ["top.sv"]
+    assert list(config.unsupported_filelist_entries) == [
+        "project.f:1:-y",
+        "project.f:1:lib",
+        "project.f:2:+libext+",
+        "project.f:3:+libext+.sv+.v",
+        "project.f:4:-v",
+        "project.f:4:vendor.sv",
+    ]

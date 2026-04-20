@@ -5,43 +5,43 @@ against the checked-in HDL corpus, not by grepping corpus.json.
 -->
 <evaluation>
   <qa_pair>
-    <question>Using `parse_filelist` and then `get_hierarchy` on `examples/hdl/reference/ip/sync_fifo` with `project.f`, what is the `hierarchical_path` of the only child instance under the top instance `sync_fifo`?</question>
+    <question>Using `pyslang_parse_filelist` and then `pyslang_get_hierarchy` on `examples/hdl/reference/ip/sync_fifo` with `project.f`, what is the `hierarchical_path` of the only child instance under the top instance `sync_fifo`?</question>
     <answer>sync_fifo.u_sync_fifo_mem</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `list_design_units` to discover the module and then `describe_design_unit` on `examples/hdl/reference/ip/sync_fifo`, how many output ports does the `sync_fifo` design unit expose?</question>
+    <question>Using `pyslang_list_design_units` to discover the module and then `pyslang_describe_design_unit` on `examples/hdl/reference/ip/sync_fifo`, how many output ports does the `sync_fifo` design unit expose?</question>
     <answer>4</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `parse_filelist` and then `get_project_summary` on `examples/hdl/reference/ip/sync_fifo`, how many `tracked_paths` are returned?</question>
+    <question>Using `pyslang_parse_filelist` and then `pyslang_get_project_summary` on `examples/hdl/reference/ip/sync_fifo`, how many `tracked_paths` are returned?</question>
     <answer>6</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using both `preprocess_files` and `dump_syntax_tree_summary` on `examples/hdl/reference/ip/sync_fifo`, which file includes `fifo_defs.svh` and has `PackageDeclaration` as its only top-level member?</question>
+    <question>Using both `pyslang_preprocess_files` and `pyslang_dump_syntax_tree_summary` on `examples/hdl/reference/ip/sync_fifo`, which file includes `fifo_defs.svh` and has `PackageDeclaration` as its only top-level member?</question>
     <answer>sync_fifo_pkg.sv</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `find_symbol` with `match_mode=&quot;contains&quot;` for `push_fire` and cross-checking the declaration with `describe_design_unit` on `examples/hdl/reference/ip/sync_fifo`, what `reference_kind` is reported for the only reference hit?</question>
+    <question>Using `pyslang_find_symbol` with `match_mode=&quot;contains&quot;` for `push_fire` and cross-checking the declaration with `pyslang_describe_design_unit` on `examples/hdl/reference/ip/sync_fifo`, what `reference_kind` is reported for the only reference hit?</question>
     <answer>named_value</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `describe_design_unit` and `get_hierarchy` on `examples/hdl/reference/ip/sync_fifo`, what module definition is instantiated by the child instance `u_sync_fifo_mem`?</question>
+    <question>Using `pyslang_describe_design_unit` and `pyslang_get_hierarchy` on `examples/hdl/reference/ip/sync_fifo`, what module definition is instantiated by the child instance `u_sync_fifo_mem`?</question>
     <answer>sync_fifo_mem</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `list_design_units` and then `describe_design_unit` on `examples/hdl/reference/ip/apb_timer`, how many ports does `timer_core` have?</question>
+    <question>Using `pyslang_list_design_units` and then `pyslang_describe_design_unit` on `examples/hdl/reference/ip/apb_timer`, how many ports does `timer_core` have?</question>
     <answer>9</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `get_hierarchy` and `find_symbol` for `tick` on `examples/hdl/reference/ip/apb_timer`, what `hierarchical_path` is reported for the `tick` variable declaration?</question>
+    <question>Using `pyslang_get_hierarchy` and `pyslang_find_symbol` for `tick` on `examples/hdl/reference/ip/apb_timer`, what `hierarchical_path` is reported for the `tick` variable declaration?</question>
     <answer>apb_timer.u_timer_core.tick</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `list_design_units` to confirm the project structure and then `find_symbol` with `match_mode=&quot;contains&quot;` for `prescale_q` on `examples/hdl/reference/ip/apb_timer`, how many declarations are reported?</question>
+    <question>Using `pyslang_list_design_units` to confirm the project structure and then `pyslang_find_symbol` with `match_mode=&quot;contains&quot;` for `prescale_q` on `examples/hdl/reference/ip/apb_timer`, how many declarations are reported?</question>
     <answer>2</answer>
   </qa_pair>
   <qa_pair>
-    <question>Using `parse_filelist` and then `get_diagnostics` on `examples/hdl/buggy/hard/apb_timer_irq_race_bug` with `project.f`, how many diagnostics are returned?</question>
+    <question>Using `pyslang_parse_filelist` and then `pyslang_get_diagnostics` on `examples/hdl/buggy/hard/apb_timer_irq_race_bug` with `project.f`, how many diagnostics are returned?</question>
     <answer>0</answer>
   </qa_pair>
 </evaluation>
