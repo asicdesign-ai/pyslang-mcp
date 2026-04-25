@@ -151,22 +151,26 @@ def get_project_summary(
 def get_diagnostics(bundle: AnalysisBundle, *, max_items: int = 200) -> dict[str, Any]:
     """Return parse and semantic diagnostics."""
 
-    diagnostics = [
-        _serialize_diagnostic(bundle, diagnostic)
-        for diagnostic in bundle.compilation.getAllDiagnostics()
-    ]
-    diagnostics_json, truncation = limit_list(diagnostics, max_items=max_items)
-    severity_counts = Counter(
-        str(entry["severity"]).lower() for entry in diagnostics if entry.get("severity")
-    )
+    diagnostics_json: list[dict[str, Any]] = []
+    severity_counts: Counter[str] = Counter()
+    total = 0
+    for diagnostic in bundle.compilation.getAllDiagnostics():
+        total += 1
+        severity = bundle.diagnostic_engine.getSeverity(
+            diagnostic.code, diagnostic.location
+        ).name.lower()
+        severity_counts[severity] += 1
+        if len(diagnostics_json) < max(max_items, 0):
+            diagnostics_json.append(_serialize_diagnostic(bundle, diagnostic))
+
     return stabilize_json(
         {
             "project_status": _project_status(bundle),
             "project_root": bundle.project.project_root.as_posix(),
             "summary": {
-                "total": len(diagnostics),
+                "total": total,
                 "severity_counts": dict(sorted(severity_counts.items())),
-                "truncation": truncation,
+                "truncation": _truncation(returned=len(diagnostics_json), total=total),
             },
             "diagnostics": diagnostics_json,
         }
@@ -312,32 +316,32 @@ def find_symbol(
     """Find declarations and references matching a symbol name or hierarchical path."""
 
     index = _analysis_index(bundle)
-    declarations = [
-        entry.output
-        for entry in index.declarations
-        if _matches_text(query=query, match_mode=match_mode, candidates=entry.candidates)
-    ]
-    references = (
-        [
-            entry.output
-            for entry in index.references
-            if _matches_text(query=query, match_mode=match_mode, candidates=entry.candidates)
-        ]
-        if include_references
-        else []
+    declarations, decl_truncation = _filter_indexed_outputs(
+        index.declarations,
+        query=query,
+        match_mode=match_mode,
+        max_items=max_results,
     )
-    limited_declarations, decl_truncation = limit_list(declarations, max_items=max_results)
-    limited_references, ref_truncation = limit_list(references, max_items=max_results)
+    references, ref_truncation = (
+        _filter_indexed_outputs(
+            index.references,
+            query=query,
+            match_mode=match_mode,
+            max_items=max_results,
+        )
+        if include_references
+        else ([], _truncation(returned=0, total=0))
+    )
     return stabilize_json(
         {
             "project_status": _project_status(bundle),
             "query": query,
             "match_mode": match_mode,
-            "declarations": limited_declarations,
-            "references": limited_references,
+            "declarations": declarations,
+            "references": references,
             "summary": {
-                "declaration_count": len(declarations),
-                "reference_count": len(references),
+                "declaration_count": decl_truncation["total"],
+                "reference_count": ref_truncation["total"],
                 "declaration_truncation": decl_truncation,
                 "reference_truncation": ref_truncation,
             },
@@ -353,8 +357,9 @@ def dump_syntax_tree_summary(
 ) -> dict[str, Any]:
     """Summarize syntax tree shapes without dumping raw ASTs."""
 
+    sorted_trees = sorted(bundle.syntax_trees.items())
     file_summaries: list[dict[str, Any]] = []
-    for file_path, tree in sorted(bundle.syntax_trees.items()):
+    for file_path, tree in sorted_trees[: max(max_files, 0)]:
         kind_counts: Counter[str] = Counter()
 
         def visit(node: Any, _kind_counts: Counter[str] = kind_counts) -> bool:
@@ -380,15 +385,17 @@ def dump_syntax_tree_summary(
             }
         )
 
-    limited_files, truncation = limit_list(file_summaries, max_items=max_files)
     return stabilize_json(
         {
             "project_status": _project_status(bundle),
             "summary": {
-                "file_count": len(file_summaries),
-                "truncation": truncation,
+                "file_count": len(sorted_trees),
+                "truncation": _truncation(
+                    returned=len(file_summaries),
+                    total=len(sorted_trees),
+                ),
             },
-            "files": limited_files,
+            "files": file_summaries,
         }
     )
 
@@ -401,10 +408,10 @@ def preprocess_files(
 ) -> dict[str, Any]:
     """Return conservative preprocessing metadata and source excerpts."""
 
+    sorted_trees = sorted(bundle.syntax_trees.items())
     results: list[dict[str, Any]] = []
-    for file_path, tree in sorted(bundle.syntax_trees.items()):
-        source_text = file_path.read_text(encoding="utf-8")
-        excerpt = "\n".join(source_text.splitlines()[:max_excerpt_lines])
+    for file_path, tree in sorted_trees[: max(max_files, 0)]:
+        excerpt = _read_leading_lines(file_path, max_excerpt_lines)
         results.append(
             {
                 "file": relative_path(bundle.project.project_root, file_path),
@@ -419,7 +426,6 @@ def preprocess_files(
             }
         )
 
-    limited_results, truncation = limit_list(results, max_items=max_files)
     return stabilize_json(
         {
             "project_status": _project_status(bundle),
@@ -429,11 +435,11 @@ def preprocess_files(
                 "A full standalone preprocessed text stream is not claimed here."
             ),
             "summary": {
-                "file_count": len(results),
-                "truncation": truncation,
+                "file_count": len(sorted_trees),
+                "truncation": _truncation(returned=len(results), total=len(sorted_trees)),
             },
             "effective_defines": {key: value for key, value in bundle.project.defines},
-            "files": limited_results,
+            "files": results,
         }
     )
 
@@ -643,6 +649,50 @@ def _read_line(path: Path, line_number: int) -> str | None:
     if line_number < 1 or line_number > len(lines):
         return None
     return lines[line_number - 1].rstrip()
+
+
+def _read_leading_lines(path: Path, max_lines: int) -> str:
+    if max_lines <= 0:
+        return ""
+    lines: list[str] = []
+    try:
+        with path.open(encoding="utf-8") as handle:
+            for _ in range(max_lines):
+                line = handle.readline()
+                if not line:
+                    break
+                lines.append(line.rstrip("\n"))
+    except FileNotFoundError:
+        return ""
+    return "\n".join(lines)
+
+
+def _truncation(*, returned: int, total: int) -> dict[str, object]:
+    return {
+        "returned": returned,
+        "total": total,
+        "truncated": total > returned,
+        "remaining": max(total - returned, 0),
+    }
+
+
+def _filter_indexed_outputs(
+    entries: Iterable[IndexedDeclaration | IndexedReference],
+    *,
+    query: str,
+    match_mode: MatchMode,
+    max_items: int,
+) -> tuple[list[dict[str, Any]], dict[str, object]]:
+    limit = max(max_items, 0)
+    total = 0
+    outputs: list[dict[str, Any]] = []
+    for entry in entries:
+        if not _matches_text(query=query, match_mode=match_mode, candidates=entry.candidates):
+            continue
+        total += 1
+        if len(outputs) < limit:
+            outputs.append(entry.output)
+    return outputs, _truncation(returned=len(outputs), total=total)
 
 
 def _format_diagnostic_message(bundle: AnalysisBundle, diagnostic: Any) -> str:

@@ -63,6 +63,10 @@ def test_analysis_over_filelist_fixture() -> None:
     assert symbol_hits["summary"]["declaration_count"] >= 1
     assert symbol_hits["summary"]["reference_count"] >= 1
     assert find_symbol(bundle, query="payload", include_references=True) == symbol_hits
+    limited_symbol_hits = find_symbol(bundle, query="payload", max_results=0)
+    assert limited_symbol_hits["summary"]["declaration_count"] >= 1
+    assert limited_symbol_hits["summary"]["declaration_truncation"]["returned"] == 0
+    assert limited_symbol_hits["summary"]["declaration_truncation"]["truncated"] is True
 
     type_hits = find_symbol(bundle, query="data_t", include_references=True)
     assert type_hits["summary"]["declaration_count"] >= 1
@@ -83,12 +87,20 @@ def test_analysis_over_filelist_fixture() -> None:
     assert syntax["project_status"]["status"] == "ok"
     assert len(syntax["files"]) == 3
     assert any(file["file"] == "top.sv" for file in syntax["files"])
+    limited_syntax = dump_syntax_tree_summary(bundle, max_files=1)
+    assert len(limited_syntax["files"]) == 1
+    assert limited_syntax["summary"]["file_count"] == 3
+    assert limited_syntax["summary"]["truncation"]["truncated"] is True
 
     preprocessing = preprocess_files(bundle)
     assert preprocessing["project_status"]["status"] == "ok"
     assert preprocessing["mode"] == "summary_only"
     assert preprocessing["effective_defines"] == {"WIDTH": "8"}
     assert preprocessing["files"][0]["include_directives"] == []
+    limited_preprocessing = preprocess_files(bundle, max_files=1, max_excerpt_lines=1)
+    assert len(limited_preprocessing["files"]) == 1
+    assert len(limited_preprocessing["files"][0]["source_excerpt"].splitlines()) <= 1
+    assert limited_preprocessing["summary"]["file_count"] == 3
 
     summary = get_project_summary(bundle, max_diagnostics=10, max_design_units=20)
     assert summary["project_status"]["status"] == "ok"
@@ -109,6 +121,11 @@ def test_diagnostics_on_broken_fixture() -> None:
     assert diagnostics["summary"]["total"] == 1
     assert diagnostics["diagnostics"][0]["severity"] == "error"
     assert "missing_symbol" in diagnostics["diagnostics"][0]["message"]
+
+    hidden_diagnostics = get_diagnostics(bundle, max_items=0)
+    assert hidden_diagnostics["summary"]["total"] == 1
+    assert hidden_diagnostics["summary"]["truncation"]["returned"] == 0
+    assert hidden_diagnostics["summary"]["truncation"]["truncated"] is True
 
     description = describe_design_unit(bundle, name="broken")
     assert description["project_status"]["status"] == "incomplete"

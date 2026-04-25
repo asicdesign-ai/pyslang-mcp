@@ -48,6 +48,13 @@ READ_ONLY_ANNOTATIONS = ToolAnnotations(
     idempotentHint=True,
     openWorldHint=False,
 )
+MAX_LIST_ITEMS = 1000
+MAX_SYMBOL_RESULTS = 1000
+MAX_HIERARCHY_DEPTH = 32
+MAX_HIERARCHY_CHILDREN = 1000
+MAX_SUMMARY_FILES = 500
+MAX_NODE_KINDS = 200
+MAX_EXCERPT_LINES = 200
 
 TOOL_NAME_PREFIX = "pyslang_"
 PUBLIC_TOOL_NAMES = {
@@ -185,6 +192,7 @@ MaxItemsArg = Annotated[
     Field(
         default=200,
         ge=0,
+        le=MAX_LIST_ITEMS,
         description="Maximum number of list items to return before truncation.",
     ),
 ]
@@ -193,26 +201,43 @@ MaxResultsArg = Annotated[
     Field(
         default=100,
         ge=0,
+        le=MAX_SYMBOL_RESULTS,
         description="Maximum declaration hits and maximum reference hits to return.",
     ),
 ]
 MaxDepthArg = Annotated[
     int,
-    Field(default=8, ge=1, description="Maximum hierarchy depth to expand from each top instance."),
+    Field(
+        default=8,
+        ge=1,
+        le=MAX_HIERARCHY_DEPTH,
+        description="Maximum hierarchy depth to expand from each top instance.",
+    ),
 ]
 MaxChildrenArg = Annotated[
     int,
-    Field(default=100, ge=0, description="Maximum child instances to return per hierarchy node."),
+    Field(
+        default=100,
+        ge=0,
+        le=MAX_HIERARCHY_CHILDREN,
+        description="Maximum child instances to return per hierarchy node.",
+    ),
 ]
 MaxFilesArg = Annotated[
     int,
-    Field(default=50, ge=0, description="Maximum number of files to summarize before truncation."),
+    Field(
+        default=50,
+        ge=0,
+        le=MAX_SUMMARY_FILES,
+        description="Maximum number of files to summarize before truncation.",
+    ),
 ]
 MaxNodeKindsArg = Annotated[
     int,
     Field(
         default=40,
         ge=0,
+        le=MAX_NODE_KINDS,
         description="Maximum distinct syntax node kinds to keep per file summary.",
     ),
 ]
@@ -221,6 +246,7 @@ MaxExcerptLinesArg = Annotated[
     Field(
         default=12,
         ge=0,
+        le=MAX_EXCERPT_LINES,
         description="Maximum number of leading source lines to include per file excerpt.",
     ),
 ]
@@ -229,6 +255,7 @@ MaxSummaryDiagnosticsArg = Annotated[
     Field(
         default=50,
         ge=0,
+        le=MAX_LIST_ITEMS,
         description=(
             f"Maximum diagnostics to fold into `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
         ),
@@ -239,6 +266,7 @@ MaxSummaryUnitsArg = Annotated[
     Field(
         default=200,
         ge=0,
+        le=MAX_LIST_ITEMS,
         description=(
             f"Maximum design units to fold into `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
         ),
@@ -249,6 +277,7 @@ SummaryDepthArg = Annotated[
     Field(
         default=6,
         ge=1,
+        le=MAX_HIERARCHY_DEPTH,
         description=(
             f"Maximum hierarchy depth to fold into `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
         ),
@@ -259,6 +288,7 @@ SummaryChildrenArg = Annotated[
     Field(
         default=100,
         ge=0,
+        le=MAX_HIERARCHY_CHILDREN,
         description=(
             f"Maximum child instances per node in `{PUBLIC_TOOL_NAMES['get_project_summary']}`."
         ),

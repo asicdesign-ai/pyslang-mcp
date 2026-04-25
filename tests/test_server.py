@@ -7,7 +7,7 @@ from typing import Any, cast
 from mcp.types import CallToolResult
 
 from pyslang_mcp.cache import AnalysisCache
-from pyslang_mcp.server import PUBLIC_TOOL_NAMES, create_server
+from pyslang_mcp.server import MAX_LIST_ITEMS, MAX_SYMBOL_RESULTS, PUBLIC_TOOL_NAMES, create_server
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -60,6 +60,24 @@ def test_tools_list_exposes_output_schema() -> None:
         assert "result" in output_schema["properties"]
         result_schema = output_schema["properties"]["result"]
         assert any(entry["$ref"].endswith(model_name) for entry in result_schema["anyOf"])
+
+
+def test_tools_list_exposes_hard_limit_bounds() -> None:
+    server = create_server(cache=AnalysisCache())
+
+    async def run() -> dict[str, dict[str, Any]]:
+        tools = await server.list_tools()
+        return {tool.name: cast(dict[str, Any], tool.inputSchema) for tool in tools}
+
+    input_schemas = asyncio.run(run())
+    assert (
+        input_schemas[PUBLIC_TOOL_NAMES["get_diagnostics"]]["properties"]["max_items"]["maximum"]
+        == MAX_LIST_ITEMS
+    )
+    assert (
+        input_schemas[PUBLIC_TOOL_NAMES["find_symbol"]]["properties"]["max_results"]["maximum"]
+        == MAX_SYMBOL_RESULTS
+    )
 
 
 def test_parse_filelist_tool() -> None:

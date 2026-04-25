@@ -66,6 +66,7 @@ The current alpha implements these read-only tools:
 - strict project-root scoping; paths outside the declared root are rejected
 - `stdio` transport first
 - compact JSON responses instead of giant raw compiler dumps
+- hard upper bounds on caller-provided list, hierarchy, file, and excerpt limits
 - in-memory caching keyed by normalized project config plus tracked file mtimes
 - conservative `pyslang_preprocess_files` behavior that returns preprocessing metadata
   and excerpts, not a claimed full preprocessed text stream

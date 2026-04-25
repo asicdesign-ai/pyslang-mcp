@@ -23,36 +23,6 @@ refreshing the editable dev install:
 
 Observed test result: `20 passed`, `89%` total coverage.
 
-## 4. Output limits are soft, not protective
-
-The tools expose limits, but most implementations collect or traverse the full
-result set before slicing with `limit_list`. Some parameters have only lower
-bounds and no upper bounds. `preprocess_files` reads entire files before
-returning leading excerpts.
-
-Evidence:
-
-- Limit argument definitions use `ge=0` without upper bounds:
-  [src/pyslang_mcp/server.py](src/pyslang_mcp/server.py)
-- `dump_syntax_tree_summary` walks full syntax trees before limiting files:
-  [src/pyslang_mcp/analysis.py](src/pyslang_mcp/analysis.py)
-- `preprocess_files` reads whole files before slicing excerpts:
-  [src/pyslang_mcp/analysis.py](src/pyslang_mcp/analysis.py)
-- `limit_list` truncates only after data is already materialized:
-  [src/pyslang_mcp/serializers.py](src/pyslang_mcp/serializers.py)
-
-Why it matters:
-
-MCP clients need bounded, predictable latency and response size. Large RTL
-repos can make full traversal and materialization expensive even when the user
-requested a small result.
-
-Recommended fix:
-
-Add maximum accepted values to limit arguments, stop traversal once limits are
-reached where feasible, avoid full-file reads for excerpts, and add global
-response-size and timeout controls. Add stress tests for truncation behavior.
-
 ## 5. HTTP transport is exposed before the security model exists
 
 The CLI exposes `--transport streamable-http` and starts a local HTTP server,
