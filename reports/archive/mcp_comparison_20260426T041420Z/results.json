@@ -1,0 +1,456 @@
+{
+  "cases": [
+    {
+      "category": "Hierarchy",
+      "difficulty": "medium",
+      "evidence_need": "elaboration",
+      "expected": "sync_fifo.u_sync_fifo_mem",
+      "id": "sync_child_path",
+      "mcp": {
+        "answer": "sync_fifo.u_sync_fifo_mem",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 102.6,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "note": "Can be guessed from simple source here; MCP confirms elaborated hierarchy.",
+      "project": "sync_fifo",
+      "text": {
+        "answer": "sync_fifo.u_sync_fifo_mem",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.862,
+        "rationale": "Regex found a direct sync_fifo_mem instance and assumed the top scope name."
+      },
+      "title": "Resolved child instance path"
+    },
+    {
+      "category": "Hierarchy",
+      "difficulty": "easy",
+      "evidence_need": "module binding",
+      "expected": "sync_fifo_mem",
+      "id": "sync_child_definition",
+      "mcp": {
+        "answer": "sync_fifo_mem",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 20.189,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "note": "A direct instantiation is easy text-only; MCP still returns bound definition.",
+      "project": "sync_fifo",
+      "text": {
+        "answer": "sync_fifo_mem",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.212,
+        "rationale": "Regex matched the module token before u_sync_fifo_mem."
+      },
+      "title": "Child instance module definition"
+    },
+    {
+      "category": "Interface",
+      "difficulty": "easy",
+      "evidence_need": "port model",
+      "expected": "4",
+      "id": "sync_output_ports",
+      "mcp": {
+        "answer": "4",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 28.03,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "note": "ANSI ports make this a fair text-only win.",
+      "project": "sync_fifo",
+      "text": {
+        "answer": "4",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.134,
+        "rationale": "Counted output tokens."
+      },
+      "title": "sync_fifo output port count"
+    },
+    {
+      "category": "Project loading",
+      "difficulty": "hard",
+      "evidence_need": "filelist and include closure",
+      "expected": "6",
+      "id": "sync_tracked_paths",
+      "mcp": {
+        "answer": "6",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 23.336,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_get_project_summary"
+      ],
+      "note": "This tests project-loader state rather than HDL syntax alone.",
+      "project": "sync_fifo",
+      "text": {
+        "answer": "unknown (3 visible source entries)",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.099,
+        "rationale": "Text inspection can count visible source entries, but not the normalized tracked filelist/include closure used by the MCP."
+      },
+      "title": "Normalized tracked path count"
+    },
+    {
+      "category": "Preprocessing",
+      "difficulty": "easy",
+      "evidence_need": "syntax plus include metadata",
+      "expected": "sync_fifo_pkg.sv",
+      "id": "sync_package_include",
+      "mcp": {
+        "answer": "sync_fifo_pkg.sv",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 26.328,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_dump_syntax_tree_summary"
+      ],
+      "note": "Plain text can answer this local include/package question.",
+      "project": "sync_fifo",
+      "text": {
+        "answer": "sync_fifo_pkg.sv",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.6,
+        "rationale": "Matched both the include directive and package token."
+      },
+      "title": "Package file that includes fifo_defs.svh"
+    },
+    {
+      "category": "Symbol references",
+      "difficulty": "hard",
+      "evidence_need": "semantic reference binding",
+      "expected": "named_value",
+      "id": "push_fire_reference_kind",
+      "mcp": {
+        "answer": "named_value",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 21.747,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "Requires compiler classification of the reference expression.",
+      "project": "sync_fifo",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.005,
+        "rationale": "Source text does not encode the compiler reference_kind classification."
+      },
+      "title": "push_fire named reference classification"
+    },
+    {
+      "category": "Interface",
+      "difficulty": "easy",
+      "evidence_need": "port model",
+      "expected": "9",
+      "id": "timer_core_ports",
+      "mcp": {
+        "answer": "9",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 76.193,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "note": "Simple ANSI interface extraction is enough here.",
+      "project": "apb_timer",
+      "text": {
+        "answer": "9",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.478,
+        "rationale": "Counted ANSI port direction tokens in timer_core."
+      },
+      "title": "timer_core total port count"
+    },
+    {
+      "category": "Symbol references",
+      "difficulty": "hard",
+      "evidence_need": "elaborated symbol scope",
+      "expected": "apb_timer.u_timer_core.tick",
+      "id": "tick_hier_path",
+      "mcp": {
+        "answer": "apb_timer.u_timer_core.tick",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 21.565,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "The answer depends on instance scope, not the local timer_core file alone.",
+      "project": "apb_timer",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.005,
+        "rationale": "The hierarchical path requires elaborating timer_core under apb_timer."
+      },
+      "title": "tick declaration hierarchical path"
+    },
+    {
+      "category": "Symbol inventory",
+      "difficulty": "medium",
+      "evidence_need": "declaration inventory",
+      "expected": "2",
+      "id": "prescale_q_count",
+      "mcp": {
+        "answer": "2",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 20.424,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "Text can count this simple declaration pattern; MCP confirms declarations.",
+      "project": "apb_timer",
+      "text": {
+        "answer": "2",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 1.031,
+        "rationale": "Counted prescale_q declarations across local source files."
+      },
+      "title": "prescale_q declaration count"
+    },
+    {
+      "category": "Diagnostics",
+      "difficulty": "hard",
+      "evidence_need": "compiler diagnostics",
+      "expected": "0",
+      "id": "buggy_apb_diagnostics",
+      "mcp": {
+        "answer": "0",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 68.527,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_get_diagnostics"
+      ],
+      "note": "The design is intentionally behaviorally buggy but compiler-clean.",
+      "project": "apb_timer_irq_race_bug",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.004,
+        "rationale": "Diagnostic count requires running a parser/semantic frontend."
+      },
+      "title": "Buggy APB parse and semantic diagnostic count"
+    },
+    {
+      "category": "Diagnostics",
+      "difficulty": "hard",
+      "evidence_need": "compiler diagnostics plus status",
+      "expected": "incomplete",
+      "id": "broken_project_status",
+      "mcp": {
+        "answer": "incomplete",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 20.584,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_get_diagnostics"
+      ],
+      "note": "Project status summarizes diagnostics and unresolved references.",
+      "project": "tests/fixtures/broken",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.004,
+        "rationale": "Project status is a compiler-backed aggregate, not plain source text."
+      },
+      "title": "Broken fixture project status"
+    },
+    {
+      "category": "Type binding",
+      "difficulty": "hard",
+      "evidence_need": "semantic type binding",
+      "expected": "declared_type",
+      "id": "data_t_reference_kind",
+      "mcp": {
+        "answer": "declared_type",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 34.869,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "Requires resolving typedef use through package import.",
+      "project": "tests/fixtures/multi_file",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.004,
+        "rationale": "Declared-type references require symbol binding, not token matching."
+      },
+      "title": "data_t declared-type reference classification"
+    },
+    {
+      "category": "Preprocessing",
+      "difficulty": "medium",
+      "evidence_need": "filelist define resolution",
+      "expected": "WIDTH=8",
+      "id": "multi_file_width_define",
+      "mcp": {
+        "answer": "WIDTH=8",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 15.403,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_preprocess_files"
+      ],
+      "note": "Text sees the simple define; MCP reports effective normalized defines.",
+      "project": "tests/fixtures/multi_file",
+      "text": {
+        "answer": "WIDTH=8",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.18,
+        "rationale": "Read +define+WIDTH directly from filelist text."
+      },
+      "title": "Effective WIDTH preprocessor define"
+    },
+    {
+      "category": "Hierarchy",
+      "difficulty": "medium",
+      "evidence_need": "elaboration",
+      "expected": "top.u_child",
+      "id": "multi_file_child_path",
+      "mcp": {
+        "answer": "top.u_child",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 18.929,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server."
+      },
+      "mcp_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "note": "A small direct instantiation is readable as text and confirmed by MCP.",
+      "project": "tests/fixtures/multi_file",
+      "text": {
+        "answer": "top.u_child",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.121,
+        "rationale": "Regex found a direct child instance."
+      },
+      "title": "multi_file top child instance path"
+    }
+  ],
+  "metadata": {
+    "branch": "feat/m6-indexed-core",
+    "commit": "65f585a",
+    "comparison": "source-text-only baseline vs local pyslang-mcp stdio server",
+    "generated_at": "2026-04-26T04:13:05+00:00",
+    "methodology": "The text-only baseline may inspect checked-in HDL and filelists with deterministic regex helpers, but it cannot call pyslang, MCP tools, or any compiler frontend. The MCP side launches the local server and uses structured tool responses.",
+    "repo": "pyslang-mcp",
+    "server_command": ".venv/bin/python -m pyslang_mcp --transport stdio",
+    "tool_count": 10,
+    "tools": [
+      "pyslang_describe_design_unit",
+      "pyslang_dump_syntax_tree_summary",
+      "pyslang_find_symbol",
+      "pyslang_get_diagnostics",
+      "pyslang_get_hierarchy",
+      "pyslang_get_project_summary",
+      "pyslang_list_design_units",
+      "pyslang_parse_filelist",
+      "pyslang_parse_files",
+      "pyslang_preprocess_files"
+    ]
+  },
+  "summary": {
+    "by_category": {
+      "Diagnostics": {
+        "mcp_correct": 2,
+        "text_correct": 0,
+        "total": 2
+      },
+      "Hierarchy": {
+        "mcp_correct": 3,
+        "text_correct": 3,
+        "total": 3
+      },
+      "Interface": {
+        "mcp_correct": 2,
+        "text_correct": 2,
+        "total": 2
+      },
+      "Preprocessing": {
+        "mcp_correct": 2,
+        "text_correct": 2,
+        "total": 2
+      },
+      "Project loading": {
+        "mcp_correct": 1,
+        "text_correct": 0,
+        "total": 1
+      },
+      "Symbol inventory": {
+        "mcp_correct": 1,
+        "text_correct": 1,
+        "total": 1
+      },
+      "Symbol references": {
+        "mcp_correct": 2,
+        "text_correct": 0,
+        "total": 2
+      },
+      "Type binding": {
+        "mcp_correct": 1,
+        "text_correct": 0,
+        "total": 1
+      }
+    },
+    "delta_correct": 6,
+    "mcp_accuracy": 1.0,
+    "mcp_correct": 14,
+    "median_mcp_ms": 22.541,
+    "median_text_ms": 0.128,
+    "text_accuracy": 0.5714,
+    "text_correct": 8,
+    "total_cases": 14
+  }
+}

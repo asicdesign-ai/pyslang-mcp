@@ -1,0 +1,818 @@
+{
+  "cases": [
+    {
+      "category": "Hierarchy",
+      "difficulty": "medium",
+      "evidence_need": "elaboration",
+      "expected": "sync_fifo.u_sync_fifo_mem",
+      "id": "sync_child_path",
+      "mcp": {
+        "answer": "sync_fifo.u_sync_fifo_mem",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 102.739,
+        "evidence_calls": 1,
+        "evidence_chars": 1378,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 7,
+          "evidence": 345,
+          "prompt": 158,
+          "total": 510
+        }
+      },
+      "mcp_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "note": "Can be guessed from simple source here; MCP confirms elaborated hierarchy.",
+      "project": "sync_fifo",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_get_hierarchy\nProject: sync_fifo\nCategory: Hierarchy\nTask: What is the hierarchical_path of the only child instance under the top instance sync_fifo?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: sync_fifo\nCategory: Hierarchy\nTask: What is the hierarchical_path of the only child instance under the top instance sync_fifo?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "What is the hierarchical_path of the only child instance under the top instance sync_fifo?",
+      "text": {
+        "answer": "sync_fifo.u_sync_fifo_mem",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.18,
+        "evidence_chars": 2252,
+        "evidence_files": [
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo.sv"
+        ],
+        "rationale": "Regex found a direct sync_fifo_mem instance and assumed the top scope name.",
+        "tokens": {
+          "answer": 7,
+          "evidence": 563,
+          "prompt": 163,
+          "total": 733
+        }
+      },
+      "title": "Resolved child instance path"
+    },
+    {
+      "category": "Hierarchy",
+      "difficulty": "easy",
+      "evidence_need": "module binding",
+      "expected": "sync_fifo_mem",
+      "id": "sync_child_definition",
+      "mcp": {
+        "answer": "sync_fifo_mem",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 19.808,
+        "evidence_calls": 1,
+        "evidence_chars": 1378,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 4,
+          "evidence": 345,
+          "prompt": 154,
+          "total": 503
+        }
+      },
+      "mcp_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "note": "A direct instantiation is easy text-only; MCP still returns bound definition.",
+      "project": "sync_fifo",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_get_hierarchy\nProject: sync_fifo\nCategory: Hierarchy\nTask: What module definition is instantiated by the child instance u_sync_fifo_mem?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: sync_fifo\nCategory: Hierarchy\nTask: What module definition is instantiated by the child instance u_sync_fifo_mem?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "What module definition is instantiated by the child instance u_sync_fifo_mem?",
+      "text": {
+        "answer": "sync_fifo_mem",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.181,
+        "evidence_chars": 2252,
+        "evidence_files": [
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo.sv"
+        ],
+        "rationale": "Regex matched the module token before u_sync_fifo_mem.",
+        "tokens": {
+          "answer": 4,
+          "evidence": 563,
+          "prompt": 160,
+          "total": 727
+        }
+      },
+      "title": "Child instance module definition"
+    },
+    {
+      "category": "Interface",
+      "difficulty": "easy",
+      "evidence_need": "port model",
+      "expected": "4",
+      "id": "sync_output_ports",
+      "mcp": {
+        "answer": "4",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 26.941,
+        "evidence_calls": 1,
+        "evidence_chars": 1616,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 404,
+          "prompt": 152,
+          "total": 557
+        }
+      },
+      "mcp_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "note": "ANSI ports make this a fair text-only win.",
+      "project": "sync_fifo",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_describe_design_unit\nProject: sync_fifo\nCategory: Interface\nTask: How many output ports does the sync_fifo design unit expose?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: sync_fifo\nCategory: Interface\nTask: How many output ports does the sync_fifo design unit expose?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "How many output ports does the sync_fifo design unit expose?",
+      "text": {
+        "answer": "4",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.081,
+        "evidence_chars": 2252,
+        "evidence_files": [
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo.sv"
+        ],
+        "rationale": "Counted output tokens.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 563,
+          "prompt": 156,
+          "total": 720
+        }
+      },
+      "title": "sync_fifo output port count"
+    },
+    {
+      "category": "Project loading",
+      "difficulty": "hard",
+      "evidence_need": "filelist and include closure",
+      "expected": "6",
+      "id": "sync_tracked_paths",
+      "mcp": {
+        "answer": "6",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 23.963,
+        "evidence_calls": 1,
+        "evidence_chars": 1412,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 353,
+          "prompt": 153,
+          "total": 507
+        }
+      },
+      "mcp_tools": [
+        "pyslang_get_project_summary"
+      ],
+      "note": "This tests project-loader state rather than HDL syntax alone.",
+      "project": "sync_fifo",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_get_project_summary\nProject: sync_fifo\nCategory: Project loading\nTask: How many normalized tracked_paths are in the loaded project?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: sync_fifo\nCategory: Project loading\nTask: How many normalized tracked_paths are in the loaded project?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "How many normalized tracked_paths are in the loaded project?",
+      "text": {
+        "answer": "unknown (3 visible source entries)",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.064,
+        "evidence_chars": 3642,
+        "evidence_files": [
+          "examples/hdl/reference/ip/sync_fifo/project.f",
+          "examples/hdl/reference/ip/sync_fifo/rtl.f",
+          "examples/hdl/reference/ip/sync_fifo/include/fifo_defs.svh",
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo_pkg.sv",
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo_mem.sv",
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo.sv"
+        ],
+        "rationale": "Text inspection can count visible source entries, but not the normalized tracked filelist/include closure used by the MCP.",
+        "tokens": {
+          "answer": 9,
+          "evidence": 911,
+          "prompt": 157,
+          "total": 1077
+        }
+      },
+      "title": "Normalized tracked path count"
+    },
+    {
+      "category": "Preprocessing",
+      "difficulty": "easy",
+      "evidence_need": "syntax plus include metadata",
+      "expected": "sync_fifo_pkg.sv",
+      "id": "sync_package_include",
+      "mcp": {
+        "answer": "sync_fifo_pkg.sv",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 26.132,
+        "evidence_calls": 1,
+        "evidence_chars": 3594,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 4,
+          "evidence": 899,
+          "prompt": 161,
+          "total": 1064
+        }
+      },
+      "mcp_tools": [
+        "pyslang_dump_syntax_tree_summary"
+      ],
+      "note": "Plain text can answer this local include/package question.",
+      "project": "sync_fifo",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_dump_syntax_tree_summary\nProject: sync_fifo\nCategory: Preprocessing\nTask: Which file includes fifo_defs.svh and has PackageDeclaration as its only top-level member?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: sync_fifo\nCategory: Preprocessing\nTask: Which file includes fifo_defs.svh and has PackageDeclaration as its only top-level member?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "Which file includes fifo_defs.svh and has PackageDeclaration as its only top-level member?",
+      "text": {
+        "answer": "sync_fifo_pkg.sv",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.31,
+        "evidence_chars": 466,
+        "evidence_files": [
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo_pkg.sv"
+        ],
+        "rationale": "Matched both the include directive and package token.",
+        "tokens": {
+          "answer": 4,
+          "evidence": 117,
+          "prompt": 164,
+          "total": 285
+        }
+      },
+      "title": "Package file that includes fifo_defs.svh"
+    },
+    {
+      "category": "Symbol references",
+      "difficulty": "hard",
+      "evidence_need": "semantic reference binding",
+      "expected": "named_value",
+      "id": "push_fire_reference_kind",
+      "mcp": {
+        "answer": "named_value",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 21.353,
+        "evidence_calls": 1,
+        "evidence_chars": 1331,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 3,
+          "evidence": 333,
+          "prompt": 158,
+          "total": 494
+        }
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "Requires compiler classification of the reference expression.",
+      "project": "sync_fifo",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_find_symbol\nProject: sync_fifo\nCategory: Symbol references\nTask: For symbol push_fire, what reference_kind is reported for its named-value reference?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: sync_fifo\nCategory: Symbol references\nTask: For symbol push_fire, what reference_kind is reported for its named-value reference?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "For symbol push_fire, what reference_kind is reported for its named-value reference?",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.004,
+        "evidence_chars": 2252,
+        "evidence_files": [
+          "examples/hdl/reference/ip/sync_fifo/sync_fifo.sv"
+        ],
+        "rationale": "Source text does not encode the compiler reference_kind classification.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 563,
+          "prompt": 164,
+          "total": 729
+        }
+      },
+      "title": "push_fire named reference classification"
+    },
+    {
+      "category": "Interface",
+      "difficulty": "easy",
+      "evidence_need": "port model",
+      "expected": "9",
+      "id": "timer_core_ports",
+      "mcp": {
+        "answer": "9",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 77.371,
+        "evidence_calls": 1,
+        "evidence_chars": 1477,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 370,
+          "prompt": 148,
+          "total": 519
+        }
+      },
+      "mcp_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "note": "Simple ANSI interface extraction is enough here.",
+      "project": "apb_timer",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_describe_design_unit\nProject: apb_timer\nCategory: Interface\nTask: How many total ports does timer_core expose?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: apb_timer\nCategory: Interface\nTask: How many total ports does timer_core expose?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "How many total ports does timer_core expose?",
+      "text": {
+        "answer": "9",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.124,
+        "evidence_chars": 1264,
+        "evidence_files": [
+          "examples/hdl/reference/ip/apb_timer/timer_core.sv"
+        ],
+        "rationale": "Counted ANSI port direction tokens in timer_core.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 316,
+          "prompt": 152,
+          "total": 469
+        }
+      },
+      "title": "timer_core total port count"
+    },
+    {
+      "category": "Symbol references",
+      "difficulty": "hard",
+      "evidence_need": "elaborated symbol scope",
+      "expected": "apb_timer.u_timer_core.tick",
+      "id": "tick_hier_path",
+      "mcp": {
+        "answer": "apb_timer.u_timer_core.tick",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 20.363,
+        "evidence_calls": 1,
+        "evidence_chars": 1317,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 7,
+          "evidence": 330,
+          "prompt": 154,
+          "total": 491
+        }
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "The answer depends on instance scope, not the local timer_core file alone.",
+      "project": "apb_timer",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_find_symbol\nProject: apb_timer\nCategory: Symbol references\nTask: What hierarchical_path is reported for the tick variable declaration?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: apb_timer\nCategory: Symbol references\nTask: What hierarchical_path is reported for the tick variable declaration?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "What hierarchical_path is reported for the tick variable declaration?",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.005,
+        "evidence_chars": 3526,
+        "evidence_files": [
+          "examples/hdl/reference/ip/apb_timer/apb_timer.sv",
+          "examples/hdl/reference/ip/apb_timer/timer_core.sv"
+        ],
+        "rationale": "The hierarchical path requires elaborating timer_core under apb_timer.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 882,
+          "prompt": 160,
+          "total": 1044
+        }
+      },
+      "title": "tick declaration hierarchical path"
+    },
+    {
+      "category": "Symbol inventory",
+      "difficulty": "medium",
+      "evidence_need": "declaration inventory",
+      "expected": "2",
+      "id": "prescale_q_count",
+      "mcp": {
+        "answer": "2",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 21.326,
+        "evidence_calls": 1,
+        "evidence_chars": 1100,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 275,
+          "prompt": 148,
+          "total": 424
+        }
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "Text can count this simple declaration pattern; MCP confirms declarations.",
+      "project": "apb_timer",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_find_symbol\nProject: apb_timer\nCategory: Symbol inventory\nTask: How many prescale_q declarations are reported?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: apb_timer\nCategory: Symbol inventory\nTask: How many prescale_q declarations are reported?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "How many prescale_q declarations are reported?",
+      "text": {
+        "answer": "2",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.292,
+        "evidence_chars": 4011,
+        "evidence_files": [
+          "examples/hdl/reference/ip/apb_timer/project.f",
+          "examples/hdl/reference/ip/apb_timer/rtl.f",
+          "examples/hdl/reference/ip/apb_timer/timer_pkg.sv",
+          "examples/hdl/reference/ip/apb_timer/timer_core.sv",
+          "examples/hdl/reference/ip/apb_timer/apb_timer.sv"
+        ],
+        "rationale": "Counted prescale_q declarations across local source files.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 1003,
+          "prompt": 154,
+          "total": 1158
+        }
+      },
+      "title": "prescale_q declaration count"
+    },
+    {
+      "category": "Diagnostics",
+      "difficulty": "hard",
+      "evidence_need": "compiler diagnostics",
+      "expected": "0",
+      "id": "buggy_apb_diagnostics",
+      "mcp": {
+        "answer": "0",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 71.1,
+        "evidence_calls": 1,
+        "evidence_chars": 556,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 1,
+          "evidence": 139,
+          "prompt": 161,
+          "total": 301
+        }
+      },
+      "mcp_tools": [
+        "pyslang_get_diagnostics"
+      ],
+      "note": "The design is intentionally behaviorally buggy but compiler-clean.",
+      "project": "apb_timer_irq_race_bug",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_get_diagnostics\nProject: apb_timer_irq_race_bug\nCategory: Diagnostics\nTask: How many parse and semantic diagnostics are reported for the buggy APB timer project?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: apb_timer_irq_race_bug\nCategory: Diagnostics\nTask: How many parse and semantic diagnostics are reported for the buggy APB timer project?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "How many parse and semantic diagnostics are reported for the buggy APB timer project?",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.004,
+        "evidence_chars": 4066,
+        "evidence_files": [
+          "examples/hdl/buggy/hard/apb_timer_irq_race_bug/project.f",
+          "examples/hdl/buggy/hard/apb_timer_irq_race_bug/rtl.f",
+          "examples/hdl/buggy/hard/apb_timer_irq_race_bug/timer_pkg.sv",
+          "examples/hdl/buggy/hard/apb_timer_irq_race_bug/timer_core.sv",
+          "examples/hdl/buggy/hard/apb_timer_irq_race_bug/apb_timer.sv"
+        ],
+        "rationale": "Diagnostic count requires running a parser/semantic frontend.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 1017,
+          "prompt": 166,
+          "total": 1185
+        }
+      },
+      "title": "Buggy APB parse and semantic diagnostic count"
+    },
+    {
+      "category": "Diagnostics",
+      "difficulty": "hard",
+      "evidence_need": "compiler diagnostics plus status",
+      "expected": "incomplete",
+      "id": "broken_project_status",
+      "mcp": {
+        "answer": "incomplete",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 19.217,
+        "evidence_calls": 1,
+        "evidence_chars": 800,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 3,
+          "evidence": 200,
+          "prompt": 155,
+          "total": 358
+        }
+      },
+      "mcp_tools": [
+        "pyslang_get_diagnostics"
+      ],
+      "note": "Project status summarizes diagnostics and unresolved references.",
+      "project": "tests/fixtures/broken",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_get_diagnostics\nProject: tests/fixtures/broken\nCategory: Diagnostics\nTask: What project_status.status is reported for the broken fixture?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: tests/fixtures/broken\nCategory: Diagnostics\nTask: What project_status.status is reported for the broken fixture?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "What project_status.status is reported for the broken fixture?",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.006,
+        "evidence_chars": 90,
+        "evidence_files": [
+          "tests/fixtures/broken/broken.sv"
+        ],
+        "rationale": "Project status is a compiler-backed aggregate, not plain source text.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 23,
+          "prompt": 160,
+          "total": 185
+        }
+      },
+      "title": "Broken fixture project status"
+    },
+    {
+      "category": "Type binding",
+      "difficulty": "hard",
+      "evidence_need": "semantic type binding",
+      "expected": "declared_type",
+      "id": "data_t_reference_kind",
+      "mcp": {
+        "answer": "declared_type",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 32.78,
+        "evidence_calls": 1,
+        "evidence_chars": 1249,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 4,
+          "evidence": 313,
+          "prompt": 158,
+          "total": 475
+        }
+      },
+      "mcp_tools": [
+        "pyslang_find_symbol"
+      ],
+      "note": "Requires resolving typedef use through package import.",
+      "project": "tests/fixtures/multi_file",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_find_symbol\nProject: tests/fixtures/multi_file\nCategory: Type binding\nTask: For symbol data_t, what reference_kind is reported for a declared-type use?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: tests/fixtures/multi_file\nCategory: Type binding\nTask: For symbol data_t, what reference_kind is reported for a declared-type use?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "For symbol data_t, what reference_kind is reported for a declared-type use?",
+      "text": {
+        "answer": "unknown",
+        "confidence": "unsupported",
+        "correct": false,
+        "elapsed_ms": 0.005,
+        "evidence_chars": 731,
+        "evidence_files": [
+          "tests/fixtures/multi_file/project.f",
+          "tests/fixtures/multi_file/rtl.f",
+          "tests/fixtures/multi_file/include/defs.svh",
+          "tests/fixtures/multi_file/pkg.sv",
+          "tests/fixtures/multi_file/child.sv",
+          "tests/fixtures/multi_file/top.sv"
+        ],
+        "rationale": "Declared-type references require symbol binding, not token matching.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 183,
+          "prompt": 164,
+          "total": 349
+        }
+      },
+      "title": "data_t declared-type reference classification"
+    },
+    {
+      "category": "Preprocessing",
+      "difficulty": "medium",
+      "evidence_need": "filelist define resolution",
+      "expected": "WIDTH=8",
+      "id": "multi_file_width_define",
+      "mcp": {
+        "answer": "WIDTH=8",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 15.115,
+        "evidence_calls": 1,
+        "evidence_chars": 1258,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 315,
+          "prompt": 154,
+          "total": 471
+        }
+      },
+      "mcp_tools": [
+        "pyslang_preprocess_files"
+      ],
+      "note": "Text sees the simple define; MCP reports effective normalized defines.",
+      "project": "tests/fixtures/multi_file",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_preprocess_files\nProject: tests/fixtures/multi_file\nCategory: Preprocessing\nTask: What effective WIDTH preprocessor define is reported?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: tests/fixtures/multi_file\nCategory: Preprocessing\nTask: What effective WIDTH preprocessor define is reported?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "What effective WIDTH preprocessor define is reported?",
+      "text": {
+        "answer": "WIDTH=8",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.15,
+        "evidence_chars": 142,
+        "evidence_files": [
+          "tests/fixtures/multi_file/project.f",
+          "tests/fixtures/multi_file/rtl.f"
+        ],
+        "rationale": "Read +define+WIDTH directly from filelist text.",
+        "tokens": {
+          "answer": 2,
+          "evidence": 36,
+          "prompt": 159,
+          "total": 197
+        }
+      },
+      "title": "Effective WIDTH preprocessor define"
+    },
+    {
+      "category": "Hierarchy",
+      "difficulty": "medium",
+      "evidence_need": "elaboration",
+      "expected": "top.u_child",
+      "id": "multi_file_child_path",
+      "mcp": {
+        "answer": "top.u_child",
+        "confidence": "compiler-backed",
+        "correct": true,
+        "elapsed_ms": 20.448,
+        "evidence_calls": 1,
+        "evidence_chars": 916,
+        "rationale": "Answered through the launched local pyslang-mcp stdio server.",
+        "tokens": {
+          "answer": 3,
+          "evidence": 229,
+          "prompt": 159,
+          "total": 391
+        }
+      },
+      "mcp_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "note": "A small direct instantiation is readable as text and confirmed by MCP.",
+      "project": "tests/fixtures/multi_file",
+      "prompts": {
+        "with_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITH MCP.\nUse the launched local pyslang-mcp stdio server for compiler-backed evidence.\nUse only read-only MCP tools and record tool evidence when reasoning depends on tool output.\nRequired MCP tools for this case: pyslang_get_hierarchy\nProject: tests/fixtures/multi_file\nCategory: Hierarchy\nTask: What is the hierarchical_path of the child instance under the top instance top?\nReturn exactly one scalar answer.",
+        "without_mcp": "Use the locally installed rtl-lint-auditor skill as evidence discipline.\nApply its evidence-grounding, output-discipline, tool-evidence-provenance, synthesizable-SystemVerilog, and lint-severity rules where relevant.\nMode: WITHOUT MCP.\nDo not call pyslang, pyslang-mcp, Verilator, simulators, synthesis, lint tools, or any compiler frontend.\nYou may inspect only checked-in HDL source files and filelists as text.\nProject: tests/fixtures/multi_file\nCategory: Hierarchy\nTask: What is the hierarchical_path of the child instance under the top instance top?\nReturn exactly one scalar answer. If the visible text cannot prove the answer, return exactly: unknown"
+      },
+      "question": "What is the hierarchical_path of the child instance under the top instance top?",
+      "text": {
+        "answer": "top.u_child",
+        "confidence": "medium",
+        "correct": true,
+        "elapsed_ms": 0.109,
+        "evidence_chars": 240,
+        "evidence_files": [
+          "tests/fixtures/multi_file/top.sv"
+        ],
+        "rationale": "Regex found a direct child instance.",
+        "tokens": {
+          "answer": 3,
+          "evidence": 60,
+          "prompt": 165,
+          "total": 228
+        }
+      },
+      "title": "multi_file top child instance path"
+    }
+  ],
+  "metadata": {
+    "branch": "feat/m6-indexed-core",
+    "commit": "65f585a",
+    "comparison": "source-text-only baseline vs local pyslang-mcp stdio server",
+    "generated_at": "2026-04-26T04:38:59+00:00",
+    "methodology": "The text-only baseline may inspect checked-in HDL and filelists with deterministic regex helpers, but it cannot call pyslang, MCP tools, or any compiler frontend. The MCP side launches the local server and uses structured tool responses.",
+    "repo": "pyslang-mcp",
+    "server_command": ".venv/bin/python -m pyslang_mcp --transport stdio",
+    "skill_profile": {
+      "installed_rules": [
+        "~/.codex/skills/rtl-lint-auditor/rules/common/evidence-grounding.md",
+        "~/.codex/skills/rtl-lint-auditor/rules/common/output-discipline.md",
+        "~/.codex/skills/rtl-lint-auditor/rules/common/tool-evidence-provenance.md",
+        "~/.codex/skills/rtl-lint-auditor/rules/rtl/synthesizable-systemverilog.md",
+        "~/.codex/skills/rtl-lint-auditor/rules/rtl/lint-severity.md"
+      ],
+      "installed_skill": "~/.codex/skills/rtl-lint-auditor/SKILL.md",
+      "name": "rtl-lint-auditor",
+      "usage": "Prompts use the installed skill and rules as evidence discipline for the HDL-understanding benchmark. The benchmark output remains scalar exact-match answers rather than full lint YAML reports."
+    },
+    "speed_methodology": "Elapsed milliseconds measure local evidence acquisition and deterministic answer extraction. They exclude hidden LLM inference time.",
+    "token_methodology": "Token counts are deterministic estimates using ceil(character_count / 4) over the exact prompt, evidence payload, and scalar answer. They are not Codex internal tokenizer telemetry.",
+    "tool_count": 10,
+    "tools": [
+      "pyslang_describe_design_unit",
+      "pyslang_dump_syntax_tree_summary",
+      "pyslang_find_symbol",
+      "pyslang_get_diagnostics",
+      "pyslang_get_hierarchy",
+      "pyslang_get_project_summary",
+      "pyslang_list_design_units",
+      "pyslang_parse_filelist",
+      "pyslang_parse_files",
+      "pyslang_preprocess_files"
+    ]
+  },
+  "summary": {
+    "by_category": {
+      "Diagnostics": {
+        "mcp_correct": 2,
+        "text_correct": 0,
+        "total": 2
+      },
+      "Hierarchy": {
+        "mcp_correct": 3,
+        "text_correct": 3,
+        "total": 3
+      },
+      "Interface": {
+        "mcp_correct": 2,
+        "text_correct": 2,
+        "total": 2
+      },
+      "Preprocessing": {
+        "mcp_correct": 2,
+        "text_correct": 2,
+        "total": 2
+      },
+      "Project loading": {
+        "mcp_correct": 1,
+        "text_correct": 0,
+        "total": 1
+      },
+      "Symbol inventory": {
+        "mcp_correct": 1,
+        "text_correct": 1,
+        "total": 1
+      },
+      "Symbol references": {
+        "mcp_correct": 2,
+        "text_correct": 0,
+        "total": 2
+      },
+      "Type binding": {
+        "mcp_correct": 1,
+        "text_correct": 0,
+        "total": 1
+      }
+    },
+    "delta_correct": 6,
+    "mcp_accuracy": 1.0,
+    "mcp_correct": 14,
+    "mcp_correct_per_1k_tokens_est": 1.9816,
+    "median_mcp_ms": 22.658,
+    "median_mcp_tokens_est": 492.5,
+    "median_text_ms": 0.095,
+    "median_text_tokens_est": 723.5,
+    "text_accuracy": 0.5714,
+    "text_correct": 8,
+    "text_correct_per_1k_tokens_est": 0.8805,
+    "total_cases": 14,
+    "total_mcp_tokens_est": 7065,
+    "total_text_tokens_est": 9086
+  }
+}
