@@ -126,6 +126,39 @@ def test_describe_design_unit_not_found_is_not_a_protocol_error() -> None:
     assert payload["design_unit"] is None
 
 
+def test_identical_tool_calls_reuse_cached_tool_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original_find_symbol = server_module.find_symbol_core
+
+    def counted_find_symbol(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        nonlocal calls
+        calls += 1
+        return cast(dict[str, Any], original_find_symbol(*args, **kwargs))
+
+    monkeypatch.setattr(server_module, "find_symbol_core", counted_find_symbol)
+    server = create_server(cache=AnalysisCache())
+    arguments = {
+        "project_root": str(FIXTURES / "multi_file"),
+        "filelist": "project.f",
+        "query": "payload",
+        "match_mode": "exact",
+        "include_references": True,
+    }
+
+    async def run() -> None:
+        first = await server.call_tool(PUBLIC_TOOL_NAMES["find_symbol"], arguments)
+        second = await server.call_tool(PUBLIC_TOOL_NAMES["find_symbol"], arguments)
+        assert isinstance(first, CallToolResult)
+        assert isinstance(second, CallToolResult)
+        assert first.structuredContent == second.structuredContent
+
+    asyncio.run(run())
+
+    assert calls == 1
+
+
 def test_invalid_argument_combo_returns_structured_tool_error() -> None:
     payload, is_error = _call_tool_json(
         PUBLIC_TOOL_NAMES["get_diagnostics"],

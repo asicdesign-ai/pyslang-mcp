@@ -85,6 +85,26 @@ later performance polish. This amendment reflects that ordering change.
    tool's response so the agent knows its downstream reasoning is
    based on incomplete analysis.
 
+## M6 Status On `main`
+
+This plan is no longer purely aspirational. A first M6 slice now exists
+on `main`:
+
+- current tool responses include a `project_status` block with
+  `ok` / `degraded` / `incomplete` plus unresolved-reference counts
+- the analysis bundle now precomputes design-unit, declaration,
+  reference, and instance indices once per compilation instead of
+  re-walking the AST from scratch on every query
+- `AnalysisCache` now memoizes identical tool calls per live project
+  bundle, so repeated `find_symbol`, `describe_design_unit`, and similar
+  calls with the same args become free
+
+Still pending for full M6:
+
+- opaque symbol URIs
+- location, driver/load, module-instantiation, and type-use reverse maps
+- explicit index-status / freshness introspection for agents
+
 ## Target Tool Surface, by Tier
 
 ### Tier 0 — Infrastructure prerequisite (M6)

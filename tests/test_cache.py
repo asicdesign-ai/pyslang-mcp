@@ -35,3 +35,48 @@ def test_analysis_cache_evicts_oldest_entry(tmp_path: Path) -> None:
 
     assert len(cache) == 1
     assert builds == ["first.sv", "second.sv", "first.sv"]
+
+
+def test_tool_result_cache_reuses_identical_tool_args(tmp_path: Path) -> None:
+    cache = AnalysisCache(max_entries=1)
+    project = _project(tmp_path, "top")
+    bundle_builds = 0
+    result_calls = 0
+
+    def bundle_factory() -> AnalysisBundle:
+        nonlocal bundle_builds
+        bundle_builds += 1
+        return cast(AnalysisBundle, type("Bundle", (), {"tracked_paths": project.files})())
+
+    def result_factory(_bundle: AnalysisBundle) -> dict[str, object]:
+        nonlocal result_calls
+        result_calls += 1
+        return {"call_count": result_calls}
+
+    first = cache.get_or_compute_tool_result(
+        project,
+        tool_name="find_symbol",
+        tool_args={"query": "payload", "match_mode": "exact"},
+        bundle_factory=bundle_factory,
+        result_factory=result_factory,
+    )
+    second = cache.get_or_compute_tool_result(
+        project,
+        tool_name="find_symbol",
+        tool_args={"query": "payload", "match_mode": "exact"},
+        bundle_factory=bundle_factory,
+        result_factory=result_factory,
+    )
+    third = cache.get_or_compute_tool_result(
+        project,
+        tool_name="find_symbol",
+        tool_args={"query": "payload", "match_mode": "contains"},
+        bundle_factory=bundle_factory,
+        result_factory=result_factory,
+    )
+
+    assert first == {"call_count": 1}
+    assert second == {"call_count": 1}
+    assert third == {"call_count": 2}
+    assert bundle_builds == 1
+    assert result_calls == 2
