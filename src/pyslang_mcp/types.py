@@ -28,41 +28,35 @@ class ProjectConfig:
 
 
 @dataclass(slots=True)
-class ProjectStatusInfo:
-    """High-level health signal for an analyzed project."""
-
-    status: Literal["ok", "degraded", "incomplete"]
-    unresolved_references: int
-    diagnostic_count: int
-    error_count: int
-
-
-@dataclass(slots=True)
-class SearchIndexEntry:
-    """Indexed payload with pre-normalized string candidates for search."""
+class IndexedDeclaration:
+    """Precomputed declaration lookup entry."""
 
     candidates: tuple[str, ...]
-    payload: dict[str, JsonValue]
+    output: dict[str, Any]
 
 
 @dataclass(slots=True)
-class AnalysisIndices:
-    """Reverse indices derived from a compiled project bundle."""
+class IndexedReference:
+    """Precomputed reference lookup entry."""
 
-    design_unit_symbols: tuple[Any, ...] = ()
-    design_unit_records: tuple[dict[str, JsonValue], ...] = ()
-    design_unit_records_by_name: dict[str, tuple[dict[str, JsonValue], ...]] = field(
-        default_factory=dict
-    )
-    design_unit_symbol_by_key: dict[tuple[str, str], Any] = field(default_factory=dict)
-    declaration_entries: tuple[SearchIndexEntry, ...] = ()
-    declaration_exact: dict[str, tuple[dict[str, JsonValue], ...]] = field(default_factory=dict)
-    reference_entries: tuple[SearchIndexEntry, ...] = ()
-    reference_exact: dict[str, tuple[dict[str, JsonValue], ...]] = field(default_factory=dict)
-    instance_map: dict[str, Any] = field(default_factory=dict)
-    children_map: dict[str | None, tuple[str, ...]] = field(default_factory=dict)
-    top_instance_paths: tuple[str, ...] = ()
-    design_unit_description_cache: dict[str, dict[str, JsonValue]] = field(default_factory=dict)
+    candidates: tuple[str, ...]
+    output: dict[str, Any]
+
+
+@dataclass(slots=True)
+class AnalysisIndex:
+    """Warm-query index derived from a compiled project."""
+
+    design_units: tuple[Any, ...]
+    design_unit_records: tuple[dict[str, Any], ...]
+    design_unit_symbols_by_key: dict[tuple[str, str], Any]
+    instances: tuple[Any, ...]
+    instance_records_by_path: dict[str, dict[str, Any]]
+    children_by_parent: dict[str | None, tuple[str, ...]]
+    top_instance_paths: tuple[str, ...]
+    declarations: tuple[IndexedDeclaration, ...]
+    references: tuple[IndexedReference, ...]
+    design_unit_description_cache: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -70,13 +64,10 @@ class AnalysisBundle:
     """Fully prepared pyslang analysis state."""
 
     project: ProjectConfig
-    project_hash: str
     source_manager: Any
     bag: Any
     compilation: Any
     syntax_trees: dict[Path, Any]
     diagnostic_engine: Any
-    diagnostics: tuple[Any, ...]
-    project_status: ProjectStatusInfo
     tracked_paths: tuple[Path, ...]
-    indices: AnalysisIndices
+    index: AnalysisIndex | None = None

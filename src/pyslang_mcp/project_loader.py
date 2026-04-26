@@ -92,20 +92,19 @@ def load_project_from_filelist(
     parsed = _parse_filelist(root=root, filelist=normalized_filelist)
     merged_defines = dict(parsed.defines)
     merged_defines.update(defines or {})
-    all_include_dirs = [*parsed.include_dirs, *(include_dirs or [])]
-    normalized_include_dirs = tuple(
-        _dedupe_paths(
-            _normalize_path(
-                root,
-                include_dir,
-                kind="include directory",
-                base_dir=root,
-                must_exist=True,
-                expect_dir=True,
-            )
-            for include_dir in all_include_dirs
+    extra_include_dirs = [
+        _normalize_path(
+            root,
+            include_dir,
+            kind="include directory",
+            base_dir=root,
+            must_exist=True,
+            expect_dir=True,
         )
-    )
+        for include_dir in include_dirs or ()
+    ]
+    all_include_dirs = [*parsed.include_dirs, *extra_include_dirs]
+    normalized_include_dirs = tuple(_dedupe_paths(all_include_dirs))
     if not parsed.files:
         raise ProjectLoadError(f"Filelist resolved no source files: {normalized_filelist}")
     return ProjectConfig(
@@ -124,7 +123,7 @@ def load_project_from_filelist(
 @dataclass(slots=True)
 class _ParsedFilelist:
     files: list[Path] = field(default_factory=list)
-    include_dirs: list[str] = field(default_factory=list)
+    include_dirs: list[Path] = field(default_factory=list)
     defines: dict[str, str | None] = field(default_factory=dict)
     filelists: list[Path] = field(default_factory=list)
     unsupported_entries: list[str] = field(default_factory=list)
@@ -192,10 +191,49 @@ def _visit_filelist(*, root: Path, filelist: Path, state: _ParsedFilelist) -> No
                     raise ProjectLoadError(
                         f"Missing include dir after -I in {filelist}:{line_number}"
                     )
-                state.include_dirs.append(tokens[index])
+                state.include_dirs.append(
+                    _normalize_path(
+                        root,
+                        tokens[index],
+                        kind="include directory",
+                        base_dir=filelist.parent,
+                        must_exist=True,
+                        expect_dir=True,
+                    )
+                )
+            elif token.startswith("-I") and len(token) > 2:
+                state.include_dirs.append(
+                    _normalize_path(
+                        root,
+                        token[2:],
+                        kind="include directory",
+                        base_dir=filelist.parent,
+                        must_exist=True,
+                        expect_dir=True,
+                    )
+                )
+            elif token == "-D":
+                index += 1
+                if index >= len(tokens):
+                    raise ProjectLoadError(f"Missing define after -D in {filelist}:{line_number}")
+                key, value = _parse_define(tokens[index])
+                state.defines[key] = value
+            elif token.startswith("-D") and len(token) > 2:
+                key, value = _parse_define(token[2:])
+                state.defines[key] = value
             elif token.startswith("+incdir+"):
                 raw_dirs = [entry for entry in token[len("+incdir+") :].split("+") if entry]
-                state.include_dirs.extend(raw_dirs)
+                state.include_dirs.extend(
+                    _normalize_path(
+                        root,
+                        raw_dir,
+                        kind="include directory",
+                        base_dir=filelist.parent,
+                        must_exist=True,
+                        expect_dir=True,
+                    )
+                    for raw_dir in raw_dirs
+                )
             elif token.startswith("+define+"):
                 raw_defines = [entry for entry in token[len("+define+") :].split("+") if entry]
                 for entry in raw_defines:
@@ -204,6 +242,13 @@ def _visit_filelist(*, root: Path, filelist: Path, state: _ParsedFilelist) -> No
             elif token in {"-y", "+libext+", "-v"} or token.startswith("+libext+"):
                 state.unsupported_entries.append(f"{filelist.name}:{line_number}:{token}")
                 if token in {"-y", "-v"} and index + 1 < len(tokens):
+                    index += 1
+                    state.unsupported_entries.append(
+                        f"{filelist.name}:{line_number}:{tokens[index]}"
+                    )
+            elif _is_unsupported_switch(token):
+                state.unsupported_entries.append(f"{filelist.name}:{line_number}:{token}")
+                if _unsupported_switch_takes_value(token) and index + 1 < len(tokens):
                     index += 1
                     state.unsupported_entries.append(
                         f"{filelist.name}:{line_number}:{tokens[index]}"
@@ -219,6 +264,23 @@ def _visit_filelist(*, root: Path, filelist: Path, state: _ParsedFilelist) -> No
                     )
                 )
             index += 1
+
+
+def _is_unsupported_switch(token: str) -> bool:
+    return token.startswith("-") or token.startswith("+")
+
+
+def _unsupported_switch_takes_value(token: str) -> bool:
+    return token in {
+        "--top-module",
+        "-L",
+        "-l",
+        "-Mdir",
+        "-top",
+        "-top-module",
+        "-timescale",
+        "-work",
+    }
 
 
 def _strip_inline_comments(raw_line: str) -> str:

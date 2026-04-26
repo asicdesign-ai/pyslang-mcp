@@ -39,6 +39,14 @@ class Location(StrictModel):
     end_column: int | None = None
 
 
+class ProjectStatus(StrictModel):
+    status: Literal["ok", "degraded", "incomplete"]
+    diagnostic_count: int
+    error_count: int
+    warning_count: int
+    unresolved_references: int
+
+
 class ProjectConfigSchema(StrictModel):
     project_root: str
     source: Literal["files", "filelist"]
@@ -58,13 +66,6 @@ class ParseSummary(StrictModel):
     top_module_count: int
     diagnostic_count: int
     diagnostic_severity_counts: dict[str, int]
-
-
-class ProjectStatus(StrictModel):
-    status: Literal["ok", "degraded", "incomplete"]
-    unresolved_references: int
-    diagnostic_count: int
-    error_count: int
 
 
 class ParseFilesResult(StrictModel):

@@ -9,6 +9,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from threading import RLock
+from typing import Any
 
 from .serializers import project_config_json
 from .types import AnalysisBundle, ProjectConfig
@@ -19,7 +20,7 @@ class _CacheEntry:
     project_hash: str
     mtimes: tuple[tuple[str, int], ...]
     bundle: AnalysisBundle
-    tool_results: OrderedDict[str, dict[str, object]]
+    tool_results: OrderedDict[str, dict[str, Any]]
 
 
 class AnalysisCache:
@@ -68,8 +69,8 @@ class AnalysisCache:
         tool_name: str,
         tool_args: dict[str, object] | None,
         bundle_factory: Callable[[], AnalysisBundle],
-        result_factory: Callable[[AnalysisBundle], dict[str, object]],
-    ) -> dict[str, object]:
+        result_factory: Callable[[AnalysisBundle], dict[str, Any]],
+    ) -> dict[str, Any]:
         """Return a cached tool result for a live project bundle when available."""
 
         bundle = self.get_or_build(project, bundle_factory)

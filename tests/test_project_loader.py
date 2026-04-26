@@ -82,3 +82,53 @@ def test_filelist_reports_unsupported_library_tokens(tmp_path: Path) -> None:
         "project.f:4:-v",
         "project.f:4:vendor.sv",
     ]
+
+
+def test_filelist_supports_common_define_and_include_forms(tmp_path: Path) -> None:
+    root = tmp_path / "project"
+    compile_dir = root / "compile"
+    rtl_dir = root / "rtl"
+    include_dir = root / "include"
+    extra_include_dir = root / "extra_include"
+    compile_dir.mkdir(parents=True)
+    rtl_dir.mkdir()
+    include_dir.mkdir()
+    extra_include_dir.mkdir()
+    (rtl_dir / "top.sv").write_text("module top; endmodule\n", encoding="utf-8")
+    (compile_dir / "project.f").write_text(
+        textwrap.dedent(
+            """\
+            -I../include
+            -I ../extra_include
+            +incdir+../include+../extra_include
+            -DDEBUG
+            -D WIDTH=16
+            -DDEPTH=4
+            +define+FLAG+MODE=2
+            -sv
+            -timescale 1ns/1ps
+            ../rtl/top.sv
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    config = load_project_from_filelist(project_root=root, filelist="compile/project.f")
+
+    assert [path.relative_to(root).as_posix() for path in config.include_dirs] == [
+        "include",
+        "extra_include",
+    ]
+    assert dict(config.defines) == {
+        "DEBUG": None,
+        "DEPTH": "4",
+        "FLAG": None,
+        "MODE": "2",
+        "WIDTH": "16",
+    }
+    assert [path.relative_to(root).as_posix() for path in config.files] == ["rtl/top.sv"]
+    assert list(config.unsupported_filelist_entries) == [
+        "project.f:8:-sv",
+        "project.f:9:-timescale",
+        "project.f:9:1ns/1ps",
+    ]

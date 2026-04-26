@@ -66,6 +66,7 @@ The current alpha implements these read-only tools:
 - strict project-root scoping; paths outside the declared root are rejected
 - `stdio` transport first
 - compact JSON responses instead of giant raw compiler dumps
+- hard upper bounds on caller-provided list, hierarchy, file, and excerpt limits
 - in-memory caching keyed by normalized project config plus tracked file mtimes
 - conservative `pyslang_preprocess_files` behavior that returns preprocessing metadata
   and excerpts, not a claimed full preprocessed text stream
@@ -76,8 +77,8 @@ The implemented `.f` parser intentionally supports a practical subset:
 
 - raw source file entries
 - nested filelists with `-f` and `-F`
-- include directories with `+incdir+...` and `-I`
-- macro defines with `+define+...`
+- include directories with `+incdir+...`, `-I dir`, and `-Idir`
+- macro defines with `+define+...`, `-D NAME`, and `-DNAME`
 
 Unsupported directives are reported back in `pyslang_parse_filelist` output instead of
 being silently ignored.
@@ -436,10 +437,11 @@ Be honest — the MCP pays elaboration cost that plain text tools avoid.
 ### What Clients Should Expect Back
 
 - responses are JSON dictionaries
+- successful responses include `project_status` so degraded or incomplete
+  compiler state is visible outside the diagnostics tool
 - large result lists include truncation metadata
-- every successful tool response carries `project_status` so clients can tell
-  `ok` from `degraded` or `incomplete` analysis
-- recoverable input problems return MCP tool errors with structured error payloads
+- recoverable input problems, including invalid limit values and unsupported
+  match modes, return MCP tool errors with structured error payloads
 - `pyslang_describe_design_unit` returns `found` / `ambiguous` results instead
   of throwing for normal lookup misses
 - `pyslang_preprocess_files` is summary-oriented; it does not claim to
@@ -504,6 +506,8 @@ product surface, not as an extension of the current local `stdio` mode.
 Current state:
 
 - local-first `stdio` server is implemented
+- local HTTP startup is experimental and intentionally gated behind an explicit
+  CLI opt-in; it is not a secure hosted mode
 - hosted multi-user deployment is not implemented yet
 
 Recommended hosted direction:
