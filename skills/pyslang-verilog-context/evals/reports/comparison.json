@@ -2,7 +2,7 @@
   "case_count": 12,
   "cases": [
     {
-      "fixture_root": "fixtures/asic-ai-workflows/hdl-design-view",
+      "fixture_root": "fixtures/rtl-workflow-fixtures/hdl-design-view",
       "id": "single-file-design-summary",
       "prompt": "prompts/single-file-design-summary.md",
       "with_skill": {
@@ -393,7 +393,7 @@
       }
     },
     {
-      "fixture_root": "fixtures/asic-ai-workflows/timing",
+      "fixture_root": "fixtures/rtl-workflow-fixtures/timing",
       "id": "asic-filelist-path-context",
       "prompt": "prompts/asic-filelist-path-context.md",
       "with_skill": {
@@ -462,7 +462,7 @@
       }
     },
     {
-      "fixture_root": "fixtures/asic-ai-workflows/cdc",
+      "fixture_root": "fixtures/rtl-workflow-fixtures/cdc",
       "id": "cdc-boundary-warning",
       "prompt": "prompts/cdc-boundary-warning.md",
       "with_skill": {
@@ -820,6 +820,6 @@
       }
     }
   ],
-  "generated_at": "2026-05-23T09:57:16.667592+00:00",
-  "manifest": "/home/arik/projects/pyslang-mcp/skills/pyslang-verilog-context/evals/manifest.json"
+  "generated_at": "2026-05-23T18:44:19.889907+00:00",
+  "manifest": "skills/pyslang-verilog-context/evals/manifest.json"
 }

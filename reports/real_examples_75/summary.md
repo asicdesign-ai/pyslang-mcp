@@ -1,6 +1,6 @@
 # Real Public RTL 75-Case Comparison
 
-Generated: 2026-05-23T11:14:06+00:00
+Generated: 2026-05-23T18:47:00+00:00
 
 ## Sources
 
@@ -18,8 +18,8 @@ Generated: 2026-05-23T11:14:06+00:00
 | Arm | Correct | Accuracy | Median local evidence time | Est. tokens |
 |---|---:|---:|---:|---:|
 | Text/no skill | 47/75 | 63% | 0.001 ms | 184,353 |
-| MCP/no skill | 75/75 | 100% | 0.552 ms | 47,493 |
-| Skill + MCP | 75/75 | 100% | 4.197 ms | 122,718 |
+| MCP/no skill | 75/75 | 100% | 0.484 ms | 47,493 |
+| Skill + MCP | 75/75 | 100% | 4.165 ms | 122,718 |
 
 ## By Task
 
@@ -49,7 +49,7 @@ Generated: 2026-05-23T11:14:06+00:00
 
 ## Verification Strategy
 
-The 75-case run was verified with this process:
+The 75-case run is verified with this process:
 
 1. Clone public upstream RTL repositories under `reports/real_examples_75/repos/`.
 2. Record each repository commit and license in the report.

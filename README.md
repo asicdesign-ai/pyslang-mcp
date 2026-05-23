@@ -359,7 +359,6 @@ Architecture and contribution docs:
 - [REMOTE_DEPLOYMENT.md](./REMOTE_DEPLOYMENT.md)
 - [docs/mcp-registry.md](./docs/mcp-registry.md)
 - [CONTRIBUTING.md](./CONTRIBUTING.md)
-- [pyslang-mcp-plan.md](./pyslang-mcp-plan.md)
 
 ## License
 

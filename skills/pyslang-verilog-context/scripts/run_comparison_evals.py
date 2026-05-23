@@ -301,6 +301,14 @@ def write_reports(report: dict[str, Any], output_dir: Path) -> None:
     (output_dir / "comparison.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def display_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(Path.cwd().resolve()))
+    except ValueError:
+        return path.name
+
+
 async def run(args: argparse.Namespace) -> int:
     manifest_path = args.manifest
     manifest = load_manifest(manifest_path)
@@ -328,12 +336,12 @@ async def run(args: argparse.Namespace) -> int:
 
     report = {
         "generated_at": datetime.now(UTC).isoformat(),
-        "manifest": str(manifest_path),
+        "manifest": display_path(manifest_path),
         "case_count": len(report_cases),
         "cases": report_cases,
     }
     write_reports(report, args.output_dir)
-    print(f"wrote {len(report_cases)} comparison cases to {args.output_dir}")
+    print(f"wrote {len(report_cases)} comparison cases to {display_path(args.output_dir)}")
     return 0
 
 

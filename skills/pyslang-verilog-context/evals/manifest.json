@@ -4,22 +4,22 @@
   "purpose": "Prompt-level evals for a skill that uses pyslang-mcp as read-only compiler-backed context for Verilog and SystemVerilog work.",
   "fixture_sources": [
     {
-      "id": "asic-ai-workflows",
-      "source": "/home/arik/projects/asic-ai-workflows/datasets/fixtures",
-      "copied_to": "fixtures/asic-ai-workflows",
+      "id": "rtl-workflow-fixtures",
+      "source": "local synthetic RTL workflow fixtures copied before publication",
+      "copied_to": "fixtures/rtl-workflow-fixtures",
       "license": "MIT",
-      "contents": "All .sv and .f HDL fixture files found locally at copy time."
+      "contents": "Synthetic .sv and .f HDL fixture files used for skill evaluation."
     },
     {
       "id": "pyslang-mcp-examples",
-      "source": "/home/arik/projects/pyslang-mcp/examples/hdl",
+      "source": "examples/hdl",
       "copied_to": "fixtures/pyslang-mcp-examples",
       "license": "Apache-2.0",
       "contents": "All Verilog/SystemVerilog sources, include headers, and filelists from the local example HDL corpus."
     },
     {
       "id": "pyslang-mcp-tests",
-      "source": "/home/arik/projects/pyslang-mcp/tests/fixtures",
+      "source": "tests/fixtures",
       "copied_to": "fixtures/pyslang-mcp-tests",
       "license": "Apache-2.0",
       "contents": "Small HDL parser fixtures used for negative diagnostic and multi-file smoke evals."
@@ -57,7 +57,7 @@
     {
       "id": "single-file-design-summary",
       "prompt": "prompts/single-file-design-summary.md",
-      "fixture_root": "fixtures/asic-ai-workflows/hdl-design-view",
+      "fixture_root": "fixtures/rtl-workflow-fixtures/hdl-design-view",
       "input": {
         "files": ["simple_counter.sv"],
         "top_modules": ["simple_counter"]
@@ -177,7 +177,7 @@
     {
       "id": "asic-filelist-path-context",
       "prompt": "prompts/asic-filelist-path-context.md",
-      "fixture_root": "fixtures/asic-ai-workflows/timing",
+      "fixture_root": "fixtures/rtl-workflow-fixtures/timing",
       "input": {
         "filelist": "cross_module_path.f",
         "top_modules": ["cross_module_path"]
@@ -197,7 +197,7 @@
     {
       "id": "cdc-boundary-warning",
       "prompt": "prompts/cdc-boundary-warning.md",
-      "fixture_root": "fixtures/asic-ai-workflows/cdc",
+      "fixture_root": "fixtures/rtl-workflow-fixtures/cdc",
       "input": {
         "files": ["unsync_single_bit.sv"],
         "top_modules": ["unsync_single_bit"]

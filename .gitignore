@@ -9,3 +9,10 @@ build/
 *.egg-info/
 deploy/internal/.env
 reports/real_examples_75/repos/
+
+# Local/private planning notes should stay out of the public repository.
+/pyslang-mcp-plan.md
+/top_10_issues.md
+/docs/*plan*.md
+/skills/**/PLAN.md
+/skills/**/evals/*PLAN*.md

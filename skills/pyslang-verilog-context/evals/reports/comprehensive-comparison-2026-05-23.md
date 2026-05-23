@@ -2,8 +2,8 @@
 
 Generated: 2026-05-23
 
-This report summarizes two fresh local eval runs based on
-`skills/pyslang-verilog-context/evals/SKILL_VS_LLM_EVAL_PLAN.md`.
+This report summarizes two fresh local eval runs for the
+`pyslang-verilog-context` skill eval suite.
 
 - Plan-specific prompt/tool-sequencing eval:
   `skills/pyslang-verilog-context/evals/reports/comparison.json`
