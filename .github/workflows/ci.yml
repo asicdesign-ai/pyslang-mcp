@@ -91,6 +91,34 @@ jobs:
       - name: Run MCP stdio protocol smoke
         run: pytest -q tests/test_mcp_stdio.py
 
+  skill-eval-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Validate pyslang-verilog-context eval fixtures
+        run: python skills/pyslang-verilog-context/scripts/validate_eval_fixtures.py
+
+      - name: Run deterministic skill eval smoke subset
+        run: |
+          python skills/pyslang-verilog-context/scripts/run_comparison_evals.py \
+            --output-dir /tmp/pyslang-verilog-context-eval-smoke \
+            --case single-file-design-summary \
+            --case filelist-hierarchy-sync-fifo \
+            --case compile-diagnostic-triage
+
   package-smoke:
     runs-on: ubuntu-latest
 

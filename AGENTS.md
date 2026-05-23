@@ -346,3 +346,31 @@ If you are picking this up fresh, do this next:
 - Be explicit about trust boundaries and unsupported cases.
 - Keep documentation technically honest.
 - If you validate new `pyslang` behavior, write it down here or in repo docs.
+
+## Skill And Eval Validation
+
+CI intentionally runs only a lean, deterministic `pyslang-verilog-context`
+smoke subset. It must not require real LLM access.
+
+Contributors must run the full local eval validation before opening a PR.
+Agents must also run it before commit or push when either of these changes:
+
+- any semantic, wording, or content change to
+  `skills/pyslang-verilog-context/SKILL.md`
+- any added or revised Verilog/SystemVerilog example, fixture, filelist,
+  include, or eval prompt that affects the skill corpus
+
+Use all available local Verilog examples and evals, not just the CI smoke
+subset:
+
+```bash
+./.venv/bin/python scripts/validate_hdl_examples.py
+./.venv/bin/python skills/pyslang-verilog-context/scripts/validate_eval_fixtures.py
+./.venv/bin/python skills/pyslang-verilog-context/scripts/run_comparison_evals.py
+./.venv/bin/python scripts/run_mcp_comparison.py --output-dir reports/mcp_comparison_comprehensive_$(date +%Y%m%d)
+./.venv/bin/python reports/real_examples_75/run_real75_comparison.py
+./.venv/bin/python -m py_compile reports/real_examples_75/run_real75_comparison.py
+```
+
+If a full local eval cannot be run, document the reason and treat the result as
+not fully validated.
