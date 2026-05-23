@@ -1,0 +1,825 @@
+{
+  "case_count": 12,
+  "cases": [
+    {
+      "fixture_root": "fixtures/asic-ai-workflows/hdl-design-view",
+      "id": "single-file-design-summary",
+      "prompt": "prompts/single-file-design-summary.md",
+      "with_skill": {
+        "expected_tool_count": 4,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 4,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 0,
+                "found": true,
+                "name": "simple_counter",
+                "ok": true,
+                "port_count": 4
+              }
+            ]
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_list_design_units": {
+            "by_kind": {
+              "Module": 1
+            },
+            "design_unit_total": 1,
+            "ok": true
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 0,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 4,
+        "line_count": 21,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "simple_counter"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/pyslang-mcp-examples/reference/ip/sync_fifo",
+      "id": "filelist-hierarchy-sync-fifo",
+      "prompt": "prompts/filelist-hierarchy-sync-fifo.md",
+      "with_skill": {
+        "expected_tool_count": 5,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 5,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 1,
+                "found": true,
+                "name": "sync_fifo",
+                "ok": true,
+                "port_count": 9
+              }
+            ]
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_get_hierarchy": {
+            "ok": true,
+            "top_instances": [
+              "sync_fifo"
+            ],
+            "total_instances": 2
+          },
+          "pyslang_list_design_units": {
+            "by_kind": {
+              "Module": 2,
+              "Package": 1
+            },
+            "design_unit_total": 3,
+            "ok": true
+          },
+          "pyslang_parse_filelist": {
+            "diagnostic_count": 0,
+            "file_count": 3,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 5,
+        "line_count": 133,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "sync_fifo",
+          "sync_fifo_mem",
+          "sync_fifo_pkg"
+        ],
+        "source_file_count": 3
+      }
+    },
+    {
+      "fixture_root": "fixtures/pyslang-mcp-examples/reference/ip/apb_timer",
+      "id": "symbol-lookup-apb-timer",
+      "prompt": "prompts/symbol-lookup-apb-timer.md",
+      "with_skill": {
+        "expected_tool_count": 4,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 4,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 1,
+                "found": true,
+                "name": "apb_timer",
+                "ok": true,
+                "port_count": 11
+              }
+            ]
+          },
+          "pyslang_find_symbol": {
+            "declaration_count": 4,
+            "ok": true,
+            "query": "irq_o",
+            "reference_count": 4
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_parse_filelist": {
+            "diagnostic_count": 0,
+            "file_count": 3,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 4,
+        "line_count": 148,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": "irq_o",
+        "query_text_hits": 8,
+        "regex_design_units": [
+          "apb_timer",
+          "timer_core",
+          "timer_pkg"
+        ],
+        "source_file_count": 3
+      }
+    },
+    {
+      "fixture_root": "fixtures/pyslang-mcp-tests/broken",
+      "id": "compile-diagnostic-triage",
+      "prompt": "prompts/compile-diagnostic-triage.md",
+      "with_skill": {
+        "expected_tool_count": 2,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 2,
+        "tool_runs": {
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 1,
+            "ok": true,
+            "severity_counts": {
+              "error": 1
+            },
+            "status": "incomplete"
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 1,
+            "file_count": 1,
+            "ok": true,
+            "status": "incomplete"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 2,
+        "line_count": 4,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "broken"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/pyslang-mcp-examples/buggy/hard/apb_timer_irq_race_bug",
+      "id": "clean-frontend-functional-bug",
+      "prompt": "prompts/clean-frontend-functional-bug.md",
+      "with_skill": {
+        "expected_tool_count": 4,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 4,
+        "tool_runs": {
+          "pyslang_find_symbol": {
+            "declaration_count": 9,
+            "ok": true,
+            "query": "irq",
+            "reference_count": 11
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_get_hierarchy": {
+            "ok": true,
+            "top_instances": [
+              "apb_timer"
+            ],
+            "total_instances": 2
+          },
+          "pyslang_parse_filelist": {
+            "diagnostic_count": 0,
+            "file_count": 3,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 4,
+        "line_count": 148,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": "irq",
+        "query_text_hits": 22,
+        "regex_design_units": [
+          "apb_timer",
+          "timer_core",
+          "timer_pkg"
+        ],
+        "source_file_count": 3
+      }
+    },
+    {
+      "fixture_root": "fixtures/pyslang-mcp-examples/reference/single/systemverilog/edge_detect",
+      "id": "coding-change-with-recheck",
+      "prompt": "prompts/coding-change-with-recheck.md",
+      "with_skill": {
+        "expected_tool_count": 3,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 3,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 0,
+                "found": true,
+                "name": "edge_detect",
+                "ok": true,
+                "port_count": 6
+              }
+            ]
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 0,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 3,
+        "line_count": 27,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "edge_detect"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/asic-ai-workflows/timing",
+      "id": "asic-filelist-path-context",
+      "prompt": "prompts/asic-filelist-path-context.md",
+      "with_skill": {
+        "expected_tool_count": 4,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 4,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 1,
+                "found": true,
+                "name": "cross_module_path",
+                "ok": true,
+                "port_count": 4
+              }
+            ]
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_get_hierarchy": {
+            "ok": true,
+            "top_instances": [
+              "cross_module_path"
+            ],
+            "total_instances": 2
+          },
+          "pyslang_parse_filelist": {
+            "diagnostic_count": 0,
+            "file_count": 2,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 4,
+        "line_count": 35,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "add8",
+          "cross_module_path"
+        ],
+        "source_file_count": 2
+      }
+    },
+    {
+      "fixture_root": "fixtures/asic-ai-workflows/cdc",
+      "id": "cdc-boundary-warning",
+      "prompt": "prompts/cdc-boundary-warning.md",
+      "with_skill": {
+        "expected_tool_count": 3,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 3,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 0,
+                "found": true,
+                "name": "unsync_single_bit",
+                "ok": true,
+                "port_count": 4
+              }
+            ]
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 0,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 3,
+        "line_count": 17,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "unsync_single_bit"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/web/lowrisc-ibex",
+      "id": "web-ibex-counter-summary",
+      "prompt": "prompts/web-ibex-counter-summary.md",
+      "with_skill": {
+        "expected_tool_count": 4,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 4,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 0,
+                "found": true,
+                "name": "ibex_counter",
+                "ok": true,
+                "port_count": 8
+              }
+            ]
+          },
+          "pyslang_dump_syntax_tree_summary": {
+            "file_count": 1,
+            "ok": true
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 1,
+            "ok": true,
+            "severity_counts": {
+              "warning": 1
+            },
+            "status": "ok"
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 1,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 4,
+        "line_count": 112,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "ibex_counter"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/web/yosyshq-picorv32",
+      "id": "web-picorv32-inventory",
+      "prompt": "prompts/web-picorv32-inventory.md",
+      "with_skill": {
+        "expected_tool_count": 5,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 5,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 0,
+                "found": true,
+                "name": "picorv32",
+                "ok": true,
+                "port_count": 27
+              }
+            ]
+          },
+          "pyslang_find_symbol": {
+            "declaration_count": 5,
+            "ok": true,
+            "query": "mem_valid",
+            "reference_count": 5
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 91,
+            "ok": true,
+            "severity_counts": {
+              "warning": 91
+            },
+            "status": "ok"
+          },
+          "pyslang_list_design_units": {
+            "by_kind": {
+              "Module": 8
+            },
+            "design_unit_total": 8,
+            "ok": true
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 91,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 5,
+        "line_count": 3050,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": "mem_valid",
+        "query_text_hits": 44,
+        "regex_design_units": [
+          "picorv32",
+          "picorv32_axi",
+          "picorv32_axi_adapter",
+          "picorv32_pcpi_div",
+          "picorv32_pcpi_fast_mul",
+          "picorv32_pcpi_mul",
+          "picorv32_regs",
+          "picorv32_wb"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/web/alexforencich-verilog-axis",
+      "id": "web-axis-register-handshake",
+      "prompt": "prompts/web-axis-register-handshake.md",
+      "with_skill": {
+        "expected_tool_count": 4,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 4,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 0,
+                "found": true,
+                "name": "axis_register",
+                "ok": true,
+                "port_count": 18
+              }
+            ]
+          },
+          "pyslang_find_symbol": {
+            "declaration_count": 4,
+            "ok": true,
+            "query": "s_axis_tready",
+            "reference_count": 4
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 3,
+            "ok": true,
+            "severity_counts": {
+              "warning": 3
+            },
+            "status": "ok"
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 3,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 4,
+        "line_count": 281,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": "s_axis_tready",
+        "query_text_hits": 18,
+        "regex_design_units": [
+          "axis_register"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/web/pulp-platform-common-cells",
+      "id": "web-common-cells-counter-hierarchy",
+      "prompt": "prompts/web-common-cells-counter-hierarchy.md",
+      "with_skill": {
+        "expected_tool_count": 5,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 5,
+        "tool_runs": {
+          "pyslang_describe_design_unit": {
+            "ok": true,
+            "runs": [
+              {
+                "child_instance_count": 1,
+                "found": true,
+                "name": "counter",
+                "ok": true,
+                "port_count": 9
+              }
+            ]
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 2,
+            "ok": true,
+            "severity_counts": {
+              "warning": 2
+            },
+            "status": "ok"
+          },
+          "pyslang_get_hierarchy": {
+            "ok": true,
+            "top_instances": [
+              "counter"
+            ],
+            "total_instances": 2
+          },
+          "pyslang_list_design_units": {
+            "by_kind": {
+              "Module": 2
+            },
+            "design_unit_total": 2,
+            "ok": true
+          },
+          "pyslang_parse_files": {
+            "diagnostic_count": 2,
+            "file_count": 2,
+            "ok": true,
+            "status": "ok"
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 5,
+        "line_count": 128,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": null,
+        "query_text_hits": null,
+        "regex_design_units": [
+          "counter",
+          "delta_counter"
+        ],
+        "source_file_count": 2
+      }
+    }
+  ],
+  "generated_at": "2026-05-23T09:57:16.667592+00:00",
+  "manifest": "/home/arik/projects/pyslang-mcp/skills/pyslang-verilog-context/evals/manifest.json"
+}

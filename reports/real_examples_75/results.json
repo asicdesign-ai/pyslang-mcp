@@ -1,0 +1,4534 @@
+{
+  "cases": [
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 0.496,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 745,
+            "skill": 0,
+            "total": 747
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 3.381,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 745,
+            "skill": 1003,
+            "total": 1750
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.001,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "total": 5002
+          }
+        }
+      },
+      "byte_count": 52336,
+      "expected": "degraded",
+      "id": "real75-001-lowrisc-ibex-ibex_alu",
+      "line_count": 1401,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_alu.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.405,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 135,
+            "skill": 0,
+            "total": 136
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 3.051,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 135,
+            "skill": 1003,
+            "total": 1139
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 838,
+            "total": 839
+          }
+        }
+      },
+      "byte_count": 3351,
+      "expected": "1",
+      "id": "real75-002-lowrisc-ibex-ibex_branch_predict",
+      "line_count": 101,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_branch_predict.sv",
+      "task": "design_unit_total",
+      "unit_name": "ibex_branch_predict"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "9",
+          "correct": true,
+          "elapsed_ms": 0.897,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 397,
+            "skill": 0,
+            "total": 398
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "9",
+          "correct": true,
+          "elapsed_ms": 9.444,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 397,
+            "skill": 1003,
+            "total": 1401
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "9",
+          "correct": true,
+          "elapsed_ms": 0.222,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 35306,
+      "expected": "9",
+      "id": "real75-003-lowrisc-ibex-ibex_compressed_decoder",
+      "line_count": 848,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_compressed_decoder.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "ibex_compressed_decoder"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 0.567,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 1977,
+            "skill": 0,
+            "total": 1979
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 6.483,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 1977,
+            "skill": 1003,
+            "total": 2982
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "total": 5002
+          }
+        }
+      },
+      "byte_count": 38079,
+      "expected": "degraded",
+      "id": "real75-004-lowrisc-ibex-ibex_controller",
+      "line_count": 945,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_controller.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.458,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 126,
+            "skill": 0,
+            "total": 127
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 14.624,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 126,
+            "skill": 1003,
+            "total": 1130
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 85195,
+      "expected": "1",
+      "id": "real75-005-lowrisc-ibex-ibex_core",
+      "line_count": 2024,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_core.sv",
+      "task": "design_unit_total",
+      "unit_name": "ibex_core"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "8",
+          "correct": true,
+          "elapsed_ms": 0.875,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 338,
+            "skill": 0,
+            "total": 339
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "8",
+          "correct": true,
+          "elapsed_ms": 2.382,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 338,
+            "skill": 1003,
+            "total": 1342
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "8",
+          "correct": true,
+          "elapsed_ms": 0.15,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 867,
+            "total": 868
+          }
+        }
+      },
+      "byte_count": 3465,
+      "expected": "8",
+      "id": "real75-006-lowrisc-ibex-ibex_counter",
+      "line_count": 112,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_counter.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "ibex_counter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.609,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1621,
+            "skill": 0,
+            "total": 1624
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 6.935,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1621,
+            "skill": 1003,
+            "total": 2627
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "total": 5002
+          }
+        }
+      },
+      "byte_count": 61836,
+      "expected": "incomplete",
+      "id": "real75-007-lowrisc-ibex-ibex_cs_registers",
+      "line_count": 1683,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_cs_registers.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.4,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 0,
+            "total": 125
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 2.212,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 1003,
+            "total": 1128
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 323,
+            "total": 324
+          }
+        }
+      },
+      "byte_count": 1289,
+      "expected": "1",
+      "id": "real75-008-lowrisc-ibex-ibex_csr",
+      "line_count": 58,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_csr.sv",
+      "task": "design_unit_total",
+      "unit_name": "ibex_csr"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "51",
+          "correct": true,
+          "elapsed_ms": 1.025,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1243,
+            "skill": 0,
+            "total": 1244
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "51",
+          "correct": true,
+          "elapsed_ms": 13.77,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1243,
+            "skill": 1003,
+            "total": 2247
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "51",
+          "correct": true,
+          "elapsed_ms": 0.537,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 46414,
+      "expected": "51",
+      "id": "real75-009-lowrisc-ibex-ibex_decoder",
+      "line_count": 1213,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_decoder.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "ibex_decoder"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.661,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 308,
+            "skill": 0,
+            "total": 311
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 1.668,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 308,
+            "skill": 1003,
+            "total": 1314
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 1241,
+            "total": 1243
+          }
+        }
+      },
+      "byte_count": 4963,
+      "expected": "incomplete",
+      "id": "real75-010-lowrisc-ibex-ibex_dummy_instr",
+      "line_count": 151,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_dummy_instr.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.402,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 130,
+            "skill": 0,
+            "total": 131
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 4.766,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 130,
+            "skill": 1003,
+            "total": 1134
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2056,
+            "total": 2057
+          }
+        }
+      },
+      "byte_count": 8222,
+      "expected": "1",
+      "id": "real75-011-lowrisc-ibex-ibex_ex_block",
+      "line_count": 218,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_ex_block.sv",
+      "task": "design_unit_total",
+      "unit_name": "ibex_ex_block"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "14",
+          "correct": true,
+          "elapsed_ms": 0.901,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 543,
+            "skill": 0,
+            "total": 544
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "14",
+          "correct": true,
+          "elapsed_ms": 3.23,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 543,
+            "skill": 1003,
+            "total": 1547
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "14",
+          "correct": true,
+          "elapsed_ms": 0.213,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2460,
+            "total": 2461
+          }
+        }
+      },
+      "byte_count": 9839,
+      "expected": "14",
+      "id": "real75-012-lowrisc-ibex-ibex_fetch_fifo",
+      "line_count": 270,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_fetch_fifo.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "ibex_fetch_fifo"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 0.567,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 971,
+            "skill": 0,
+            "total": 973
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 3.945,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 971,
+            "skill": 1003,
+            "total": 1976
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "total": 5002
+          }
+        }
+      },
+      "byte_count": 55477,
+      "expected": "degraded",
+      "id": "real75-013-lowrisc-ibex-ibex_icache",
+      "line_count": 1338,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_icache.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.468,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 130,
+            "skill": 0,
+            "total": 131
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 25.947,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 130,
+            "skill": 1003,
+            "total": 1134
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 44908,
+      "expected": "1",
+      "id": "real75-014-lowrisc-ibex-ibex_id_stage",
+      "line_count": 1157,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_id_stage.sv",
+      "task": "design_unit_total",
+      "unit_name": "ibex_id_stage"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "62",
+          "correct": true,
+          "elapsed_ms": 0.944,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1668,
+            "skill": 0,
+            "total": 1669
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "62",
+          "correct": true,
+          "elapsed_ms": 9.125,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1668,
+            "skill": 1003,
+            "total": 2672
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "0",
+          "correct": false,
+          "elapsed_ms": 0.155,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 36579,
+      "expected": "62",
+      "id": "real75-015-lowrisc-ibex-ibex_if_stage",
+      "line_count": 840,
+      "repo_id": "lowrisc-ibex",
+      "source": "rtl/ibex_if_stage.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "ibex_if_stage"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.414,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 244,
+            "skill": 0,
+            "total": 247
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 1.284,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 244,
+            "skill": 1003,
+            "total": 1250
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 1227,
+            "total": 1229
+          }
+        }
+      },
+      "byte_count": 4907,
+      "expected": "incomplete",
+      "id": "real75-016-pulp-common-cells-addr_decode",
+      "line_count": 110,
+      "repo_id": "pulp-common-cells",
+      "source": "src/addr_decode.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.459,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 133,
+            "skill": 0,
+            "total": 134
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 7.721,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 133,
+            "skill": 1003,
+            "total": 1137
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2141,
+            "total": 2142
+          }
+        }
+      },
+      "byte_count": 8562,
+      "expected": "1",
+      "id": "real75-017-pulp-common-cells-addr_decode_dync",
+      "line_count": 178,
+      "repo_id": "pulp-common-cells",
+      "source": "src/addr_decode_dync.sv",
+      "task": "design_unit_total",
+      "unit_name": "addr_decode_dync"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "7",
+          "correct": true,
+          "elapsed_ms": 0.859,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 307,
+            "skill": 0,
+            "total": 308
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "7",
+          "correct": true,
+          "elapsed_ms": 2.727,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 307,
+            "skill": 1003,
+            "total": 1311
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "7",
+          "correct": true,
+          "elapsed_ms": 0.195,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 854,
+            "total": 855
+          }
+        }
+      },
+      "byte_count": 3414,
+      "expected": "7",
+      "id": "real75-018-pulp-common-cells-addr_decode_napot",
+      "line_count": 93,
+      "repo_id": "pulp-common-cells",
+      "source": "src/addr_decode_napot.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "addr_decode_napot"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.497,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 93,
+            "skill": 0,
+            "total": 94
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.967,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 93,
+            "skill": 1003,
+            "total": 1097
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 226,
+            "total": 228
+          }
+        }
+      },
+      "byte_count": 904,
+      "expected": "ok",
+      "id": "real75-019-pulp-common-cells-binary_to_gray",
+      "line_count": 23,
+      "repo_id": "pulp-common-cells",
+      "source": "src/binary_to_gray.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.666,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 123,
+            "skill": 0,
+            "total": 124
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 2.589,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 123,
+            "skill": 1003,
+            "total": 1127
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 264,
+            "total": 265
+          }
+        }
+      },
+      "byte_count": 1053,
+      "expected": "1",
+      "id": "real75-020-pulp-common-cells-boxcar",
+      "line_count": 32,
+      "repo_id": "pulp-common-cells",
+      "source": "src/boxcar.sv",
+      "task": "design_unit_total",
+      "unit_name": "boxcar"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "13",
+          "correct": true,
+          "elapsed_ms": 0.845,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 526,
+            "skill": 0,
+            "total": 527
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "13",
+          "correct": true,
+          "elapsed_ms": 6.244,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 526,
+            "skill": 1003,
+            "total": 1530
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "13",
+          "correct": true,
+          "elapsed_ms": 0.2,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2420,
+            "total": 2421
+          }
+        }
+      },
+      "byte_count": 9678,
+      "expected": "13",
+      "id": "real75-021-pulp-common-cells-cb_filter",
+      "line_count": 247,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cb_filter.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "cb_filter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.46,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 93,
+            "skill": 0,
+            "total": 94
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 1.245,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 93,
+            "skill": 1003,
+            "total": 1097
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 294,
+            "total": 296
+          }
+        }
+      },
+      "byte_count": 1175,
+      "expected": "ok",
+      "id": "real75-022-pulp-common-cells-cb_filter_pkg",
+      "line_count": 27,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cb_filter_pkg.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.465,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 0,
+            "total": 125
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 1.37,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 1003,
+            "total": 1128
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 487,
+            "total": 488
+          }
+        }
+      },
+      "byte_count": 1945,
+      "expected": "1",
+      "id": "real75-023-pulp-common-cells-cc_onehot",
+      "line_count": 51,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cc_onehot.sv",
+      "task": "design_unit_total",
+      "unit_name": "cc_onehot"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "10",
+          "correct": true,
+          "elapsed_ms": 0.837,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 372,
+            "skill": 0,
+            "total": 373
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "10",
+          "correct": true,
+          "elapsed_ms": 1.9,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 372,
+            "skill": 1003,
+            "total": 1376
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "10",
+          "correct": true,
+          "elapsed_ms": 0.137,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1615,
+            "total": 1616
+          }
+        }
+      },
+      "byte_count": 6458,
+      "expected": "10",
+      "id": "real75-024-pulp-common-cells-cdc_2phase",
+      "line_count": 200,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_2phase.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "cdc_2phase"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.461,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 859,
+            "skill": 0,
+            "total": 862
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 2.96,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 859,
+            "skill": 1003,
+            "total": 1865
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2829,
+            "total": 2831
+          }
+        }
+      },
+      "byte_count": 11314,
+      "expected": "incomplete",
+      "id": "real75-025-pulp-common-cells-cdc_2phase_clearable",
+      "line_count": 341,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_2phase_clearable.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.414,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 246,
+            "skill": 0,
+            "total": 247
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 2.707,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 246,
+            "skill": 1003,
+            "total": 1250
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2255,
+            "total": 2256
+          }
+        }
+      },
+      "byte_count": 9020,
+      "expected": "3",
+      "id": "real75-026-pulp-common-cells-cdc_4phase",
+      "line_count": 328,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_4phase.sv",
+      "task": "design_unit_total",
+      "unit_name": "cdc_4phase"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "10",
+          "correct": true,
+          "elapsed_ms": 0.77,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 435,
+            "skill": 0,
+            "total": 436
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "10",
+          "correct": true,
+          "elapsed_ms": 4.197,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 435,
+            "skill": 1003,
+            "total": 1439
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "10",
+          "correct": true,
+          "elapsed_ms": 0.145,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1506,
+            "total": 1507
+          }
+        }
+      },
+      "byte_count": 6021,
+      "expected": "10",
+      "id": "real75-027-pulp-common-cells-cdc_fifo_2phase",
+      "line_count": 158,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_fifo_2phase.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "cdc_fifo_2phase"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.528,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1338,
+            "skill": 0,
+            "total": 1341
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 4.625,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1338,
+            "skill": 1003,
+            "total": 2344
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2690,
+            "total": 2692
+          }
+        }
+      },
+      "byte_count": 10760,
+      "expected": "incomplete",
+      "id": "real75-028-pulp-common-cells-cdc_fifo_gray",
+      "line_count": 295,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_fifo_gray.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.483,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 286,
+            "skill": 0,
+            "total": 287
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 9.662,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 286,
+            "skill": 1003,
+            "total": 1290
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 3840,
+            "total": 3841
+          }
+        }
+      },
+      "byte_count": 15358,
+      "expected": "3",
+      "id": "real75-029-pulp-common-cells-cdc_fifo_gray_clearable",
+      "line_count": 394,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_fifo_gray_clearable.sv",
+      "task": "design_unit_total",
+      "unit_name": "cdc_fifo_gray_clearable"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "14",
+          "correct": true,
+          "elapsed_ms": 0.849,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 489,
+            "skill": 0,
+            "total": 490
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "14",
+          "correct": true,
+          "elapsed_ms": 4.333,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 489,
+            "skill": 1003,
+            "total": 1493
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "0",
+          "correct": false,
+          "elapsed_ms": 0.127,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 21849,
+      "expected": "14",
+      "id": "real75-030-pulp-common-cells-cdc_reset_ctrlr",
+      "line_count": 530,
+      "repo_id": "pulp-common-cells",
+      "source": "src/cdc_reset_ctrlr.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "cdc_reset_ctrlr"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.418,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 421,
+            "skill": 0,
+            "total": 424
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 1.766,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 421,
+            "skill": 1003,
+            "total": 1427
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 1249,
+            "total": 1251
+          }
+        }
+      },
+      "byte_count": 4993,
+      "expected": "incomplete",
+      "id": "real75-031-verilog-axis-arbiter",
+      "line_count": 160,
+      "repo_id": "verilog-axis",
+      "source": "rtl/arbiter.v",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.428,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 127,
+            "skill": 0,
+            "total": 128
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 1.673,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 127,
+            "skill": 1003,
+            "total": 1131
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 3203,
+            "total": 3204
+          }
+        }
+      },
+      "byte_count": 12811,
+      "expected": "1",
+      "id": "real75-032-verilog-axis-axis_adapter",
+      "line_count": 328,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_adapter.v",
+      "task": "design_unit_total",
+      "unit_name": "axis_adapter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 1.059,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 743,
+            "skill": 0,
+            "total": 744
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 5.931,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 743,
+            "skill": 1003,
+            "total": 1747
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 0.328,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2909,
+            "total": 2910
+          }
+        }
+      },
+      "byte_count": 11633,
+      "expected": "18",
+      "id": "real75-033-verilog-axis-axis_arb_mux",
+      "line_count": 311,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_arb_mux.v",
+      "task": "first_unit_port_count",
+      "unit_name": "axis_arb_mux"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.544,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 692,
+            "skill": 0,
+            "total": 693
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 3.061,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 692,
+            "skill": 1003,
+            "total": 1696
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "total": 5002
+          }
+        }
+      },
+      "byte_count": 34494,
+      "expected": "ok",
+      "id": "real75-034-verilog-axis-axis_async_fifo",
+      "line_count": 912,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_async_fifo.v",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.446,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 140,
+            "skill": 0,
+            "total": 141
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 1.91,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 140,
+            "skill": 1003,
+            "total": 1144
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 3242,
+            "total": 3243
+          }
+        }
+      },
+      "byte_count": 12967,
+      "expected": "1",
+      "id": "real75-035-verilog-axis-axis_async_fifo_adapter",
+      "line_count": 379,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_async_fifo_adapter.v",
+      "task": "design_unit_total",
+      "unit_name": "axis_async_fifo_adapter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 0.793,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 655,
+            "skill": 0,
+            "total": 656
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 1.666,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 655,
+            "skill": 1003,
+            "total": 1659
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 0.248,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1854,
+            "total": 1855
+          }
+        }
+      },
+      "byte_count": 7416,
+      "expected": "18",
+      "id": "real75-036-verilog-axis-axis_broadcast",
+      "line_count": 196,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_broadcast.v",
+      "task": "first_unit_port_count",
+      "unit_name": "axis_broadcast"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.409,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 158,
+            "skill": 0,
+            "total": 159
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 1.157,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 158,
+            "skill": 1003,
+            "total": 1162
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2967,
+            "total": 2969
+          }
+        }
+      },
+      "byte_count": 11865,
+      "expected": "ok",
+      "id": "real75-037-verilog-axis-axis_cobs_decode",
+      "line_count": 334,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_cobs_decode.v",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.471,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 133,
+            "skill": 0,
+            "total": 134
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 3.76,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 133,
+            "skill": 1003,
+            "total": 1137
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 4301,
+            "total": 4302
+          }
+        }
+      },
+      "byte_count": 17203,
+      "expected": "1",
+      "id": "real75-038-verilog-axis-axis_cobs_encode",
+      "line_count": 511,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_cobs_encode.v",
+      "task": "design_unit_total",
+      "unit_name": "axis_cobs_encode"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "17",
+          "correct": true,
+          "elapsed_ms": 1.066,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 579,
+            "skill": 0,
+            "total": 580
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "17",
+          "correct": true,
+          "elapsed_ms": 4.339,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 579,
+            "skill": 1003,
+            "total": 1583
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "17",
+          "correct": true,
+          "elapsed_ms": 0.284,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1549,
+            "total": 1550
+          }
+        }
+      },
+      "byte_count": 6193,
+      "expected": "17",
+      "id": "real75-039-verilog-axis-axis_crosspoint",
+      "line_count": 154,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_crosspoint.v",
+      "task": "first_unit_port_count",
+      "unit_name": "axis_crosspoint"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.43,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 352,
+            "skill": 0,
+            "total": 353
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 1.637,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 352,
+            "skill": 1003,
+            "total": 1356
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2679,
+            "total": 2681
+          }
+        }
+      },
+      "byte_count": 10715,
+      "expected": "ok",
+      "id": "real75-040-verilog-axis-axis_demux",
+      "line_count": 302,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_demux.v",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.404,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 0,
+            "total": 125
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 5.029,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 1003,
+            "total": 1128
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 21692,
+      "expected": "1",
+      "id": "real75-041-verilog-axis-axis_fifo",
+      "line_count": 567,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_fifo.v",
+      "task": "design_unit_total",
+      "unit_name": "axis_fifo"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "25",
+          "correct": true,
+          "elapsed_ms": 1.07,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 680,
+            "skill": 0,
+            "total": 681
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "25",
+          "correct": true,
+          "elapsed_ms": 2.233,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 680,
+            "skill": 1003,
+            "total": 1684
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "25",
+          "correct": true,
+          "elapsed_ms": 0.422,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 3024,
+            "total": 3025
+          }
+        }
+      },
+      "byte_count": 12095,
+      "expected": "25",
+      "id": "real75-042-verilog-axis-axis_fifo_adapter",
+      "line_count": 362,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_fifo_adapter.v",
+      "task": "first_unit_port_count",
+      "unit_name": "axis_fifo_adapter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 0.46,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 769,
+            "skill": 0,
+            "total": 770
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "ok",
+          "correct": true,
+          "elapsed_ms": 2.835,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 769,
+            "skill": 1003,
+            "total": 1773
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2807,
+            "total": 2809
+          }
+        }
+      },
+      "byte_count": 11226,
+      "expected": "ok",
+      "id": "real75-043-verilog-axis-axis_frame_join",
+      "line_count": 332,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_frame_join.v",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.433,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 129,
+            "skill": 0,
+            "total": 130
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 2.689,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 129,
+            "skill": 1003,
+            "total": 1133
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 823,
+            "total": 824
+          }
+        }
+      },
+      "byte_count": 3292,
+      "expected": "1",
+      "id": "real75-044-verilog-axis-axis_frame_len",
+      "line_count": 115,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_frame_len.v",
+      "task": "design_unit_total",
+      "unit_name": "axis_frame_len"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "26",
+          "correct": true,
+          "elapsed_ms": 0.898,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1033,
+            "skill": 0,
+            "total": 1034
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "26",
+          "correct": true,
+          "elapsed_ms": 32.632,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1033,
+            "skill": 1003,
+            "total": 2037
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "26",
+          "correct": true,
+          "elapsed_ms": 0.303,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 25108,
+      "expected": "26",
+      "id": "real75-045-verilog-axis-axis_frame_length_adjust",
+      "line_count": 618,
+      "repo_id": "verilog-axis",
+      "source": "rtl/axis_frame_length_adjust.v",
+      "task": "first_unit_port_count",
+      "unit_name": "axis_frame_length_adjust"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.592,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 2045,
+            "skill": 0,
+            "total": 2048
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 6.243,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 2045,
+            "skill": 1003,
+            "total": 3051
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 4142,
+            "total": 4144
+          }
+        }
+      },
+      "byte_count": 16566,
+      "expected": "incomplete",
+      "id": "real75-046-pulp-axi-axi_atop_filter",
+      "line_count": 449,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_atop_filter.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.589,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 135,
+            "skill": 0,
+            "total": 136
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 6.432,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 135,
+            "skill": 1003,
+            "total": 1139
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 875,
+            "total": 876
+          }
+        }
+      },
+      "byte_count": 3497,
+      "expected": "1",
+      "id": "real75-047-pulp-axi-axi_burst_splitter",
+      "line_count": 94,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_burst_splitter.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_burst_splitter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 0.919,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1035,
+            "skill": 0,
+            "total": 1036
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 47.592,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 1035,
+            "skill": 1003,
+            "total": 2039
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "18",
+          "correct": true,
+          "elapsed_ms": 0.247,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 29593,
+      "expected": "18",
+      "id": "real75-048-pulp-axi-axi_bus_compare",
+      "line_count": 725,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_bus_compare.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "axi_bus_compare"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.755,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 3725,
+            "skill": 0,
+            "total": 3728
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 10.964,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 3725,
+            "skill": 1003,
+            "total": 4731
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2445,
+            "total": 2447
+          }
+        }
+      },
+      "byte_count": 9778,
+      "expected": "incomplete",
+      "id": "real75-049-pulp-axi-axi_cdc",
+      "line_count": 255,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_cdc.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.42,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 255,
+            "skill": 0,
+            "total": 256
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 21.95,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 255,
+            "skill": 1003,
+            "total": 1259
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2848,
+            "total": 2849
+          }
+        }
+      },
+      "byte_count": 11390,
+      "expected": "3",
+      "id": "real75-050-pulp-axi-axi_cdc_dst",
+      "line_count": 298,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_cdc_dst.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_cdc_dst"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "19",
+          "correct": true,
+          "elapsed_ms": 0.86,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 658,
+            "skill": 0,
+            "total": 659
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "19",
+          "correct": true,
+          "elapsed_ms": 20.969,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 658,
+            "skill": 1003,
+            "total": 1662
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "19",
+          "correct": true,
+          "elapsed_ms": 0.278,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2851,
+            "total": 2852
+          }
+        }
+      },
+      "byte_count": 11404,
+      "expected": "19",
+      "id": "real75-051-pulp-axi-axi_cdc_src",
+      "line_count": 297,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_cdc_src.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "axi_cdc_src"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 21.689,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "skill": 0,
+            "total": 5002
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 37.524,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 5000,
+            "skill": 1003,
+            "total": 6005
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 3400,
+            "total": 3402
+          }
+        }
+      },
+      "byte_count": 13598,
+      "expected": "degraded",
+      "id": "real75-052-pulp-axi-axi_chan_compare",
+      "line_count": 267,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_chan_compare.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 0.552,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 243,
+            "skill": 0,
+            "total": 244
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "3",
+          "correct": true,
+          "elapsed_ms": 23.458,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 243,
+            "skill": 1003,
+            "total": 1247
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "15",
+          "correct": false,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2406,
+            "total": 2407
+          }
+        }
+      },
+      "byte_count": 9624,
+      "expected": "3",
+      "id": "real75-053-pulp-axi-axi_cut",
+      "line_count": 291,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_cut.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_cut"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "6",
+          "correct": true,
+          "elapsed_ms": 0.815,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 330,
+            "skill": 0,
+            "total": 331
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "6",
+          "correct": true,
+          "elapsed_ms": 15.14,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 330,
+            "skill": 1003,
+            "total": 1334
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "6",
+          "correct": true,
+          "elapsed_ms": 0.145,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1653,
+            "total": 1654
+          }
+        }
+      },
+      "byte_count": 6610,
+      "expected": "6",
+      "id": "real75-054-pulp-axi-axi_delayer",
+      "line_count": 199,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_delayer.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "axi_delayer"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.678,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 2799,
+            "skill": 0,
+            "total": 2802
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 8.374,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 2799,
+            "skill": 1003,
+            "total": 3805
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2775,
+            "total": 2777
+          }
+        }
+      },
+      "byte_count": 11100,
+      "expected": "incomplete",
+      "id": "real75-055-pulp-axi-axi_demux",
+      "line_count": 303,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_demux.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.452,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 138,
+            "skill": 0,
+            "total": 139
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 3.326,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 138,
+            "skill": 1003,
+            "total": 1142
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1313,
+            "total": 1314
+          }
+        }
+      },
+      "byte_count": 5252,
+      "expected": "1",
+      "id": "real75-056-pulp-axi-axi_demux_id_counters",
+      "line_count": 147,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_demux_id_counters.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_demux_id_counters"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "9",
+          "correct": true,
+          "elapsed_ms": 0.851,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 333,
+            "skill": 0,
+            "total": 334
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "9",
+          "correct": true,
+          "elapsed_ms": 48.92,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 333,
+            "skill": 1003,
+            "total": 1337
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "9",
+          "correct": true,
+          "elapsed_ms": 0.227,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 22181,
+      "expected": "9",
+      "id": "real75-057-pulp-axi-axi_demux_simple",
+      "line_count": 513,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_demux_simple.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "axi_demux_simple"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.533,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1345,
+            "skill": 0,
+            "total": 1348
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 4.581,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1345,
+            "skill": 1003,
+            "total": 2351
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 1968,
+            "total": 1970
+          }
+        }
+      },
+      "byte_count": 7872,
+      "expected": "incomplete",
+      "id": "real75-058-pulp-axi-axi_dumper",
+      "line_count": 216,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_dumper.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 0.415,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 200,
+            "skill": 0,
+            "total": 201
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 16.034,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 200,
+            "skill": 1003,
+            "total": 1204
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2059,
+            "total": 2060
+          }
+        }
+      },
+      "byte_count": 8234,
+      "expected": "2",
+      "id": "real75-059-pulp-axi-axi_dw_converter",
+      "line_count": 191,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_dw_converter.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_dw_converter"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "6",
+          "correct": true,
+          "elapsed_ms": 0.875,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 621,
+            "skill": 0,
+            "total": 622
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "6",
+          "correct": true,
+          "elapsed_ms": 77.422,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 621,
+            "skill": 1003,
+            "total": 1625
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "6",
+          "correct": true,
+          "elapsed_ms": 0.29,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 5000,
+            "total": 5001
+          }
+        }
+      },
+      "byte_count": 35346,
+      "expected": "6",
+      "id": "real75-060-pulp-axi-axi_dw_downsizer",
+      "line_count": 947,
+      "repo_id": "pulp-axi",
+      "source": "src/axi_dw_downsizer.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "axi_dw_downsizer"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 0.489,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 1086,
+            "skill": 0,
+            "total": 1088
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 4.173,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 1086,
+            "skill": 1003,
+            "total": 2091
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 733,
+            "total": 735
+          }
+        }
+      },
+      "byte_count": 2930,
+      "expected": "degraded",
+      "id": "real75-061-pulp-register-interface-apb_to_reg_v2",
+      "line_count": 89,
+      "repo_id": "pulp-register-interface",
+      "source": "src/apb_to_reg_v2.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 0.472,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 198,
+            "skill": 0,
+            "total": 199
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 17.118,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 198,
+            "skill": 1003,
+            "total": 1202
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 2392,
+            "total": 2393
+          }
+        }
+      },
+      "byte_count": 9566,
+      "expected": "2",
+      "id": "real75-062-pulp-register-interface-axi_lite_to_reg",
+      "line_count": 287,
+      "repo_id": "pulp-register-interface",
+      "source": "src/axi_lite_to_reg.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_lite_to_reg"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "8",
+          "correct": true,
+          "elapsed_ms": 0.823,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 398,
+            "skill": 0,
+            "total": 399
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "8",
+          "correct": true,
+          "elapsed_ms": 3.104,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 398,
+            "skill": 1003,
+            "total": 1402
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "8",
+          "correct": true,
+          "elapsed_ms": 0.173,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1868,
+            "total": 1869
+          }
+        }
+      },
+      "byte_count": 7469,
+      "expected": "8",
+      "id": "real75-063-pulp-register-interface-axi_to_reg_v2",
+      "line_count": 239,
+      "repo_id": "pulp-register-interface",
+      "source": "src/axi_to_reg_v2.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "axi_to_reg_v2"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 0.405,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 163,
+            "skill": 0,
+            "total": 165
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 1.161,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 163,
+            "skill": 1003,
+            "total": 1168
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.001,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 546,
+            "total": 548
+          }
+        }
+      },
+      "byte_count": 2184,
+      "expected": "degraded",
+      "id": "real75-064-pulp-register-interface-apb_to_reg",
+      "line_count": 68,
+      "repo_id": "pulp-register-interface",
+      "source": "src/deprecated/apb_to_reg.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 0.527,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 193,
+            "skill": 0,
+            "total": 194
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 12.114,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 193,
+            "skill": 1003,
+            "total": 1197
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "2",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 1522,
+            "total": 1523
+          }
+        }
+      },
+      "byte_count": 6088,
+      "expected": "2",
+      "id": "real75-065-pulp-register-interface-axi_to_reg",
+      "line_count": 185,
+      "repo_id": "pulp-register-interface",
+      "source": "src/deprecated/axi_to_reg.sv",
+      "task": "design_unit_total",
+      "unit_name": "axi_to_reg"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "15",
+          "correct": true,
+          "elapsed_ms": 0.85,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 457,
+            "skill": 0,
+            "total": 458
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "15",
+          "correct": true,
+          "elapsed_ms": 7.312,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 457,
+            "skill": 1003,
+            "total": 1461
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "15",
+          "correct": true,
+          "elapsed_ms": 0.219,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 925,
+            "total": 926
+          }
+        }
+      },
+      "byte_count": 3700,
+      "expected": "15",
+      "id": "real75-066-pulp-register-interface-periph_to_reg",
+      "line_count": 106,
+      "repo_id": "pulp-register-interface",
+      "source": "src/periph_to_reg.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "periph_to_reg"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.583,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 834,
+            "skill": 0,
+            "total": 837
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 3.648,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 834,
+            "skill": 1003,
+            "total": 1840
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 2542,
+            "total": 2544
+          }
+        }
+      },
+      "byte_count": 10166,
+      "expected": "incomplete",
+      "id": "real75-067-pulp-register-interface-reg_cdc",
+      "line_count": 333,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_cdc.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.49,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 0,
+            "total": 125
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 13.518,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 124,
+            "skill": 1003,
+            "total": 1128
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 525,
+            "total": 526
+          }
+        }
+      },
+      "byte_count": 2099,
+      "expected": "1",
+      "id": "real75-068-pulp-register-interface-reg_cut",
+      "line_count": 74,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_cut.sv",
+      "task": "design_unit_total",
+      "unit_name": "reg_cut"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "7",
+          "correct": true,
+          "elapsed_ms": 1.056,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 267,
+            "skill": 0,
+            "total": 268
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "7",
+          "correct": true,
+          "elapsed_ms": 1.923,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 267,
+            "skill": 1003,
+            "total": 1271
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "7",
+          "correct": true,
+          "elapsed_ms": 0.139,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 368,
+            "total": 369
+          }
+        }
+      },
+      "byte_count": 1469,
+      "expected": "7",
+      "id": "real75-069-pulp-register-interface-reg_demux",
+      "line_count": 38,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_demux.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "reg_demux"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 0.402,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 319,
+            "skill": 0,
+            "total": 321
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "degraded",
+          "correct": true,
+          "elapsed_ms": 1.815,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 2,
+            "evidence": 319,
+            "skill": 1003,
+            "total": 1324
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 193,
+            "total": 195
+          }
+        }
+      },
+      "byte_count": 771,
+      "expected": "degraded",
+      "id": "real75-070-pulp-register-interface-reg_err_slv",
+      "line_count": 26,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_err_slv.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.618,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 139,
+            "skill": 0,
+            "total": 140
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 4.955,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 139,
+            "skill": 1003,
+            "total": 1143
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 358,
+            "total": 359
+          }
+        }
+      },
+      "byte_count": 1430,
+      "expected": "1",
+      "id": "real75-071-pulp-register-interface-reg_filter_empty_writes",
+      "line_count": 41,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_filter_empty_writes.sv",
+      "task": "design_unit_total",
+      "unit_name": "reg_filter_empty_writes"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.821,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 175,
+            "skill": 0,
+            "total": 176
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 1.839,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 175,
+            "skill": 1003,
+            "total": 1179
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.1,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 484,
+            "total": 485
+          }
+        }
+      },
+      "byte_count": 1934,
+      "expected": "1",
+      "id": "real75-072-pulp-register-interface-reg_intf",
+      "line_count": 44,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_intf.sv",
+      "task": "first_unit_port_count",
+      "unit_name": "REG_BUS"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 0.469,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1001,
+            "skill": 0,
+            "total": 1004
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "incomplete",
+          "correct": true,
+          "elapsed_ms": 4.003,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 3,
+            "evidence": 1001,
+            "skill": 1003,
+            "total": 2007
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "unknown",
+          "correct": false,
+          "elapsed_ms": 0.0,
+          "rationale": "Text-only reading cannot prove parser/semantic diagnostic status.",
+          "tokens": {
+            "answer": 2,
+            "evidence": 623,
+            "total": 625
+          }
+        }
+      },
+      "byte_count": 2491,
+      "expected": "incomplete",
+      "id": "real75-073-pulp-register-interface-reg_mux",
+      "line_count": 71,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_mux.sv",
+      "task": "diagnostic_status",
+      "unit_name": null
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.489,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 123,
+            "skill": 0,
+            "total": 124
+          },
+          "tool_call_count": 1,
+          "tool_calls": [
+            "pyslang_list_design_units"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 1.356,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 123,
+            "skill": 1003,
+            "total": 1127
+          },
+          "tool_call_count": 3,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "1",
+          "correct": true,
+          "elapsed_ms": 0.001,
+          "rationale": "Regex counted visible module/interface/package declarations.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 682,
+            "total": 683
+          }
+        }
+      },
+      "byte_count": 2725,
+      "expected": "1",
+      "id": "real75-074-pulp-register-interface-reg_test",
+      "line_count": 104,
+      "repo_id": "pulp-register-interface",
+      "source": "src/reg_test.sv",
+      "task": "design_unit_total",
+      "unit_name": "reg_test"
+    },
+    {
+      "arms": {
+        "mcp_no_skill": {
+          "answer": "0",
+          "correct": true,
+          "elapsed_ms": 0.985,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 189,
+            "skill": 0,
+            "total": 190
+          },
+          "tool_call_count": 2,
+          "tool_calls": [
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "skill_mcp": {
+          "answer": "0",
+          "correct": true,
+          "elapsed_ms": 5.42,
+          "had_tool_error": false,
+          "tokens": {
+            "answer": 1,
+            "evidence": 189,
+            "skill": 1003,
+            "total": 1193
+          },
+          "tool_call_count": 4,
+          "tool_calls": [
+            "pyslang_parse_files",
+            "pyslang_get_diagnostics",
+            "pyslang_list_design_units",
+            "pyslang_describe_design_unit"
+          ]
+        },
+        "text_no_skill": {
+          "answer": "0",
+          "correct": true,
+          "elapsed_ms": 0.114,
+          "rationale": "Text parser counted the first visible module/interface port list.",
+          "tokens": {
+            "answer": 1,
+            "evidence": 717,
+            "total": 718
+          }
+        }
+      },
+      "byte_count": 2867,
+      "expected": "0",
+      "id": "real75-075-picorv32-testbench",
+      "line_count": 127,
+      "repo_id": "picorv32",
+      "source": "dhrystone/testbench.v",
+      "task": "first_unit_port_count",
+      "unit_name": "testbench"
+    }
+  ],
+  "metadata": {
+    "comparison": "75 real public RTL files: text/no-skill vs MCP/no-skill vs pyslang-verilog-context skill+MCP",
+    "generated_at": "2026-05-23T11:14:06+00:00",
+    "methodology": "Each case uses one real public HDL file. Tasks cycle through frontend diagnostic status, design-unit inventory, and first design-unit port count. Text/no-skill uses local text heuristics. MCP/no-skill uses targeted pyslang-mcp tools. Skill+MCP uses parse + diagnostics before the structural query.",
+    "repo": "pyslang-mcp",
+    "skill": "skills/pyslang-verilog-context/SKILL.md",
+    "sources": [
+      {
+        "commit": "9742d89",
+        "id": "lowrisc-ibex",
+        "license": "Apache-2.0",
+        "url": "https://github.com/lowRISC/ibex"
+      },
+      {
+        "commit": "63e1b67",
+        "id": "pulp-common-cells",
+        "license": "Solderpad-0.51",
+        "url": "https://github.com/pulp-platform/common_cells"
+      },
+      {
+        "commit": "48ff7a7",
+        "id": "verilog-axis",
+        "license": "MIT",
+        "url": "https://github.com/alexforencich/verilog-axis"
+      },
+      {
+        "commit": "e286bb1",
+        "id": "pulp-axi",
+        "license": "Solderpad-0.51",
+        "url": "https://github.com/pulp-platform/axi"
+      },
+      {
+        "commit": "d6e1d4c",
+        "id": "pulp-register-interface",
+        "license": "Solderpad-0.51",
+        "url": "https://github.com/pulp-platform/register_interface"
+      },
+      {
+        "commit": "87c89ac",
+        "id": "picorv32",
+        "license": "ISC",
+        "url": "https://github.com/YosysHQ/picorv32"
+      }
+    ]
+  },
+  "summary": {
+    "arms": {
+      "mcp_no_skill": {
+        "accuracy": 1.0,
+        "correct": 75,
+        "median_ms": 0.552,
+        "total_tokens_est": 47493
+      },
+      "skill_mcp": {
+        "accuracy": 1.0,
+        "correct": 75,
+        "median_ms": 4.197,
+        "total_tokens_est": 122718
+      },
+      "text_no_skill": {
+        "accuracy": 0.6267,
+        "correct": 47,
+        "median_ms": 0.001,
+        "total_tokens_est": 184353
+      }
+    },
+    "by_repo": {
+      "lowrisc-ibex": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "text_no_skill": {
+            "accuracy": 0.6,
+            "correct": 9
+          }
+        },
+        "total": 15
+      },
+      "picorv32": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 1
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 1
+          },
+          "text_no_skill": {
+            "accuracy": 1.0,
+            "correct": 1
+          }
+        },
+        "total": 1
+      },
+      "pulp-axi": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "text_no_skill": {
+            "accuracy": 0.6,
+            "correct": 9
+          }
+        },
+        "total": 15
+      },
+      "pulp-common-cells": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "text_no_skill": {
+            "accuracy": 0.6,
+            "correct": 9
+          }
+        },
+        "total": 15
+      },
+      "pulp-register-interface": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 14
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 14
+          },
+          "text_no_skill": {
+            "accuracy": 0.6429,
+            "correct": 9
+          }
+        },
+        "total": 14
+      },
+      "verilog-axis": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 15
+          },
+          "text_no_skill": {
+            "accuracy": 0.6667,
+            "correct": 10
+          }
+        },
+        "total": 15
+      }
+    },
+    "by_task": {
+      "design_unit_total": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 25
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 25
+          },
+          "text_no_skill": {
+            "accuracy": 0.96,
+            "correct": 24
+          }
+        },
+        "total": 25
+      },
+      "diagnostic_status": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 25
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 25
+          },
+          "text_no_skill": {
+            "accuracy": 0.0,
+            "correct": 0
+          }
+        },
+        "total": 25
+      },
+      "first_unit_port_count": {
+        "arms": {
+          "mcp_no_skill": {
+            "accuracy": 1.0,
+            "correct": 25
+          },
+          "skill_mcp": {
+            "accuracy": 1.0,
+            "correct": 25
+          },
+          "text_no_skill": {
+            "accuracy": 0.92,
+            "correct": 23
+          }
+        },
+        "total": 25
+      }
+    },
+    "deltas": {
+      "mcp_no_skill_vs_text_no_skill": 28,
+      "skill_mcp_vs_mcp_no_skill": 0,
+      "skill_mcp_vs_text_no_skill": 28
+    },
+    "total_cases": 75
+  }
+}

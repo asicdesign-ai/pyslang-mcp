@@ -1,0 +1,14 @@
+interface:
+  display_name: "pyslang Verilog Context"
+  short_description: "Compiler-backed Verilog/SystemVerilog context"
+  default_prompt: "Use $pyslang-verilog-context to analyze this RTL with compiler-backed pyslang-mcp evidence."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "pyslang-mcp"
+      description: "Read-only Verilog/SystemVerilog semantic analysis through pyslang."
+      transport: "stdio"
+
+policy:
+  allow_implicit_invocation: true

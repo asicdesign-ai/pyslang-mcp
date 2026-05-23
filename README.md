@@ -269,6 +269,52 @@ Run the CI smoke subset:
 ./.venv/bin/python scripts/validate_hdl_examples.py --smoke-only
 ```
 
+## Evaluation Benchmarks
+
+The repo includes a `pyslang-verilog-context` skill eval suite under
+[`skills/pyslang-verilog-context/evals`](./skills/pyslang-verilog-context/evals/)
+and comparison reports under [`reports/`](./reports/). The current benchmark
+compares three local evidence modes:
+
+- text/no skill: source and filelist text heuristics only
+- MCP/no skill: targeted `pyslang-mcp` tool calls
+- skill + MCP: `pyslang-verilog-context` sequencing with `pyslang-mcp`
+
+Latest local result from 2026-05-23:
+
+| Benchmark | Text/no skill | MCP/no skill | Skill + MCP |
+|---|---:|---:|---:|
+| Existing 25-case benchmark | 13/25 | 20/25 | 25/25 |
+| Added 75 real public RTL cases | 47/75 | 75/75 | 75/75 |
+| Combined 100 cases | 60/100 | 95/100 | 100/100 |
+
+The 75 real-source cases use public RTL files from `lowrisc-ibex`,
+`pulp-common-cells`, `verilog-axis`, `pulp-axi`,
+`pulp-register-interface`, and `picorv32`. They exercise frontend diagnostic
+status, design-unit inventory, and first-unit port counts. The older 25-case
+run includes the RTL coding / bug-audit cases where the skill adds measurable
+value beyond MCP-only evidence.
+
+Verification commands used for the reported run:
+
+```bash
+./.venv/bin/python skills/pyslang-verilog-context/scripts/validate_eval_fixtures.py
+./.venv/bin/python -m pytest
+./.venv/bin/python skills/pyslang-verilog-context/scripts/run_comparison_evals.py
+./.venv/bin/python scripts/run_mcp_comparison.py --output-dir reports/mcp_comparison_comprehensive_20260523
+./.venv/bin/python reports/real_examples_75/run_real75_comparison.py
+./.venv/bin/python -m py_compile reports/real_examples_75/run_real75_comparison.py
+```
+
+These are deterministic scalar harnesses, not blind autonomous LLM-judge runs.
+`pyslang-mcp` evidence remains frontend/compiler context only, not simulation,
+synthesis, CDC/RDC, timing, formal, or full lint signoff.
+
+Documentation-only eval/report updates do not require a PyPI release. A PyPI
+release is warranted when package code, public tool behavior, schemas, runtime
+dependencies, CLI behavior, or user-facing install/runtime docs change in a way
+published users need.
+
 ## Project Status
 
 Implemented:

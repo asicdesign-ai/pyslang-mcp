@@ -1,0 +1,301 @@
+{
+  "version": 1,
+  "skill": "pyslang-verilog-context",
+  "purpose": "Prompt-level evals for a skill that uses pyslang-mcp as read-only compiler-backed context for Verilog and SystemVerilog work.",
+  "fixture_sources": [
+    {
+      "id": "asic-ai-workflows",
+      "source": "/home/arik/projects/asic-ai-workflows/datasets/fixtures",
+      "copied_to": "fixtures/asic-ai-workflows",
+      "license": "MIT",
+      "contents": "All .sv and .f HDL fixture files found locally at copy time."
+    },
+    {
+      "id": "pyslang-mcp-examples",
+      "source": "/home/arik/projects/pyslang-mcp/examples/hdl",
+      "copied_to": "fixtures/pyslang-mcp-examples",
+      "license": "Apache-2.0",
+      "contents": "All Verilog/SystemVerilog sources, include headers, and filelists from the local example HDL corpus."
+    },
+    {
+      "id": "pyslang-mcp-tests",
+      "source": "/home/arik/projects/pyslang-mcp/tests/fixtures",
+      "copied_to": "fixtures/pyslang-mcp-tests",
+      "license": "Apache-2.0",
+      "contents": "Small HDL parser fixtures used for negative diagnostic and multi-file smoke evals."
+    },
+    {
+      "id": "web-lowrisc-ibex",
+      "source": "https://github.com/lowRISC/ibex",
+      "copied_to": "fixtures/web/lowrisc-ibex",
+      "license": "Apache-2.0",
+      "contents": "Representative SystemVerilog counter module and repository license."
+    },
+    {
+      "id": "web-yosyshq-picorv32",
+      "source": "https://github.com/YosysHQ/picorv32",
+      "copied_to": "fixtures/web/yosyshq-picorv32",
+      "license": "ISC",
+      "contents": "PicoRV32 Verilog CPU source and COPYING file."
+    },
+    {
+      "id": "web-alexforencich-verilog-axis",
+      "source": "https://github.com/alexforencich/verilog-axis",
+      "copied_to": "fixtures/web/alexforencich-verilog-axis",
+      "license": "MIT",
+      "contents": "AXI Stream register Verilog source and COPYING file."
+    },
+    {
+      "id": "web-pulp-platform-common-cells",
+      "source": "https://github.com/pulp-platform/common_cells",
+      "copied_to": "fixtures/web/pulp-platform-common-cells",
+      "license": "Solderpad-0.51",
+      "contents": "Generic counter and delta_counter SystemVerilog sources plus repository license."
+    }
+  ],
+  "cases": [
+    {
+      "id": "single-file-design-summary",
+      "prompt": "prompts/single-file-design-summary.md",
+      "fixture_root": "fixtures/asic-ai-workflows/hdl-design-view",
+      "input": {
+        "files": ["simple_counter.sv"],
+        "top_modules": ["simple_counter"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_list_design_units",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Uses compiler-backed evidence before summarizing the module.",
+        "Reports whether diagnostics were present.",
+        "Names the top module and summarizes ports/state/control behavior without inventing external context."
+      ]
+    },
+    {
+      "id": "filelist-hierarchy-sync-fifo",
+      "prompt": "prompts/filelist-hierarchy-sync-fifo.md",
+      "fixture_root": "fixtures/pyslang-mcp-examples/reference/ip/sync_fifo",
+      "input": {
+        "filelist": "project.f",
+        "top_modules": ["sync_fifo"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_filelist",
+        "pyslang_get_diagnostics",
+        "pyslang_list_design_units",
+        "pyslang_get_hierarchy",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Resolves the filelist instead of loading one file in isolation.",
+        "Mentions package/include and child memory module context.",
+        "Does not claim simulation, synthesis, or FIFO correctness proof."
+      ]
+    },
+    {
+      "id": "symbol-lookup-apb-timer",
+      "prompt": "prompts/symbol-lookup-apb-timer.md",
+      "fixture_root": "fixtures/pyslang-mcp-examples/reference/ip/apb_timer",
+      "input": {
+        "filelist": "project.f",
+        "top_modules": ["apb_timer"],
+        "query": "irq_o"
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_filelist",
+        "pyslang_get_diagnostics",
+        "pyslang_find_symbol",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Finds declaration/reference evidence for irq_o or clearly states if lookup is limited.",
+        "Explains the signal in wrapper/core context.",
+        "Separates symbol evidence from behavioral claims."
+      ]
+    },
+    {
+      "id": "compile-diagnostic-triage",
+      "prompt": "prompts/compile-diagnostic-triage.md",
+      "fixture_root": "fixtures/pyslang-mcp-tests/broken",
+      "input": {
+        "files": ["broken.sv"],
+        "top_modules": ["broken"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics"
+      ],
+      "pass_criteria": [
+        "Surfaces the unresolved symbol diagnostic as tool evidence.",
+        "Does not continue as if the design elaborated cleanly.",
+        "Suggests a minimal next investigation or fix direction."
+      ]
+    },
+    {
+      "id": "clean-frontend-functional-bug",
+      "prompt": "prompts/clean-frontend-functional-bug.md",
+      "fixture_root": "fixtures/pyslang-mcp-examples/buggy/hard/apb_timer_irq_race_bug",
+      "input": {
+        "filelist": "project.f",
+        "top_modules": ["apb_timer"],
+        "query": "irq"
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_filelist",
+        "pyslang_get_diagnostics",
+        "pyslang_get_hierarchy",
+        "pyslang_find_symbol"
+      ],
+      "pass_criteria": [
+        "States that clean frontend diagnostics do not prove behavioral correctness.",
+        "Inspects reset/IRQ clear/terminal-count logic with source-grounded reasoning.",
+        "Avoids claiming simulation or formal proof."
+      ]
+    },
+    {
+      "id": "coding-change-with-recheck",
+      "prompt": "prompts/coding-change-with-recheck.md",
+      "fixture_root": "fixtures/pyslang-mcp-examples/reference/single/systemverilog/edge_detect",
+      "input": {
+        "files": ["edge_detect.sv"],
+        "top_modules": ["edge_detect"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Checks the current module interface and diagnostics before proposing an edit.",
+        "Keeps the requested RTL change scoped.",
+        "Plans or performs a diagnostics recheck after the change."
+      ]
+    },
+    {
+      "id": "asic-filelist-path-context",
+      "prompt": "prompts/asic-filelist-path-context.md",
+      "fixture_root": "fixtures/asic-ai-workflows/timing",
+      "input": {
+        "filelist": "cross_module_path.f",
+        "top_modules": ["cross_module_path"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_filelist",
+        "pyslang_get_diagnostics",
+        "pyslang_get_hierarchy",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Uses the filelist to analyze both top and add8 modules.",
+        "Identifies the cross-module instance relationship.",
+        "Limits timing claims to structural path context, not signoff timing."
+      ]
+    },
+    {
+      "id": "cdc-boundary-warning",
+      "prompt": "prompts/cdc-boundary-warning.md",
+      "fixture_root": "fixtures/asic-ai-workflows/cdc",
+      "input": {
+        "files": ["unsync_single_bit.sv"],
+        "top_modules": ["unsync_single_bit"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Uses compiler evidence for structure and declarations.",
+        "Recognizes CDC risk from source structure when visible.",
+        "Explicitly says pyslang-mcp is not a CDC signoff tool."
+      ]
+    },
+    {
+      "id": "web-ibex-counter-summary",
+      "prompt": "prompts/web-ibex-counter-summary.md",
+      "fixture_root": "fixtures/web/lowrisc-ibex",
+      "input": {
+        "files": ["rtl/ibex_counter.sv"],
+        "top_modules": ["ibex_counter"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_describe_design_unit",
+        "pyslang_dump_syntax_tree_summary"
+      ],
+      "pass_criteria": [
+        "Uses compiler evidence on a real upstream SystemVerilog module.",
+        "Reports parameterized counter structure and reset behavior.",
+        "Does not claim synthesis inference or simulation proof."
+      ]
+    },
+    {
+      "id": "web-picorv32-inventory",
+      "prompt": "prompts/web-picorv32-inventory.md",
+      "fixture_root": "fixtures/web/yosyshq-picorv32",
+      "input": {
+        "files": ["picorv32.v"],
+        "top_modules": ["picorv32"],
+        "query": "mem_valid"
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_list_design_units",
+        "pyslang_describe_design_unit",
+        "pyslang_find_symbol"
+      ],
+      "pass_criteria": [
+        "Handles a large real Verilog source file.",
+        "Reports multiple design units from the file.",
+        "Uses symbol evidence for mem_valid instead of text-only guessing."
+      ]
+    },
+    {
+      "id": "web-axis-register-handshake",
+      "prompt": "prompts/web-axis-register-handshake.md",
+      "fixture_root": "fixtures/web/alexforencich-verilog-axis",
+      "input": {
+        "files": ["rtl/axis_register.v"],
+        "top_modules": ["axis_register"],
+        "query": "s_axis_tready"
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_describe_design_unit",
+        "pyslang_find_symbol"
+      ],
+      "pass_criteria": [
+        "Uses compiler-backed declaration/reference lookup on real AXI Stream RTL.",
+        "Explains ready/valid context without claiming protocol verification.",
+        "Reports diagnostics status."
+      ]
+    },
+    {
+      "id": "web-common-cells-counter-hierarchy",
+      "prompt": "prompts/web-common-cells-counter-hierarchy.md",
+      "fixture_root": "fixtures/web/pulp-platform-common-cells",
+      "input": {
+        "files": ["src/delta_counter.sv", "src/counter.sv"],
+        "top_modules": ["counter"]
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_files",
+        "pyslang_get_diagnostics",
+        "pyslang_list_design_units",
+        "pyslang_get_hierarchy",
+        "pyslang_describe_design_unit"
+      ],
+      "pass_criteria": [
+        "Analyzes a real multi-file SystemVerilog component.",
+        "Reports the counter to delta_counter instance relationship.",
+        "Separates hierarchy evidence from functional proof."
+      ]
+    }
+  ]
+}
