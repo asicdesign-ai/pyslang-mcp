@@ -321,16 +321,18 @@ Latest local result from 2026-05-23:
 
 | Benchmark | Text/no skill | MCP/no skill | Skill + MCP |
 |---|---:|---:|---:|
-| Existing 25-case benchmark | 13/25 | 20/25 | 25/25 |
-| Added 75 real public RTL cases | 47/75 | 75/75 | 75/75 |
-| Combined 100 cases | 60/100 | 95/100 | 100/100 |
+| 100 HDL analysis cases | 60/100 | 95/100 | 100/100 |
 
-The 75 real-source cases use public RTL files from `lowrisc-ibex`,
+The benchmark mixes deterministic repo-local HDL fixtures with real public RTL
+source files. The local fixtures exercise targeted behaviors such as filelists,
+hierarchy, symbols, diagnostics, clean-frontend functional bugs, and RTL coding
+and bug-audit discipline. The real public RTL cases use source files from
+`lowrisc-ibex`,
 `pulp-common-cells`, `verilog-axis`, `pulp-axi`,
 `pulp-register-interface`, and `picorv32`. They exercise frontend diagnostic
-status, design-unit inventory, and first-unit port counts. The older 25-case
-run includes the RTL coding / bug-audit cases where the skill adds measurable
-value beyond MCP-only evidence.
+status, design-unit inventory, and first-unit port counts on real source files.
+See [docs/evaluation-benchmarks.md](./docs/evaluation-benchmarks.md) for the
+prompt/task shapes and MCP functions used.
 
 Verification commands used for the reported run:
 
