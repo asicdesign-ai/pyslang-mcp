@@ -269,6 +269,43 @@ Run the CI smoke subset:
 ./.venv/bin/python scripts/validate_hdl_examples.py --smoke-only
 ```
 
+## Using With Broader RTL Skills
+
+If your agent environment already has a broad RTL skill such as
+`rtl-analysis`, `rtl-audit`, or `llm-based-verilog-analysis`, use
+`pyslang-verilog-context` as the fine-grained compiler-evidence layer beneath
+that broader skill.
+
+Recommended setup:
+
+1. Configure the `pyslang-mcp` server in your MCP client so the agent can call
+   the read-only `pyslang_*` tools.
+2. Install or copy the `pyslang-verilog-context` skill from
+   [`skills/pyslang-verilog-context`](./skills/pyslang-verilog-context/).
+3. Add a delegation note like this to your broader RTL skill:
+
+```text
+For Verilog/SystemVerilog tasks, use $pyslang-verilog-context before making
+claims about diagnostics, design units, ports, hierarchy, declarations,
+references, includes, defines, or filelist behavior. Treat its output as
+compiler frontend evidence only. Do not present it as simulation, synthesis,
+timing, CDC/RDC, formal, or full lint signoff.
+```
+
+The intended flow is:
+
+```text
+user RTL request
+  -> broad RTL analysis/audit skill
+  -> pyslang-verilog-context
+  -> pyslang-mcp compiler-backed evidence
+  -> final answer with evidence and limitations
+```
+
+This keeps high-level RTL review policy in the broad skill while grounding
+Verilog/SystemVerilog structure, diagnostics, hierarchy, symbols, includes, and
+filelists in `pyslang`.
+
 ## Evaluation Benchmarks
 
 The repo includes a `pyslang-verilog-context` skill eval suite under
