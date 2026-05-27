@@ -7,7 +7,121 @@ on:
       - main
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      docs_only: ${{ steps.detect.outputs.docs_only }}
+      markdown_changed: ${{ steps.detect.outputs.markdown_changed }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed file types
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+            head="${{ github.event.pull_request.head.sha }}"
+          else
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+            if [[ "$base" =~ ^0+$ ]]; then
+              base="$(git rev-list --max-parents=0 "$head")"
+            fi
+          fi
+
+          mapfile -t changed_files < <(git diff --name-only "$base" "$head" | sed '/^$/d')
+          docs_only=false
+          markdown_changed=false
+
+          if (( ${#changed_files[@]} > 0 )); then
+            docs_only=true
+            for file in "${changed_files[@]}"; do
+              case "${file,,}" in
+                *.md|*.markdown)
+                  markdown_changed=true
+                  ;;
+              esac
+
+              case "${file,,}" in
+                readme.md|changelog.md|contributing.md|*_plan.md|docs/*)
+                  ;;
+                *)
+                  docs_only=false
+                  ;;
+              esac
+            done
+          fi
+
+          echo "docs_only=$docs_only" >> "$GITHUB_OUTPUT"
+          echo "markdown_changed=$markdown_changed" >> "$GITHUB_OUTPUT"
+          printf 'Changed files:\n'
+          printf '  %s\n' "${changed_files[@]}"
+          echo "docs_only=$docs_only"
+          echo "markdown_changed=$markdown_changed"
+
+  markdown-language:
+    needs: changes
+    if: needs.changes.outputs.markdown_changed == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install spelling checker
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'codespell>=2,<3'
+
+      - name: Check changed Markdown spelling
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+            head="${{ github.event.pull_request.head.sha }}"
+          else
+            base="${{ github.event.before }}"
+            head="${{ github.sha }}"
+            if [[ "$base" =~ ^0+$ ]]; then
+              base="$(git rev-list --max-parents=0 "$head")"
+            fi
+          fi
+
+          mapfile -t markdown_files < <(
+            git diff --name-only --diff-filter=ACMR "$base" "$head" -- '*.md' '*.markdown' |
+              sed '/^$/d' |
+              sort -u
+          )
+
+          if (( ${#markdown_files[@]} == 0 )); then
+            echo "No changed Markdown files to check."
+            exit 0
+          fi
+
+          printf 'Checking Markdown files:\n'
+          printf '  %s\n' "${markdown_files[@]}"
+          codespell "${markdown_files[@]}" \
+            --ignore-words-list "pyslang,systemverilog,verilog,filelist,filelists,maas,stdio,svh,hdl,rtl,pypi,uvx,mcp,codex"
+
   test:
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -47,6 +161,8 @@ jobs:
         run: pytest --cov=src/pyslang_mcp --cov-report=xml --cov-report=term-missing:skip-covered -q
 
   hdl-smoke:
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -72,6 +188,8 @@ jobs:
         run: pytest -q tests/test_hdl_smoke.py
 
   mcp-protocol-smoke:
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -92,6 +210,8 @@ jobs:
         run: pytest -q tests/test_mcp_stdio.py
 
   skill-eval-smoke:
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -120,6 +240,8 @@ jobs:
             --case compile-diagnostic-triage
 
   package-smoke:
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -152,6 +274,8 @@ jobs:
             --project-root "$PWD/tests/fixtures/multi_file"
 
   internal-maas-docker-smoke:
+    needs: changes
+    if: needs.changes.outputs.docs_only != 'true'
     runs-on: ubuntu-latest
 
     steps:
