@@ -23,6 +23,15 @@ This is not a simulator, synthesizer, waveform viewer, linter replacement, or
 RTL refactoring tool. It is a small semantic analysis service for local HDL
 checkouts.
 
+That read-only boundary is intentional. It keeps the server side-effect free,
+reduces the blast radius in IP-protected workspaces, and makes it safer to use
+in local and CI environments.
+
+It was decided to keep `pyslang-mcp` read-only. The LLM handles the actual RTL
+coding, while `pyslang-mcp` serves as the compile/elab-backed reader, checker,
+and explainer for code that already exists. In other words, the model drafts
+the RTL and the MCP server verifies what the compiler frontend sees.
+
 > [!NOTE]
 > The project is currently early-stage and published on
 > [PyPI](https://pypi.org/project/pyslang-mcp/) and the
