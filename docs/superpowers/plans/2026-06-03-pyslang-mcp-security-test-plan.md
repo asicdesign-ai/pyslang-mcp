@@ -34,6 +34,7 @@
 - Malware resistance or host compromise prevention.
 - Safety of any remote LLM provider that is outside the controlled environment.
 - Broader corporate policy compliance beyond the repository’s own controls.
+- Weaponized exploit development or proof-of-concept payload construction.
 
 ---
 
@@ -49,6 +50,10 @@
 - `tests/security/test_offline_egress.py` — new no-network / no-DNS / no-external-HTTP execution check.
 - `tests/security/test_cache_isolation.py` — new cross-project cache isolation and invalidation test.
 - `tests/security/test_internal_maas_config.py` — new hardening assertions for internal Docker Compose and setup script.
+- `tests/security/test_secret_scanning.py` — new secret and sensitive-data leakage scan assertions.
+- `tests/security/test_dependency_vuln_scanning.py` — new offline dependency and container vulnerability scan assertions.
+- `tests/security/test_parser_fuzzing.py` — new safe fuzz coverage for filelist, path, and argument parsing.
+- `scripts/run_security_scans.py` — new offline scanner harness for local-only secret and vulnerability checks.
 - `skills/pyslang-verilog-context/SKILL.md` — tighten the skill’s local-only security language.
 - `skills/pyslang-verilog-context/evals/manifest.json` — add security-specific prompt cases and offline execution notes.
 - `skills/pyslang-verilog-context/evals/prompts/security/*.md` — new malicious / red-team prompt fixtures.
@@ -228,7 +233,40 @@
 
 ---
 
-### Task 6: Add security-specific skill evals for malicious and prohibited prompts
+### Task 6: Add offline secret, dependency, container, and fuzzing checks
+
+**Files:**
+- Create `tests/security/test_secret_scanning.py`
+- Create `tests/security/test_dependency_vuln_scanning.py`
+- Create `tests/security/test_parser_fuzzing.py`
+- Create `scripts/run_security_scans.py`
+- Modify `.github/workflows/ci.yml` or create `.github/workflows/security.yml`
+
+**Purpose:**
+- Prove the repository does not leak proprietary source, tokens, or workspace metadata into docs, prompts, test fixtures, logs, reports, or generated artifacts.
+- Prove dependency and container scans can run against local mirrors or preloaded databases without sending code to a public service.
+- Shake out parser, path, and HTTP-argument edge cases with safe local fuzzing, not weaponized exploit work.
+
+**Test cases to add:**
+- Secret scan over the repository tree, generated artifacts, and CI logs for bearer tokens, private keys, API keys, or embedded workspace secrets.
+- Dependency vulnerability scan of pinned Python packages against a locally mirrored advisory database or an internally mirrored scanner image.
+- Container/image scan of the internal deployment image without external lookups.
+- Parser fuzzing for filelist tokens, nested filelists, include-dir resolution, and transport argument validation using mutated local inputs.
+- Prompt fuzzing that injects exfiltration requests and checks that the skill stays on local-only responses.
+- Artifact scan that rejects any report containing raw proprietary HDL outside the intentionally bounded source excerpts.
+
+**Commands to run:**
+- `python scripts/run_security_scans.py --offline`
+- `pytest -q tests/security/test_secret_scanning.py tests/security/test_dependency_vuln_scanning.py tests/security/test_parser_fuzzing.py`
+
+**Evidence required:**
+- Scanner runs complete using only local databases, mirrors, or images.
+- Fuzz runs produce structured failures, not crashes, hangs, or tracebacks.
+- No scan output, artifact, or report may contain proprietary source unless the tool is intentionally emitting a bounded excerpt.
+
+---
+
+### Task 7: Add security-specific skill evals for malicious and prohibited prompts
 
 **Files:**
 - Modify `skills/pyslang-verilog-context/SKILL.md`
@@ -270,7 +308,7 @@
 
 ---
 
-### Task 7: Put the security suite behind a repeatable CI gate and artifact bundle
+### Task 8: Put the security suite behind a repeatable CI gate and artifact bundle
 
 **Files:**
 - Modify `.github/workflows/ci.yml` or create `.github/workflows/security.yml`
@@ -303,8 +341,9 @@
 2. Add the path-containment and cache-isolation tests.
 3. Add transport/auth/internal-MaaS tests.
 4. Add output-hygiene and offline-egress tests.
-5. Add the skill security eval prompts and run them locally.
-6. Wire the whole set into a dedicated CI or security workflow.
+5. Add offline secret, dependency, container, and fuzzing checks.
+6. Add the skill security eval prompts and run them locally.
+7. Wire the whole set into a dedicated CI or security workflow.
 
 ## Exit criteria
 
