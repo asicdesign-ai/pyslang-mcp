@@ -41,6 +41,88 @@ def test_load_project_from_files_rejects_paths_outside_root(tmp_path: Path) -> N
         )
 
 
+def test_load_project_from_filelist_rejects_filelist_outside_root(tmp_path: Path) -> None:
+    root = tmp_path / "root"
+    outside_filelist = tmp_path / "outside.f"
+    root.mkdir()
+    outside_filelist.write_text("top.sv\n", encoding="utf-8")
+
+    with pytest.raises(PathOutsideRootError, match="Filelist escapes project root"):
+        load_project_from_filelist(project_root=root, filelist=str(outside_filelist))
+
+
+@pytest.mark.parametrize(
+    ("entry", "expected_kind"),
+    [
+        ("../outside.sv", "Source file"),
+        ("-f ../outside.f", "Nested filelist"),
+        ("-F../outside.f", "Nested filelist"),
+        ("-I ../outside_include", "Include directory"),
+        ("-I../outside_include", "Include directory"),
+        ("+incdir+../outside_include", "Include directory"),
+    ],
+)
+def test_load_project_from_filelist_rejects_entries_outside_root(
+    tmp_path: Path,
+    entry: str,
+    expected_kind: str,
+) -> None:
+    root = tmp_path / "root"
+    outside_include = tmp_path / "outside_include"
+    root.mkdir()
+    outside_include.mkdir()
+    (tmp_path / "outside.sv").write_text("module bad; endmodule\n", encoding="utf-8")
+    (tmp_path / "outside.f").write_text("outside.sv\n", encoding="utf-8")
+    (root / "project.f").write_text(f"{entry}\n", encoding="utf-8")
+
+    with pytest.raises(PathOutsideRootError, match=f"{expected_kind} escapes project root"):
+        load_project_from_filelist(project_root=root, filelist="project.f")
+
+
+def test_load_project_from_files_rejects_include_dir_outside_root(tmp_path: Path) -> None:
+    root = tmp_path / "root"
+    outside_include = tmp_path / "outside_include"
+    root.mkdir()
+    outside_include.mkdir()
+    (root / "top.sv").write_text("module top; endmodule\n", encoding="utf-8")
+
+    with pytest.raises(PathOutsideRootError, match="Include directory escapes project root"):
+        load_project_from_files(
+            project_root=root,
+            files=["top.sv"],
+            include_dirs=[str(outside_include)],
+        )
+
+
+def test_load_project_from_filelist_rejects_extra_include_dir_outside_root(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "root"
+    outside_include = tmp_path / "outside_include"
+    root.mkdir()
+    outside_include.mkdir()
+    (root / "top.sv").write_text("module top; endmodule\n", encoding="utf-8")
+    (root / "project.f").write_text("top.sv\n", encoding="utf-8")
+
+    with pytest.raises(PathOutsideRootError, match="Include directory escapes project root"):
+        load_project_from_filelist(
+            project_root=root,
+            filelist="project.f",
+            include_dirs=[str(outside_include)],
+        )
+
+
+def test_load_project_from_files_rejects_symlinked_source_outside_root(tmp_path: Path) -> None:
+    root = tmp_path / "root"
+    outside = tmp_path / "outside.sv"
+    root.mkdir()
+    outside.write_text("module bad; endmodule\n", encoding="utf-8")
+    (root / "linked.sv").symlink_to(outside)
+
+    with pytest.raises(PathOutsideRootError, match="Source file escapes project root"):
+        load_project_from_files(project_root=root, files=["linked.sv"])
+
+
 def test_filelist_strips_inline_comments_without_whitespace(tmp_path: Path) -> None:
     root = tmp_path / "project"
     root.mkdir()

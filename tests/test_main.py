@@ -18,6 +18,25 @@ def test_main_runs_default_stdio_transport(monkeypatch: pytest.MonkeyPatch) -> N
     assert observed["transport"] == "stdio"
 
 
+def test_main_ignores_http_token_for_stdio_transport(monkeypatch: pytest.MonkeyPatch) -> None:
+    observed: dict[str, object] = {}
+
+    class DummyServer:
+        def run(self, transport: str) -> None:
+            observed["transport"] = transport
+
+    def create_dummy_server(**kwargs: object) -> DummyServer:
+        observed["kwargs"] = kwargs
+        return DummyServer()
+
+    monkeypatch.setattr(cli, "create_server", create_dummy_server)
+    monkeypatch.setenv("PYSLANG_MCP_HTTP_BEARER_TOKEN", "test-token")
+
+    assert cli.main([]) == 0
+    assert observed["transport"] == "stdio"
+    assert observed["kwargs"] == {}
+
+
 def test_main_rejects_streamable_http_without_experimental_flag(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

@@ -183,6 +183,14 @@ async def _assert_structured_errors(
             },
             "path_outside_root",
         ),
+        (
+            PUBLIC_TOOL_NAMES["parse_filelist"],
+            {
+                "project_root": str(fixture_root),
+                "filelist": str(REPO_ROOT / "pyproject.toml"),
+            },
+            "path_outside_root",
+        ),
     ]
 
     for tool_name, arguments, expected_code in invalid_calls:

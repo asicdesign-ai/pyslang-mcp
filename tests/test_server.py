@@ -9,7 +9,17 @@ from mcp.types import CallToolResult
 
 import pyslang_mcp.server as server_module
 from pyslang_mcp.cache import AnalysisCache
-from pyslang_mcp.server import MAX_LIST_ITEMS, MAX_SYMBOL_RESULTS, PUBLIC_TOOL_NAMES, create_server
+from pyslang_mcp.server import (
+    MAX_EXCERPT_LINES,
+    MAX_HIERARCHY_CHILDREN,
+    MAX_HIERARCHY_DEPTH,
+    MAX_LIST_ITEMS,
+    MAX_NODE_KINDS,
+    MAX_SUMMARY_FILES,
+    MAX_SYMBOL_RESULTS,
+    PUBLIC_TOOL_NAMES,
+    create_server,
+)
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -72,14 +82,25 @@ def test_tools_list_exposes_hard_limit_bounds() -> None:
         return {tool.name: cast(dict[str, Any], tool.inputSchema) for tool in tools}
 
     input_schemas = asyncio.run(run())
-    assert (
-        input_schemas[PUBLIC_TOOL_NAMES["get_diagnostics"]]["properties"]["max_items"]["maximum"]
-        == MAX_LIST_ITEMS
-    )
-    assert (
-        input_schemas[PUBLIC_TOOL_NAMES["find_symbol"]]["properties"]["max_results"]["maximum"]
-        == MAX_SYMBOL_RESULTS
-    )
+    expected_bounds = [
+        (PUBLIC_TOOL_NAMES["get_diagnostics"], "max_items", 0, MAX_LIST_ITEMS),
+        (PUBLIC_TOOL_NAMES["list_design_units"], "max_items", 0, MAX_LIST_ITEMS),
+        (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_depth", 1, MAX_HIERARCHY_DEPTH),
+        (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_children", 0, MAX_HIERARCHY_CHILDREN),
+        (PUBLIC_TOOL_NAMES["find_symbol"], "max_results", 0, MAX_SYMBOL_RESULTS),
+        (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_files", 0, MAX_SUMMARY_FILES),
+        (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_node_kinds", 0, MAX_NODE_KINDS),
+        (PUBLIC_TOOL_NAMES["preprocess_files"], "max_files", 0, MAX_SUMMARY_FILES),
+        (PUBLIC_TOOL_NAMES["preprocess_files"], "max_excerpt_lines", 0, MAX_EXCERPT_LINES),
+        (PUBLIC_TOOL_NAMES["get_project_summary"], "max_diagnostics", 0, MAX_LIST_ITEMS),
+        (PUBLIC_TOOL_NAMES["get_project_summary"], "max_design_units", 0, MAX_LIST_ITEMS),
+        (PUBLIC_TOOL_NAMES["get_project_summary"], "max_depth", 1, MAX_HIERARCHY_DEPTH),
+        (PUBLIC_TOOL_NAMES["get_project_summary"], "max_children", 0, MAX_HIERARCHY_CHILDREN),
+    ]
+    for tool_name, argument_name, expected_minimum, expected_maximum in expected_bounds:
+        schema = input_schemas[tool_name]["properties"][argument_name]
+        assert schema["minimum"] == expected_minimum
+        assert schema["maximum"] == expected_maximum
 
 
 def test_parse_filelist_tool() -> None:
@@ -189,19 +210,83 @@ def test_invalid_match_mode_returns_structured_tool_error() -> None:
     assert "match_mode" in payload["error"]["message"]
 
 
-def test_limit_out_of_range_returns_structured_tool_error() -> None:
+@pytest.mark.parametrize(
+    ("tool_name", "argument_name", "too_large_value", "extra_arguments"),
+    [
+        (PUBLIC_TOOL_NAMES["get_diagnostics"], "max_items", MAX_LIST_ITEMS + 1, {}),
+        (PUBLIC_TOOL_NAMES["list_design_units"], "max_items", MAX_LIST_ITEMS + 1, {}),
+        (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_depth", MAX_HIERARCHY_DEPTH + 1, {}),
+        (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_children", MAX_HIERARCHY_CHILDREN + 1, {}),
+        (
+            PUBLIC_TOOL_NAMES["find_symbol"],
+            "max_results",
+            MAX_SYMBOL_RESULTS + 1,
+            {"query": "payload"},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"],
+            "max_files",
+            MAX_SUMMARY_FILES + 1,
+            {},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"],
+            "max_node_kinds",
+            MAX_NODE_KINDS + 1,
+            {},
+        ),
+        (PUBLIC_TOOL_NAMES["preprocess_files"], "max_files", MAX_SUMMARY_FILES + 1, {}),
+        (
+            PUBLIC_TOOL_NAMES["preprocess_files"],
+            "max_excerpt_lines",
+            MAX_EXCERPT_LINES + 1,
+            {},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_project_summary"],
+            "max_diagnostics",
+            MAX_LIST_ITEMS + 1,
+            {},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_project_summary"],
+            "max_design_units",
+            MAX_LIST_ITEMS + 1,
+            {},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_project_summary"],
+            "max_depth",
+            MAX_HIERARCHY_DEPTH + 1,
+            {},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_project_summary"],
+            "max_children",
+            MAX_HIERARCHY_CHILDREN + 1,
+            {},
+        ),
+    ],
+)
+def test_limit_out_of_range_returns_structured_tool_error(
+    tool_name: str,
+    argument_name: str,
+    too_large_value: int,
+    extra_arguments: dict[str, object],
+) -> None:
     payload, is_error = _call_tool_json(
-        PUBLIC_TOOL_NAMES["get_diagnostics"],
+        tool_name,
         {
             "project_root": str(FIXTURES / "multi_file"),
             "filelist": "project.f",
-            "max_items": MAX_LIST_ITEMS + 1,
+            **extra_arguments,
+            argument_name: too_large_value,
         },
     )
 
     assert is_error
     assert payload["error"]["code"] == "invalid_arguments"
-    assert "max_items" in payload["error"]["message"]
+    assert argument_name in payload["error"]["message"]
 
 
 def test_empty_file_list_returns_structured_project_load_error() -> None:
