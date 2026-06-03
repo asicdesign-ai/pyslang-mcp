@@ -74,6 +74,7 @@ def test_tools_list_exposes_output_schema() -> None:
         assert any(entry["$ref"].endswith(model_name) for entry in result_schema["anyOf"])
 
 
+@pytest.mark.security
 def test_tools_list_exposes_hard_limit_bounds() -> None:
     server = create_server(cache=AnalysisCache())
 
@@ -268,6 +269,7 @@ def test_invalid_match_mode_returns_structured_tool_error() -> None:
         ),
     ],
 )
+@pytest.mark.security
 def test_limit_out_of_range_returns_structured_tool_error(
     tool_name: str,
     argument_name: str,

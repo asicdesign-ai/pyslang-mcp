@@ -18,6 +18,7 @@ def test_main_runs_default_stdio_transport(monkeypatch: pytest.MonkeyPatch) -> N
     assert observed["transport"] == "stdio"
 
 
+@pytest.mark.security
 def test_main_ignores_http_token_for_stdio_transport(monkeypatch: pytest.MonkeyPatch) -> None:
     observed: dict[str, object] = {}
 

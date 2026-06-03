@@ -8,6 +8,8 @@ from starlette.testclient import TestClient
 from pyslang_mcp.auth import StaticBearerTokenVerifier
 from pyslang_mcp.server import create_server
 
+pytestmark = pytest.mark.security
+
 
 def test_static_bearer_token_verifier_accepts_expected_token() -> None:
     verifier = StaticBearerTokenVerifier("secret-token")
