@@ -27,9 +27,9 @@ That read-only boundary is intentional. It keeps the server side-effect free,
 reduces the blast radius in IP-protected workspaces, and makes it safer to use
 in local and CI environments.
 
-My workflow choice is deliberate too: I let the LLM do the actual RTL coding,
-then use `pyslang-mcp` as the compile/elab-backed reader, checker, and
-explainer for the code that already exists. In other words, the model drafts
+It was decided to keep `pyslang-mcp` read-only. The LLM handles the actual RTL
+coding, while `pyslang-mcp` serves as the compile/elab-backed reader, checker,
+and explainer for code that already exists. In other words, the model drafts
 the RTL and the MCP server verifies what the compiler frontend sees.
 
 > [!NOTE]
