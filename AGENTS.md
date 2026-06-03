@@ -52,6 +52,14 @@ Non-goals:
 - Cache by project config plus file mtimes.
 - Keep the analysis core separate from the MCP wrapper.
 
+## Security Goals
+
+- Treat project-root scoping, read-only behavior, and bounded outputs as
+  regression-tested product guarantees.
+- Keep auth and remote-deployment language narrow and technically honest.
+- Mark deterministic abuse-case regressions with `pytest.mark.security` so CI
+  can run the dedicated `security-regression` target.
+
 ## Remote Deployment Position
 
 Remote/MaaS work must keep two tracks separate:
