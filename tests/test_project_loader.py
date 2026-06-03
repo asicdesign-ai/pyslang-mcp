@@ -28,6 +28,7 @@ def test_load_project_from_filelist_expands_files_and_defines() -> None:
     assert config.filelists[-1].name == "rtl.f"
 
 
+@pytest.mark.security
 def test_load_project_from_files_rejects_paths_outside_root(tmp_path: Path) -> None:
     root = tmp_path / "root"
     outside = tmp_path / "outside.sv"
@@ -41,6 +42,7 @@ def test_load_project_from_files_rejects_paths_outside_root(tmp_path: Path) -> N
         )
 
 
+@pytest.mark.security
 def test_load_project_from_filelist_rejects_filelist_outside_root(tmp_path: Path) -> None:
     root = tmp_path / "root"
     outside_filelist = tmp_path / "outside.f"
@@ -51,6 +53,7 @@ def test_load_project_from_filelist_rejects_filelist_outside_root(tmp_path: Path
         load_project_from_filelist(project_root=root, filelist=str(outside_filelist))
 
 
+@pytest.mark.security
 @pytest.mark.parametrize(
     ("entry", "expected_kind"),
     [
@@ -79,6 +82,7 @@ def test_load_project_from_filelist_rejects_entries_outside_root(
         load_project_from_filelist(project_root=root, filelist="project.f")
 
 
+@pytest.mark.security
 def test_load_project_from_files_rejects_include_dir_outside_root(tmp_path: Path) -> None:
     root = tmp_path / "root"
     outside_include = tmp_path / "outside_include"
@@ -94,6 +98,7 @@ def test_load_project_from_files_rejects_include_dir_outside_root(tmp_path: Path
         )
 
 
+@pytest.mark.security
 def test_load_project_from_filelist_rejects_extra_include_dir_outside_root(
     tmp_path: Path,
 ) -> None:
@@ -112,6 +117,7 @@ def test_load_project_from_filelist_rejects_extra_include_dir_outside_root(
         )
 
 
+@pytest.mark.security
 def test_load_project_from_files_rejects_symlinked_source_outside_root(tmp_path: Path) -> None:
     root = tmp_path / "root"
     outside = tmp_path / "outside.sv"

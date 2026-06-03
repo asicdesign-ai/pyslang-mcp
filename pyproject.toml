@@ -62,6 +62,9 @@ packages = ["src/pyslang_mcp"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+  "security: security boundary and abuse-case regression tests.",
+]
 
 [tool.ruff]
 line-length = 100

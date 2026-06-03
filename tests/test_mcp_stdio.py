@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import jsonschema
+import pytest
 from mcp import ClientSession
 from mcp.client.stdio import StdioServerParameters, stdio_client
 from mcp.types import CallToolResult, Tool
@@ -30,6 +31,7 @@ EXPECTED_RESULT_MODELS = {
 }
 
 
+@pytest.mark.security
 def test_mcp_stdio_protocol_smoke() -> None:
     asyncio.run(_run_stdio_protocol_smoke())
 
