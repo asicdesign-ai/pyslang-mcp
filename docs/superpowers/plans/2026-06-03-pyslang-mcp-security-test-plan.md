@@ -22,6 +22,24 @@ The plan intentionally exercises malicious inputs and abuse cases, not just happ
 
 ---
 
+## Progress
+
+- Done in PR #11: initial project-root containment, filelist escape, symlink
+  escape, bearer-token/stdio boundary, MCP structured-error, and bounded-output
+  regression coverage.
+- In draft PR #12: `pytest.mark.security`, dedicated `security-regression` CI
+  target, and short `AGENTS.md` security goals.
+- Partially covered: Tasks 2, 3, 4, and 9.
+- Not yet covered: full public-doc security contract, offline-egress proof,
+  cache-isolation tests, internal MaaS config assertions, secret/dependency
+  scans, fuzzing/resource-limit checks, skill security evals, and public-safe
+  evidence bundle.
+- Next recommended task: Task 4, focused on output hygiene and cache isolation,
+  because it extends the new security-regression target with high-value
+  deterministic tests and does not require changing skill wording.
+
+---
+
 ## Primary security invariant
 
 The main security objective is non-exfiltration for proprietary ASIC work. The
