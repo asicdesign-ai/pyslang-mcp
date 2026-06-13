@@ -2567,7 +2567,7 @@ git commit -m "feat: trace structural connectivity"
 - Supported claim: MCP contracts expose output schemas, read-only annotations, hard bounds, structured errors, and cache reuse for new tools.
 - Unsupported claim: Protocol smoke proves correctness on large proprietary designs.
 
-- [ ] **Step 1: Update expected result models**
+- [x] **Step 1: Update expected result models**
 
 In both test files, add:
 
@@ -2579,7 +2579,7 @@ In both test files, add:
         PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"]: "SummarizeDiagnosticsByCodeResult",
 ```
 
-- [ ] **Step 2: Extend hard-limit schema assertions**
+- [x] **Step 2: Extend hard-limit schema assertions**
 
 In `tests/test_server.py::test_tools_list_exposes_hard_limit_bounds`, add:
 
@@ -2608,7 +2608,7 @@ In `tests/test_server.py::test_tools_list_exposes_hard_limit_bounds`, add:
         ),
 ```
 
-- [ ] **Step 3: Extend out-of-range tests**
+- [x] **Step 3: Extend out-of-range tests**
 
 In the parameter list for `test_limit_out_of_range_returns_structured_tool_error`, add entries for each new max arg, with required extra arguments:
 
@@ -2659,7 +2659,7 @@ In the parameter list for `test_limit_out_of_range_returns_structured_tool_error
 
 For these new entries, use `tests/fixtures/verilog_debug` as the fixture root in a small branch inside the test helper when the tool name is one of the Verilog analysis tools.
 
-- [ ] **Step 4: Add invalid enum tests**
+- [x] **Step 4: Add invalid enum tests**
 
 Append:
 
@@ -2699,7 +2699,7 @@ def test_invalid_trace_direction_returns_structured_tool_error() -> None:
     assert "direction" in payload["error"]["message"]
 ```
 
-- [ ] **Step 5: Add cache reuse test for a new tool**
+- [x] **Step 5: Add cache reuse test for a new tool**
 
 Append:
 
@@ -2738,11 +2738,11 @@ def test_identical_new_tool_calls_reuse_cached_tool_result(
     assert calls == 1
 ```
 
-- [ ] **Step 6: Extend stdio tool calls**
+- [x] **Step 6: Extend stdio tool calls**
 
 In `tests/test_mcp_stdio.py::_assert_all_public_tools_call_successfully`, add calls for the five new tools. Use the generated-debug fixture for member, assignment, trace, and connection tools, and the broken fixture for diagnostic grouping.
 
-- [ ] **Step 7: Run protocol tests**
+- [x] **Step 7: Run protocol tests**
 
 Run:
 
@@ -2752,7 +2752,7 @@ Run:
 
 Expected: all selected tests pass.
 
-- [ ] **Step 8: Commit MCP contract coverage**
+- [x] **Step 8: Commit MCP contract coverage**
 
 ```bash
 git add tests/test_server.py tests/test_mcp_stdio.py

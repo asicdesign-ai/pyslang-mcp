@@ -21,9 +21,14 @@ EXPECTED_RESULT_MODELS = {
     PUBLIC_TOOL_NAMES["parse_files"]: "ParseFilesResult",
     PUBLIC_TOOL_NAMES["parse_filelist"]: "ParseFilelistResult",
     PUBLIC_TOOL_NAMES["get_diagnostics"]: "DiagnosticsResult",
+    PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"]: "SummarizeDiagnosticsByCodeResult",
     PUBLIC_TOOL_NAMES["list_design_units"]: "ListDesignUnitsResult",
     PUBLIC_TOOL_NAMES["describe_design_unit"]: "DescribeDesignUnitResult",
+    PUBLIC_TOOL_NAMES["find_member"]: "FindMemberResult",
+    PUBLIC_TOOL_NAMES["get_assignments"]: "GetAssignmentsResult",
+    PUBLIC_TOOL_NAMES["trace_connectivity"]: "TraceConnectivityResult",
     PUBLIC_TOOL_NAMES["get_hierarchy"]: "HierarchyResult",
+    PUBLIC_TOOL_NAMES["get_instance_connections"]: "GetInstanceConnectionsResult",
     PUBLIC_TOOL_NAMES["find_symbol"]: "FindSymbolResult",
     PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"]: "SyntaxTreeSummaryResult",
     PUBLIC_TOOL_NAMES["preprocess_files"]: "PreprocessFilesResult",
@@ -89,6 +94,11 @@ async def _assert_all_public_tools_call_successfully(
         "project_root": str(fixture_root),
         "filelist": "project.f",
     }
+    verilog_args: dict[str, Any] = {
+        "project_root": str(FIXTURES / "verilog_debug"),
+        "filelist": "project.f",
+        "top_modules": ["debug_top"],
+    }
     tool_calls: list[tuple[str, dict[str, Any]]] = [
         (
             PUBLIC_TOOL_NAMES["parse_files"],
@@ -101,11 +111,57 @@ async def _assert_all_public_tools_call_successfully(
         ),
         (PUBLIC_TOOL_NAMES["parse_filelist"], filelist_args),
         (PUBLIC_TOOL_NAMES["get_diagnostics"], {**filelist_args, "max_items": 5}),
+        (
+            PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+            {
+                "project_root": str(FIXTURES / "broken"),
+                "files": ["broken.sv"],
+                "max_groups": 5,
+                "max_examples_per_group": 1,
+            },
+        ),
         (PUBLIC_TOOL_NAMES["list_design_units"], {**filelist_args, "max_items": 10}),
         (PUBLIC_TOOL_NAMES["describe_design_unit"], {**filelist_args, "name": "top"}),
         (
+            PUBLIC_TOOL_NAMES["find_member"],
+            {
+                **verilog_args,
+                "design_unit": "debug_stage",
+                "query": "response__vld",
+                "max_results": 5,
+            },
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_assignments"],
+            {
+                **verilog_args,
+                "design_unit": "debug_stage",
+                "signal": "response__vld",
+                "role": "lhs",
+                "max_results": 5,
+            },
+        ),
+        (
+            PUBLIC_TOOL_NAMES["trace_connectivity"],
+            {
+                **verilog_args,
+                "start": "debug_top.ctrl_out__rdy",
+                "direction": "load",
+                "max_depth": 5,
+                "max_edges": 20,
+            },
+        ),
+        (
             PUBLIC_TOOL_NAMES["get_hierarchy"],
             {**filelist_args, "max_depth": 4, "max_children": 10},
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_instance_connections"],
+            {
+                **verilog_args,
+                "instance_path_or_name": "debug_top.u_stage",
+                "max_connections": 10,
+            },
         ),
         (
             PUBLIC_TOOL_NAMES["find_symbol"],
@@ -151,10 +207,17 @@ async def _assert_all_public_tools_call_successfully(
         "rtl.f",
     ]
     assert payloads[PUBLIC_TOOL_NAMES["get_diagnostics"]]["summary"]["total"] == 0
+    assert payloads[PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"]]["summary"][
+        "total_diagnostics"
+    ] == 1
     design_units = payloads[PUBLIC_TOOL_NAMES["list_design_units"]]["design_units"]
     assert {"top", "child", "types_pkg"} <= {unit["name"] for unit in design_units}
     assert payloads[PUBLIC_TOOL_NAMES["describe_design_unit"]]["found"] is True
+    assert payloads[PUBLIC_TOOL_NAMES["find_member"]]["summary"]["total"] >= 1
+    assert payloads[PUBLIC_TOOL_NAMES["get_assignments"]]["summary"]["total"] == 1
+    assert payloads[PUBLIC_TOOL_NAMES["trace_connectivity"]]["summary"]["path_count"] >= 1
     assert payloads[PUBLIC_TOOL_NAMES["get_hierarchy"]]["summary"]["total_instances"] == 2
+    assert payloads[PUBLIC_TOOL_NAMES["get_instance_connections"]]["summary"]["total"] == 6
     assert payloads[PUBLIC_TOOL_NAMES["find_symbol"]]["summary"]["declaration_count"] >= 1
     assert payloads[PUBLIC_TOOL_NAMES["find_symbol"]]["summary"]["reference_count"] >= 1
     assert payloads[PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"]]["summary"]["file_count"] == 3

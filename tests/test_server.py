@@ -337,60 +337,147 @@ def test_invalid_match_mode_returns_structured_tool_error() -> None:
 
 
 @pytest.mark.parametrize(
-    ("tool_name", "argument_name", "too_large_value", "extra_arguments"),
+    (
+        "tool_name",
+        "argument_name",
+        "too_large_value",
+        "extra_arguments",
+        "fixture_name",
+    ),
     [
-        (PUBLIC_TOOL_NAMES["get_diagnostics"], "max_items", MAX_LIST_ITEMS + 1, {}),
-        (PUBLIC_TOOL_NAMES["list_design_units"], "max_items", MAX_LIST_ITEMS + 1, {}),
-        (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_depth", MAX_HIERARCHY_DEPTH + 1, {}),
-        (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_children", MAX_HIERARCHY_CHILDREN + 1, {}),
+        (PUBLIC_TOOL_NAMES["get_diagnostics"], "max_items", MAX_LIST_ITEMS + 1, {}, "multi_file"),
+        (
+            PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+            "max_groups",
+            MAX_DIAGNOSTIC_GROUPS + 1,
+            {},
+            "multi_file",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+            "max_examples_per_group",
+            MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP + 1,
+            {},
+            "multi_file",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["list_design_units"],
+            "max_items",
+            MAX_LIST_ITEMS + 1,
+            {},
+            "multi_file",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_hierarchy"],
+            "max_depth",
+            MAX_HIERARCHY_DEPTH + 1,
+            {},
+            "multi_file",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_hierarchy"],
+            "max_children",
+            MAX_HIERARCHY_CHILDREN + 1,
+            {},
+            "multi_file",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["find_member"],
+            "max_results",
+            MAX_MEMBER_RESULTS + 1,
+            {"design_unit": "debug_stage", "query": "response__vld"},
+            "verilog_debug",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_assignments"],
+            "max_results",
+            MAX_ASSIGNMENT_RESULTS + 1,
+            {"design_unit": "debug_stage", "signal": "response__vld"},
+            "verilog_debug",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["get_instance_connections"],
+            "max_connections",
+            MAX_CONNECTION_RESULTS + 1,
+            {"instance_path_or_name": "debug_top.u_stage"},
+            "verilog_debug",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["trace_connectivity"],
+            "max_depth",
+            MAX_TRACE_DEPTH + 1,
+            {"start": "debug_top.ctrl_out__rdy"},
+            "verilog_debug",
+        ),
+        (
+            PUBLIC_TOOL_NAMES["trace_connectivity"],
+            "max_edges",
+            MAX_TRACE_EDGES + 1,
+            {"start": "debug_top.ctrl_out__rdy"},
+            "verilog_debug",
+        ),
         (
             PUBLIC_TOOL_NAMES["find_symbol"],
             "max_results",
             MAX_SYMBOL_RESULTS + 1,
             {"query": "payload"},
+            "multi_file",
         ),
         (
             PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"],
             "max_files",
             MAX_SUMMARY_FILES + 1,
             {},
+            "multi_file",
         ),
         (
             PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"],
             "max_node_kinds",
             MAX_NODE_KINDS + 1,
             {},
+            "multi_file",
         ),
-        (PUBLIC_TOOL_NAMES["preprocess_files"], "max_files", MAX_SUMMARY_FILES + 1, {}),
+        (
+            PUBLIC_TOOL_NAMES["preprocess_files"],
+            "max_files",
+            MAX_SUMMARY_FILES + 1,
+            {},
+            "multi_file",
+        ),
         (
             PUBLIC_TOOL_NAMES["preprocess_files"],
             "max_excerpt_lines",
             MAX_EXCERPT_LINES + 1,
             {},
+            "multi_file",
         ),
         (
             PUBLIC_TOOL_NAMES["get_project_summary"],
             "max_diagnostics",
             MAX_LIST_ITEMS + 1,
             {},
+            "multi_file",
         ),
         (
             PUBLIC_TOOL_NAMES["get_project_summary"],
             "max_design_units",
             MAX_LIST_ITEMS + 1,
             {},
+            "multi_file",
         ),
         (
             PUBLIC_TOOL_NAMES["get_project_summary"],
             "max_depth",
             MAX_HIERARCHY_DEPTH + 1,
             {},
+            "multi_file",
         ),
         (
             PUBLIC_TOOL_NAMES["get_project_summary"],
             "max_children",
             MAX_HIERARCHY_CHILDREN + 1,
             {},
+            "multi_file",
         ),
     ],
 )
@@ -400,12 +487,14 @@ def test_limit_out_of_range_returns_structured_tool_error(
     argument_name: str,
     too_large_value: int,
     extra_arguments: dict[str, object],
+    fixture_name: str,
 ) -> None:
     payload, is_error = _call_tool_json(
         tool_name,
         {
-            "project_root": str(FIXTURES / "multi_file"),
+            "project_root": str(FIXTURES / fixture_name),
             "filelist": "project.f",
+            **({"top_modules": ["debug_top"]} if fixture_name == "verilog_debug" else {}),
             **extra_arguments,
             argument_name: too_large_value,
         },
@@ -414,6 +503,75 @@ def test_limit_out_of_range_returns_structured_tool_error(
     assert is_error
     assert payload["error"]["code"] == "invalid_arguments"
     assert argument_name in payload["error"]["message"]
+
+
+def test_invalid_assignment_role_returns_structured_tool_error() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["get_assignments"],
+        {
+            "project_root": str(FIXTURES / "verilog_debug"),
+            "filelist": "project.f",
+            "top_modules": ["debug_top"],
+            "design_unit": "debug_stage",
+            "signal": "response__vld",
+            "role": "driver",
+        },
+    )
+
+    assert is_error
+    assert payload["error"]["code"] == "invalid_arguments"
+    assert "role" in payload["error"]["message"]
+
+
+def test_invalid_trace_direction_returns_structured_tool_error() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["trace_connectivity"],
+        {
+            "project_root": str(FIXTURES / "verilog_debug"),
+            "filelist": "project.f",
+            "top_modules": ["debug_top"],
+            "start": "debug_top.ctrl_out__rdy",
+            "direction": "fanin",
+        },
+    )
+
+    assert is_error
+    assert payload["error"]["code"] == "invalid_arguments"
+    assert "direction" in payload["error"]["message"]
+
+
+def test_identical_new_tool_calls_reuse_cached_tool_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original_find_member = server_module.find_member_core
+
+    def counted_find_member(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        nonlocal calls
+        calls += 1
+        return cast(dict[str, Any], original_find_member(*args, **kwargs))
+
+    monkeypatch.setattr(server_module, "find_member_core", counted_find_member)
+    server = create_server(cache=AnalysisCache())
+    arguments = {
+        "project_root": str(FIXTURES / "verilog_debug"),
+        "filelist": "project.f",
+        "top_modules": ["debug_top"],
+        "design_unit": "debug_stage",
+        "query": "response__vld",
+        "match_mode": "exact",
+    }
+
+    async def run() -> None:
+        first = await server.call_tool(PUBLIC_TOOL_NAMES["find_member"], arguments)
+        second = await server.call_tool(PUBLIC_TOOL_NAMES["find_member"], arguments)
+        assert isinstance(first, CallToolResult)
+        assert isinstance(second, CallToolResult)
+        assert first.structuredContent == second.structuredContent
+
+    asyncio.run(run())
+
+    assert calls == 1
 
 
 def test_empty_file_list_returns_structured_project_load_error() -> None:
