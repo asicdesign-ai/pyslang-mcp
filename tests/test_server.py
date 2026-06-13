@@ -10,6 +10,8 @@ from mcp.types import CallToolResult
 import pyslang_mcp.server as server_module
 from pyslang_mcp.cache import AnalysisCache
 from pyslang_mcp.server import (
+    MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
+    MAX_DIAGNOSTIC_GROUPS,
     MAX_EXCERPT_LINES,
     MAX_HIERARCHY_CHILDREN,
     MAX_HIERARCHY_DEPTH,
@@ -45,6 +47,7 @@ def test_tools_list_exposes_output_schema() -> None:
         PUBLIC_TOOL_NAMES["parse_files"]: "ParseFilesResult",
         PUBLIC_TOOL_NAMES["parse_filelist"]: "ParseFilelistResult",
         PUBLIC_TOOL_NAMES["get_diagnostics"]: "DiagnosticsResult",
+        PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"]: "SummarizeDiagnosticsByCodeResult",
         PUBLIC_TOOL_NAMES["list_design_units"]: "ListDesignUnitsResult",
         PUBLIC_TOOL_NAMES["describe_design_unit"]: "DescribeDesignUnitResult",
         PUBLIC_TOOL_NAMES["get_hierarchy"]: "HierarchyResult",
@@ -85,6 +88,18 @@ def test_tools_list_exposes_hard_limit_bounds() -> None:
     input_schemas = asyncio.run(run())
     expected_bounds = [
         (PUBLIC_TOOL_NAMES["get_diagnostics"], "max_items", 0, MAX_LIST_ITEMS),
+        (
+            PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+            "max_groups",
+            0,
+            MAX_DIAGNOSTIC_GROUPS,
+        ),
+        (
+            PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+            "max_examples_per_group",
+            0,
+            MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
+        ),
         (PUBLIC_TOOL_NAMES["list_design_units"], "max_items", 0, MAX_LIST_ITEMS),
         (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_depth", 1, MAX_HIERARCHY_DEPTH),
         (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_children", 0, MAX_HIERARCHY_CHILDREN),
@@ -117,6 +132,22 @@ def test_parse_filelist_tool() -> None:
     assert payload["project_status"]["status"] == "ok"
     assert payload["parse"]["file_count"] == 3
     assert payload["filelist"]["filelists"] == ["project.f", "rtl.f"]
+
+
+def test_summarize_diagnostics_by_code_tool() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+        {
+            "project_root": str(FIXTURES / "broken"),
+            "files": ["broken.sv"],
+            "max_groups": 10,
+            "max_examples_per_group": 1,
+        },
+    )
+
+    assert not is_error
+    assert payload["summary"]["total_diagnostics"] == 1
+    assert payload["groups"][0]["count"] == 1
 
 
 def test_get_hierarchy_tool() -> None:

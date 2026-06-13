@@ -187,6 +187,27 @@ def test_diagnostics_on_broken_fixture() -> None:
     assert hierarchy["project_status"]["status"] == "incomplete"
 
 
+def test_summarize_diagnostics_by_code_on_broken_fixture() -> None:
+    project = load_project_from_files(
+        project_root=FIXTURES / "broken",
+        files=["broken.sv"],
+    )
+    bundle = build_analysis(project)
+
+    summary = analysis_module.summarize_diagnostics_by_code(
+        bundle,
+        max_groups=10,
+        max_examples_per_group=1,
+    )
+
+    assert summary["project_status"]["status"] == "incomplete"
+    assert summary["summary"]["total_diagnostics"] == 1
+    assert summary["summary"]["total_groups"] == 1
+    assert summary["groups"][0]["count"] == 1
+    assert summary["groups"][0]["unresolved_reference_count"] == 1
+    assert len(summary["groups"][0]["examples"]) == 1
+
+
 def test_format_diagnostic_message_preserves_escaped_braces() -> None:
     diagnostic_engine = SimpleNamespace(getMessage=lambda _code: "literal {{}} before {} after")
     bundle = SimpleNamespace(diagnostic_engine=diagnostic_engine)

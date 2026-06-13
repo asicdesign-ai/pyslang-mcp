@@ -22,6 +22,7 @@ from .analysis import get_hierarchy as get_hierarchy_core
 from .analysis import get_project_summary as get_project_summary_core
 from .analysis import list_design_units as list_design_units_core
 from .analysis import preprocess_files as preprocess_files_core
+from .analysis import summarize_diagnostics_by_code as summarize_diagnostics_by_code_core
 from .auth import StaticBearerTokenVerifier
 from .cache import DEFAULT_CACHE, AnalysisCache
 from .project_loader import (
@@ -40,6 +41,7 @@ from .schemas import (
     ParseFilesResult,
     PreprocessFilesResult,
     ProjectSummaryResult,
+    SummarizeDiagnosticsByCodeResult,
     SyntaxTreeSummaryResult,
     ToolErrorDetail,
     ToolErrorResult,
@@ -72,6 +74,7 @@ PUBLIC_TOOL_NAMES = {
     "parse_files": f"{TOOL_NAME_PREFIX}parse_files",
     "parse_filelist": f"{TOOL_NAME_PREFIX}parse_filelist",
     "get_diagnostics": f"{TOOL_NAME_PREFIX}get_diagnostics",
+    "summarize_diagnostics_by_code": f"{TOOL_NAME_PREFIX}summarize_diagnostics_by_code",
     "list_design_units": f"{TOOL_NAME_PREFIX}list_design_units",
     "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
     "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
@@ -205,6 +208,22 @@ MaxItemsArg = Annotated[
         default=200,
         description="Maximum number of list items to return before truncation.",
         json_schema_extra={"minimum": 0, "maximum": MAX_LIST_ITEMS},
+    ),
+]
+MaxDiagnosticGroupsArg = Annotated[
+    int,
+    Field(
+        default=200,
+        description="Maximum diagnostic-code groups to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_DIAGNOSTIC_GROUPS},
+    ),
+]
+MaxDiagnosticExamplesPerGroupArg = Annotated[
+    int,
+    Field(
+        default=3,
+        description="Maximum representative diagnostics to include per group.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP},
     ),
 ]
 MaxResultsArg = Annotated[
@@ -589,6 +608,58 @@ def create_server(
                     max_items,
                     minimum=0,
                     maximum=MAX_LIST_ITEMS,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Group parse and semantic diagnostics by diagnostic code and severity. Use this for "
+            "large projects where raw diagnostics contain repeated warnings or errors; results "
+            "include counts, representative examples, affected-file counts, and "
+            "unresolved-reference correlation counts."
+        ),
+    )
+    def summarize_diagnostics_by_code(
+        project_root: ProjectRootArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        max_groups: MaxDiagnosticGroupsArg = 200,
+        max_examples_per_group: MaxDiagnosticExamplesPerGroupArg = 3,
+    ) -> Annotated[CallToolResult, SummarizeDiagnosticsByCodeResult | ToolErrorResult]:
+        return run_project_tool(
+            SummarizeDiagnosticsByCodeResult,
+            tool_name="summarize_diagnostics_by_code",
+            tool_args={
+                "max_groups": max_groups,
+                "max_examples_per_group": max_examples_per_group,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: summarize_diagnostics_by_code_core(
+                bundle,
+                max_groups=bounded_int(
+                    "max_groups",
+                    max_groups,
+                    minimum=0,
+                    maximum=MAX_DIAGNOSTIC_GROUPS,
+                ),
+                max_examples_per_group=bounded_int(
+                    "max_examples_per_group",
+                    max_examples_per_group,
+                    minimum=0,
+                    maximum=MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
                 ),
             ),
         )

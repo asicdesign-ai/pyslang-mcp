@@ -107,6 +107,32 @@ class DiagnosticsResult(StrictModel):
     diagnostics: list[DiagnosticEntry]
 
 
+class DiagnosticGroup(StrictModel):
+    code: str
+    severity: str
+    count: int
+    affected_files_count: int
+    affected_design_units_count: int
+    unresolved_reference_count: int
+    message_samples: list[str]
+    examples: list[DiagnosticEntry]
+    truncation: TruncationInfo
+
+
+class DiagnosticGroupSummary(StrictModel):
+    total_diagnostics: int
+    total_groups: int
+    severity_counts: dict[str, int]
+    truncation: TruncationInfo
+
+
+class SummarizeDiagnosticsByCodeResult(StrictModel):
+    project_status: ProjectStatus
+    project_root: str
+    summary: DiagnosticGroupSummary
+    groups: list[DiagnosticGroup]
+
+
 class DesignUnitRecord(StrictModel):
     name: str
     kind: str

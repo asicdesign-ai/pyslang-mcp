@@ -181,6 +181,85 @@ def get_diagnostics(bundle: AnalysisBundle, *, max_items: int = 200) -> dict[str
     )
 
 
+def summarize_diagnostics_by_code(
+    bundle: AnalysisBundle,
+    *,
+    max_groups: int = 200,
+    max_examples_per_group: int = 3,
+) -> dict[str, Any]:
+    """Group parse and semantic diagnostics by code and severity."""
+
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    severity_counts: Counter[str] = Counter()
+    total_diagnostics = 0
+
+    for diagnostic in bundle.compilation.getAllDiagnostics():
+        total_diagnostics += 1
+        entry = _serialize_diagnostic(bundle, diagnostic)
+        severity = str(entry["severity"])
+        code = str(entry["code"])
+        severity_counts[severity] += 1
+        group = grouped.setdefault(
+            (code, severity),
+            {
+                "code": code,
+                "severity": severity,
+                "count": 0,
+                "affected_files": set(),
+                "affected_design_units": set(),
+                "unresolved_reference_count": 0,
+                "message_samples": [],
+                "examples": [],
+            },
+        )
+        group["count"] += 1
+        location = entry.get("location")
+        if isinstance(location, dict) and location.get("path"):
+            group["affected_files"].add(str(location["path"]))
+        for unit in _diagnostic_design_unit_candidates(bundle, location):
+            group["affected_design_units"].add(unit)
+        message = str(entry["message"])
+        if message not in group["message_samples"] and len(group["message_samples"]) < 3:
+            group["message_samples"].append(message)
+        if _diagnostic_looks_unresolved(entry):
+            group["unresolved_reference_count"] += 1
+        if len(group["examples"]) < max(max_examples_per_group, 0):
+            group["examples"].append(entry)
+
+    groups: list[dict[str, Any]] = []
+    for group in grouped.values():
+        examples = list(group["examples"])
+        groups.append(
+            {
+                "code": group["code"],
+                "severity": group["severity"],
+                "count": group["count"],
+                "affected_files_count": len(group["affected_files"]),
+                "affected_design_units_count": len(group["affected_design_units"]),
+                "unresolved_reference_count": group["unresolved_reference_count"],
+                "message_samples": list(group["message_samples"]),
+                "examples": examples,
+                "truncation": _truncation(returned=len(examples), total=group["count"]),
+            }
+        )
+
+    groups.sort(key=lambda item: (-int(item["count"]), str(item["code"]), str(item["severity"])))
+    limited_groups, group_truncation = limit_list(groups, max_items=max_groups)
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "project_root": bundle.project.project_root.as_posix(),
+            "summary": {
+                "total_diagnostics": total_diagnostics,
+                "total_groups": len(groups),
+                "severity_counts": dict(sorted(severity_counts.items())),
+                "truncation": group_truncation,
+            },
+            "groups": limited_groups,
+        }
+    )
+
+
 def list_design_units(bundle: AnalysisBundle, *, max_items: int = 200) -> dict[str, Any]:
     """List project-local modules, interfaces, and packages."""
 
@@ -501,6 +580,43 @@ def _project_status(bundle: AnalysisBundle) -> dict[str, Any]:
         "warning_count": severity_counts.get("warning", 0),
         "unresolved_references": unresolved_references,
     }
+
+
+def _diagnostic_looks_unresolved(entry: dict[str, Any]) -> bool:
+    text = f"{entry.get('code', '')} {entry.get('message', '')}".lower()
+    return any(
+        marker in text
+        for marker in (
+            "undeclared",
+            "unresolved",
+            "unknown module",
+            "unknown type",
+            "could not find",
+        )
+    )
+
+
+def _diagnostic_design_unit_candidates(
+    bundle: AnalysisBundle,
+    location: dict[str, Any] | None,
+) -> tuple[str, ...]:
+    if not location:
+        return ()
+    path = location.get("path")
+    if not isinstance(path, str):
+        return ()
+    line = int(location.get("line", 0))
+    candidates: list[tuple[int, str]] = []
+    for record in _analysis_index(bundle).design_unit_records:
+        record_location = record.get("location")
+        if not isinstance(record_location, dict):
+            continue
+        record_line = int(record_location.get("line", 0))
+        if record_location.get("path") == path and record_line <= line:
+            candidates.append((record_line, str(record["name"])))
+    if not candidates:
+        return ()
+    return (max(candidates)[1],)
 
 
 def _design_unit_symbols(bundle: AnalysisBundle) -> list[Any]:

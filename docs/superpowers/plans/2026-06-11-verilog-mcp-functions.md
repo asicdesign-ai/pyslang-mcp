@@ -522,7 +522,7 @@ git commit -m "refactor: add symbol helper groundwork"
 - Supported claim: Diagnostics are grouped by frontend diagnostic code with bounded examples.
 - Unsupported claim: Grouping proves which diagnostics are real design bugs.
 
-- [ ] **Step 1: Add schemas**
+- [x] **Step 1: Add schemas**
 
 Add these models to `src/pyslang_mcp/schemas.py` after `DiagnosticsResult`:
 
@@ -553,7 +553,7 @@ class SummarizeDiagnosticsByCodeResult(StrictModel):
     groups: list[DiagnosticGroup]
 ```
 
-- [ ] **Step 2: Add core grouping function**
+- [x] **Step 2: Add core grouping function**
 
 Add this function to `src/pyslang_mcp/analysis.py` after `get_diagnostics`:
 
@@ -638,7 +638,7 @@ def summarize_diagnostics_by_code(
     )
 ```
 
-- [ ] **Step 3: Add diagnostic helper functions**
+- [x] **Step 3: Add diagnostic helper functions**
 
 Add below `_project_status`:
 
@@ -677,7 +677,7 @@ def _diagnostic_design_unit_candidates(
     return tuple(candidates[-1:])
 ```
 
-- [ ] **Step 4: Wire server imports and tool name**
+- [x] **Step 4: Wire server imports and tool name**
 
 In `src/pyslang_mcp/server.py`, import the core function and schema:
 
@@ -695,7 +695,7 @@ Add to `PUBLIC_TOOL_NAMES`:
     "summarize_diagnostics_by_code": f"{TOOL_NAME_PREFIX}summarize_diagnostics_by_code",
 ```
 
-- [ ] **Step 5: Add bounded args**
+- [x] **Step 5: Add bounded args**
 
 Add:
 
@@ -718,7 +718,7 @@ MaxDiagnosticExamplesPerGroupArg = Annotated[
 ]
 ```
 
-- [ ] **Step 6: Register the MCP tool**
+- [x] **Step 6: Register the MCP tool**
 
 Add this tool after `get_diagnostics`:
 
@@ -776,7 +776,7 @@ Add this tool after `get_diagnostics`:
         )
 ```
 
-- [ ] **Step 7: Add core tests**
+- [x] **Step 7: Add core tests**
 
 Add imports in `tests/test_analysis.py`:
 
@@ -804,7 +804,7 @@ def test_summarize_diagnostics_by_code_on_broken_fixture() -> None:
     assert len(summary["groups"][0]["examples"]) == 1
 ```
 
-- [ ] **Step 8: Add server tests**
+- [x] **Step 8: Add server tests**
 
 Update `tests/test_server.py` expected models and bounds, then append:
 
@@ -825,7 +825,7 @@ def test_summarize_diagnostics_by_code_tool() -> None:
     assert payload["groups"][0]["count"] == 1
 ```
 
-- [ ] **Step 9: Run focused tests**
+- [x] **Step 9: Run focused tests**
 
 Run:
 
@@ -835,7 +835,7 @@ Run:
 
 Expected: all selected tests pass.
 
-- [ ] **Step 10: Commit diagnostic grouping**
+- [x] **Step 10: Commit diagnostic grouping**
 
 ```bash
 git add src/pyslang_mcp/analysis.py src/pyslang_mcp/schemas.py src/pyslang_mcp/server.py tests/test_analysis.py tests/test_server.py
