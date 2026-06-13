@@ -860,7 +860,7 @@ git commit -m "feat: summarize diagnostics by code"
 - Supported claim: Local ports, variables/nets, parameters, and instances visible to pyslang are queryable by design unit.
 - Unsupported claim: Member lookup proves driver/load behavior or functional intent.
 
-- [ ] **Step 1: Add member schemas**
+- [x] **Step 1: Add member schemas**
 
 Add to `src/pyslang_mcp/schemas.py` after `DescribeDesignUnitResult`:
 
@@ -896,7 +896,7 @@ class FindMemberResult(StrictModel):
     members: list[MemberRecord]
 ```
 
-- [ ] **Step 2: Add member serialization helper**
+- [x] **Step 2: Add member serialization helper**
 
 Add in `analysis.py`:
 
@@ -949,7 +949,7 @@ def _make_member_entry(bundle: AnalysisBundle, symbol: Any) -> IndexedMember | N
     )
 ```
 
-- [ ] **Step 3: Extend `_build_index` collection**
+- [x] **Step 3: Extend `_build_index` collection**
 
 Inside `_build_index`, add local containers before `visit`:
 
@@ -986,7 +986,7 @@ When returning `AnalysisIndex`, pass:
         connectivity_edges_by_target={},
 ```
 
-- [ ] **Step 4: Add design-unit resolver**
+- [x] **Step 4: Add design-unit resolver**
 
 Add:
 
@@ -1013,7 +1013,7 @@ def _resolve_design_unit(
     return None, exact or suggestions, len(exact) > 1
 ```
 
-- [ ] **Step 5: Add `find_member` core function**
+- [x] **Step 5: Add `find_member` core function**
 
 Add after `describe_design_unit`:
 
@@ -1098,7 +1098,7 @@ def find_member(
     )
 ```
 
-- [ ] **Step 6: Wire server tool**
+- [x] **Step 6: Wire server tool**
 
 In `server.py`, import `find_member_core`, add `FindMemberResult`, add `PUBLIC_TOOL_NAMES["find_member"]`, add boolean args and max arg:
 
@@ -1188,7 +1188,7 @@ Register:
         )
 ```
 
-- [ ] **Step 7: Add tests**
+- [x] **Step 7: Add tests**
 
 In `tests/test_analysis.py`, import `find_member` and append:
 
@@ -1258,7 +1258,7 @@ def test_find_member_tool() -> None:
     assert payload["members"][0]["name"] == "response_pop_fifo__rdy"
 ```
 
-- [ ] **Step 8: Run focused tests**
+- [x] **Step 8: Run focused tests**
 
 Run:
 
@@ -1268,7 +1268,7 @@ Run:
 
 Expected: both tests pass.
 
-- [ ] **Step 9: Commit member lookup**
+- [x] **Step 9: Commit member lookup**
 
 ```bash
 git add src/pyslang_mcp/analysis.py src/pyslang_mcp/schemas.py src/pyslang_mcp/server.py tests/test_analysis.py tests/test_server.py

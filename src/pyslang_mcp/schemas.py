@@ -182,6 +182,37 @@ class DescribeDesignUnitResult(StrictModel):
     design_unit: DesignUnitDescription | None = None
 
 
+class MemberRecord(StrictModel):
+    name: str
+    kind: str
+    symbol_kind: str
+    design_unit: str
+    hierarchical_path: str
+    lexical_path: str
+    location: Location | None = None
+    direction: str | None = None
+    data_type: str | None = None
+    evidence_source: Literal["semantic", "syntax"]
+
+
+class FindMemberSummary(StrictModel):
+    total: int
+    by_kind: dict[str, int]
+    truncation: TruncationInfo
+
+
+class FindMemberResult(StrictModel):
+    project_status: ProjectStatus
+    design_unit_query: str
+    found_design_unit: bool
+    ambiguous_design_unit: bool
+    design_unit_candidates: list[DesignUnitRecord]
+    query: str
+    match_mode: Literal["exact", "contains", "startswith"]
+    summary: FindMemberSummary
+    members: list[MemberRecord]
+
+
 class HierarchyPortConnection(StrictModel):
     port: str
     expression_kind: str

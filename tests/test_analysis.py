@@ -161,6 +161,48 @@ def test_verilog_debug_symbol_helpers_preserve_stable_metadata() -> None:
     assert analysis_module._direction_name(response_symbol) == "Out"
 
 
+def test_find_member_verilog_nets() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    response_valid = analysis_module.find_member(
+        bundle,
+        design_unit="debug_stage",
+        query="response__vld",
+        match_mode="exact",
+    )
+    assert response_valid["found_design_unit"] is True
+    assert response_valid["summary"]["total"] >= 1
+    assert response_valid["members"][0]["name"] == "response__vld"
+    assert response_valid["members"][0]["kind"] in {"port", "variable"}
+    assert response_valid["members"][0]["location"]["path"] == "verilog_debug.sv"
+
+    local_ready = analysis_module.find_member(
+        bundle,
+        design_unit="debug_stage",
+        query="response_pop_fifo__rdy",
+        match_mode="exact",
+        include_ports=False,
+    )
+    assert local_ready["summary"]["total"] == 1
+    assert local_ready["members"][0]["kind"] == "variable"
+
+    child_instance = analysis_module.find_member(
+        bundle,
+        design_unit="debug_stage",
+        query="u_sink",
+        match_mode="exact",
+        include_ports=False,
+        include_variables=False,
+    )
+    assert child_instance["summary"]["total"] == 1
+    assert child_instance["members"][0]["kind"] == "instance"
+
+
 def test_diagnostics_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",

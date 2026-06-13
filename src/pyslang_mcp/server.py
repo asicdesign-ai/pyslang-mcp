@@ -16,6 +16,7 @@ from starlette.responses import JSONResponse
 from .analysis import MatchMode, build_analysis, filelist_summary, parse_summary
 from .analysis import describe_design_unit as describe_design_unit_core
 from .analysis import dump_syntax_tree_summary as dump_syntax_tree_summary_core
+from .analysis import find_member as find_member_core
 from .analysis import find_symbol as find_symbol_core
 from .analysis import get_diagnostics as get_diagnostics_core
 from .analysis import get_hierarchy as get_hierarchy_core
@@ -34,6 +35,7 @@ from .project_loader import (
 from .schemas import (
     DescribeDesignUnitResult,
     DiagnosticsResult,
+    FindMemberResult,
     FindSymbolResult,
     HierarchyResult,
     ListDesignUnitsResult,
@@ -77,6 +79,7 @@ PUBLIC_TOOL_NAMES = {
     "summarize_diagnostics_by_code": f"{TOOL_NAME_PREFIX}summarize_diagnostics_by_code",
     "list_design_units": f"{TOOL_NAME_PREFIX}list_design_units",
     "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
+    "find_member": f"{TOOL_NAME_PREFIX}find_member",
     "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
     "find_symbol": f"{TOOL_NAME_PREFIX}find_symbol",
     "dump_syntax_tree_summary": f"{TOOL_NAME_PREFIX}dump_syntax_tree_summary",
@@ -181,6 +184,10 @@ SymbolQueryArg = Annotated[
         )
     ),
 ]
+MemberQueryArg = Annotated[
+    str,
+    Field(description="Member name or path to match inside `design_unit`."),
+]
 MatchModeArg = Annotated[
     str,
     Field(
@@ -224,6 +231,14 @@ MaxDiagnosticExamplesPerGroupArg = Annotated[
         default=3,
         description="Maximum representative diagnostics to include per group.",
         json_schema_extra={"minimum": 0, "maximum": MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP},
+    ),
+]
+MaxMemberResultsArg = Annotated[
+    int,
+    Field(
+        default=100,
+        description="Maximum member hits to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_MEMBER_RESULTS},
     ),
 ]
 MaxResultsArg = Annotated[
@@ -741,6 +756,72 @@ def create_server(
             callback=lambda bundle: describe_design_unit_core(
                 bundle,
                 name=name,
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["find_member"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Find ports, nets, variables, parameters, and child instances inside one design "
+            "unit. Use this when `find_symbol` is too broad and the query is for a local name."
+        ),
+    )
+    def find_member(
+        project_root: ProjectRootArg,
+        design_unit: DesignUnitNameArg,
+        query: MemberQueryArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        match_mode: MatchModeArg = "exact",
+        include_ports: bool = True,
+        include_nets: bool = True,
+        include_variables: bool = True,
+        include_instances: bool = True,
+        include_parameters: bool = True,
+        max_results: MaxMemberResultsArg = 100,
+    ) -> Annotated[CallToolResult, FindMemberResult | ToolErrorResult]:
+        return run_project_tool(
+            FindMemberResult,
+            tool_name="find_member",
+            tool_args={
+                "design_unit": design_unit,
+                "query": query,
+                "match_mode": match_mode,
+                "include_ports": include_ports,
+                "include_nets": include_nets,
+                "include_variables": include_variables,
+                "include_instances": include_instances,
+                "include_parameters": include_parameters,
+                "max_results": max_results,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: find_member_core(
+                bundle,
+                design_unit=design_unit,
+                query=query,
+                match_mode=validate_match_mode(match_mode),
+                include_ports=include_ports,
+                include_nets=include_nets,
+                include_variables=include_variables,
+                include_instances=include_instances,
+                include_parameters=include_parameters,
+                max_results=bounded_int(
+                    "max_results",
+                    max_results,
+                    minimum=0,
+                    maximum=MAX_MEMBER_RESULTS,
+                ),
             ),
         )
 

@@ -342,6 +342,88 @@ def describe_design_unit(bundle: AnalysisBundle, *, name: str) -> dict[str, Any]
     return stable
 
 
+def find_member(
+    bundle: AnalysisBundle,
+    *,
+    design_unit: str,
+    query: str,
+    match_mode: MatchMode = "exact",
+    include_ports: bool = True,
+    include_nets: bool = True,
+    include_variables: bool = True,
+    include_instances: bool = True,
+    include_parameters: bool = True,
+    max_results: int = 100,
+) -> dict[str, Any]:
+    """Find local members inside a specific design unit."""
+
+    selected, candidates, ambiguous = _resolve_design_unit(bundle, name=design_unit)
+    if selected is None:
+        return stabilize_json(
+            {
+                "project_status": _project_status(bundle),
+                "design_unit_query": design_unit,
+                "found_design_unit": False,
+                "ambiguous_design_unit": ambiguous,
+                "design_unit_candidates": candidates,
+                "query": query,
+                "match_mode": match_mode,
+                "summary": {
+                    "total": 0,
+                    "by_kind": {},
+                    "truncation": _truncation(returned=0, total=0),
+                },
+                "members": [],
+            }
+        )
+
+    allowed: set[str] = set()
+    if include_ports:
+        allowed.add("port")
+    if include_nets:
+        allowed.add("net")
+    if include_variables:
+        allowed.add("variable")
+    if include_instances:
+        allowed.add("instance")
+    if include_parameters:
+        allowed.add("parameter")
+
+    entries = _analysis_index(bundle).members_by_design_unit.get(str(selected["name"]), ())
+    matching: list[dict[str, Any]] = []
+    kind_counts: Counter[str] = Counter()
+    total = 0
+    limit = max(max_results, 0)
+    for entry in entries:
+        kind = str(entry.output["kind"])
+        if kind not in allowed:
+            continue
+        if not _matches_text(query=query, match_mode=match_mode, candidates=entry.candidates):
+            continue
+        total += 1
+        kind_counts[kind] += 1
+        if len(matching) < limit:
+            matching.append(entry.output)
+
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "design_unit_query": design_unit,
+            "found_design_unit": True,
+            "ambiguous_design_unit": False,
+            "design_unit_candidates": [],
+            "query": query,
+            "match_mode": match_mode,
+            "summary": {
+                "total": total,
+                "by_kind": dict(sorted(kind_counts.items())),
+                "truncation": _truncation(returned=len(matching), total=total),
+            },
+            "members": matching,
+        }
+    )
+
+
 def get_hierarchy(
     bundle: AnalysisBundle,
     *,
@@ -642,11 +724,13 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
     design_unit_symbols_by_key: dict[tuple[str, str], Any] = {}
     declarations: list[IndexedDeclaration] = []
     references: list[IndexedReference] = []
+    members_by_design_unit: defaultdict[str, list[IndexedMember]] = defaultdict(list)
     instances: list[Any] = []
     instance_records_by_path: dict[str, dict[str, Any]] = {}
     children_by_parent: defaultdict[str | None, list[str]] = defaultdict(list)
     seen_declarations: set[tuple[str, str, str | None]] = set()
     seen_references: set[tuple[str, str, str | None, str | None]] = set()
+    seen_members: set[tuple[str, str, str]] = set()
 
     for symbol in design_units:
         record = _serialize_design_unit_record(bundle, symbol)
@@ -676,6 +760,17 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 seen=seen_references,
             )
         )
+
+        member_entry = _make_member_entry(bundle, symbol)
+        if member_entry is not None:
+            key = (
+                member_entry.design_unit,
+                str(member_entry.output["kind"]),
+                str(member_entry.output["hierarchical_path"]),
+            )
+            if key not in seen_members:
+                seen_members.add(key)
+                members_by_design_unit[member_entry.design_unit].append(member_entry)
 
         if kind is not None and kind.name == "NamedValue":
             return True
@@ -707,6 +802,18 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
         top_instance_paths=top_instance_paths,
         declarations=tuple(declarations),
         references=tuple(references),
+        members_by_design_unit={
+            key: tuple(
+                sorted(
+                    values,
+                    key=lambda item: (
+                        str(item.output["hierarchical_path"]),
+                        str(item.output["kind"]),
+                    ),
+                )
+            )
+            for key, values in members_by_design_unit.items()
+        },
     )
 
 
@@ -838,6 +945,81 @@ def _serialize_design_unit_record(bundle: AnalysisBundle, symbol: Any) -> dict[s
         "instance_count": getattr(symbol, "instanceCount", None),
         "location": location,
     }
+
+
+def _resolve_design_unit(
+    bundle: AnalysisBundle,
+    *,
+    name: str,
+) -> tuple[dict[str, Any] | None, list[dict[str, Any]], bool]:
+    records = list(_analysis_index(bundle).design_unit_records)
+    exact = [record for record in records if record["name"] == name]
+    if len(exact) == 1:
+        return exact[0], [], False
+    suggestions = [
+        record
+        for record in records
+        if _matches_text(
+            query=name,
+            match_mode="contains",
+            candidates={record["name"], record["hierarchical_path"], record["lexical_path"]},
+        )
+        or str(record["name"]).lower().startswith(name.lower())
+    ][:10]
+    return None, exact or suggestions, len(exact) > 1
+
+
+def _member_kind(symbol: Any) -> str | None:
+    kind_name = _symbol_kind_name(symbol)
+    if kind_name == "Port":
+        return "port"
+    if kind_name == "Instance":
+        return "instance"
+    if kind_name == "Variable":
+        return "variable"
+    if kind_name == "Net":
+        return "net"
+    if kind_name in {"Parameter", "ParameterSymbol"}:
+        return "parameter"
+    if kind_name in {"TypeAlias", "TypeAliasType"}:
+        return "type"
+    return None
+
+
+def _make_member_entry(bundle: AnalysisBundle, symbol: Any) -> IndexedMember | None:
+    design_unit = _symbol_design_unit(symbol)
+    kind = _member_kind(symbol)
+    name = getattr(symbol, "name", None)
+    lexical_path = _symbol_lexical_path(symbol)
+    if not design_unit or not kind or not name:
+        return None
+    if kind == "instance" and "." not in lexical_path:
+        return None
+    output = {
+        "name": str(name),
+        "kind": kind,
+        "symbol_kind": _symbol_kind_name(symbol),
+        "design_unit": design_unit,
+        "hierarchical_path": _symbol_hierarchical_path(symbol),
+        "lexical_path": lexical_path,
+        "location": _serialize_location(bundle, getattr(symbol, "location", None)),
+        "direction": _direction_name(symbol),
+        "data_type": _data_type_text(symbol),
+        "evidence_source": "semantic",
+    }
+    return IndexedMember(
+        design_unit=design_unit,
+        candidates=_candidate_tuple(
+            (
+                output["name"],
+                output["kind"],
+                output["symbol_kind"],
+                output["hierarchical_path"],
+                output["lexical_path"],
+            )
+        ),
+        output=output,
+    )
 
 
 def _tracked_paths(project: ProjectConfig, source_manager: Any) -> tuple[Path, ...]:

@@ -16,6 +16,7 @@ from pyslang_mcp.server import (
     MAX_HIERARCHY_CHILDREN,
     MAX_HIERARCHY_DEPTH,
     MAX_LIST_ITEMS,
+    MAX_MEMBER_RESULTS,
     MAX_NODE_KINDS,
     MAX_SUMMARY_FILES,
     MAX_SYMBOL_RESULTS,
@@ -50,6 +51,7 @@ def test_tools_list_exposes_output_schema() -> None:
         PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"]: "SummarizeDiagnosticsByCodeResult",
         PUBLIC_TOOL_NAMES["list_design_units"]: "ListDesignUnitsResult",
         PUBLIC_TOOL_NAMES["describe_design_unit"]: "DescribeDesignUnitResult",
+        PUBLIC_TOOL_NAMES["find_member"]: "FindMemberResult",
         PUBLIC_TOOL_NAMES["get_hierarchy"]: "HierarchyResult",
         PUBLIC_TOOL_NAMES["find_symbol"]: "FindSymbolResult",
         PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"]: "SyntaxTreeSummaryResult",
@@ -103,6 +105,7 @@ def test_tools_list_exposes_hard_limit_bounds() -> None:
         (PUBLIC_TOOL_NAMES["list_design_units"], "max_items", 0, MAX_LIST_ITEMS),
         (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_depth", 1, MAX_HIERARCHY_DEPTH),
         (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_children", 0, MAX_HIERARCHY_CHILDREN),
+        (PUBLIC_TOOL_NAMES["find_member"], "max_results", 0, MAX_MEMBER_RESULTS),
         (PUBLIC_TOOL_NAMES["find_symbol"], "max_results", 0, MAX_SYMBOL_RESULTS),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_files", 0, MAX_SUMMARY_FILES),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_node_kinds", 0, MAX_NODE_KINDS),
@@ -148,6 +151,26 @@ def test_summarize_diagnostics_by_code_tool() -> None:
     assert not is_error
     assert payload["summary"]["total_diagnostics"] == 1
     assert payload["groups"][0]["count"] == 1
+
+
+def test_find_member_tool() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["find_member"],
+        {
+            "project_root": str(FIXTURES / "verilog_debug"),
+            "filelist": "project.f",
+            "top_modules": ["debug_top"],
+            "design_unit": "debug_stage",
+            "query": "response_pop_fifo__rdy",
+            "match_mode": "exact",
+            "max_results": 5,
+        },
+    )
+
+    assert not is_error
+    assert payload["found_design_unit"] is True
+    assert payload["summary"]["total"] == 1
+    assert payload["members"][0]["name"] == "response_pop_fifo__rdy"
 
 
 def test_get_hierarchy_tool() -> None:
