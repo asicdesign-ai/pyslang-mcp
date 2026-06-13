@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import re
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Literal
@@ -41,6 +41,7 @@ from .types import (
 
 MatchMode = Literal["exact", "contains", "startswith"]
 AssignmentRole = Literal["lhs", "rhs", "both"]
+TraceDirection = Literal["driver", "load", "both"]
 
 
 def build_analysis(project: ProjectConfig) -> AnalysisBundle:
@@ -620,6 +621,90 @@ def get_assignments(
     )
 
 
+def trace_connectivity(
+    bundle: AnalysisBundle,
+    *,
+    start: str,
+    direction: TraceDirection = "both",
+    max_depth: int = 5,
+    max_edges: int = 200,
+) -> dict[str, Any]:
+    """Trace bounded structural connectivity through assignments and port bindings."""
+
+    index = _analysis_index(bundle)
+    starts = _resolve_connectivity_starts(index, start)
+    paths: list[dict[str, Any]] = []
+    edge_count = 0
+    limit = max(max_edges, 0)
+    queue: deque[tuple[str, str, list[dict[str, Any]], set[str]]] = deque(
+        (node, node, [], {node}) for node in starts
+    )
+    budget_exhausted = False
+
+    while queue and len(paths) < limit:
+        path_start, node, hops, visited = queue.popleft()
+        if len(hops) >= max_depth:
+            paths.append(
+                {
+                    "start": path_start,
+                    "end": node,
+                    "hops": hops,
+                    "stop_reason": "max_depth",
+                }
+            )
+            continue
+        next_edges = _trace_edges_for_direction(index, node, direction)
+        if not next_edges:
+            paths.append(
+                {
+                    "start": path_start,
+                    "end": node,
+                    "hops": hops,
+                    "stop_reason": "no_edges",
+                }
+            )
+            continue
+        for edge in next_edges:
+            if edge_count >= limit:
+                budget_exhausted = True
+                break
+            edge_count += 1
+            next_hops = [*hops, edge.output]
+            if edge.target in visited:
+                paths.append(
+                    {
+                        "start": path_start,
+                        "end": edge.target,
+                        "hops": next_hops,
+                        "stop_reason": "cycle",
+                    }
+                )
+                continue
+            queue.append(
+                (path_start, edge.target, next_hops, {*visited, edge.target})
+            )
+        if budget_exhausted:
+            break
+
+    pending = len(queue) + (1 if budget_exhausted else 0)
+    truncation = _truncation(returned=len(paths), total=len(paths) + pending)
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "start": start,
+            "direction": direction,
+            "resolved_starts": starts,
+            "summary": {
+                "path_count": len(paths),
+                "edge_count_considered": edge_count,
+                "max_depth_requested": max_depth,
+                "truncation": truncation,
+            },
+            "paths": paths,
+        }
+    )
+
+
 def find_symbol(
     bundle: AnalysisBundle,
     *,
@@ -879,6 +964,8 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
         str, list[IndexedInstanceConnection]
     ] = defaultdict(list)
     assignments_by_design_unit: defaultdict[str, list[IndexedAssignment]] = defaultdict(list)
+    edges_by_source: defaultdict[str, list[ConnectivityEdge]] = defaultdict(list)
+    edges_by_target: defaultdict[str, list[ConnectivityEdge]] = defaultdict(list)
     instances: list[Any] = []
     instance_records_by_path: dict[str, dict[str, Any]] = {}
     children_by_parent: defaultdict[str | None, list[str]] = defaultdict(list)
@@ -908,9 +995,64 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
             parent = path.rsplit(".", 1)[0] if "." in path else None
             children_by_parent[parent].append(path)
             for connection in getattr(symbol, "portConnections", []):
-                connections_by_instance_path[path].append(
-                    _serialize_instance_connection(bundle, symbol, connection)
-                )
+                connection_entry = _serialize_instance_connection(bundle, symbol, connection)
+                connections_by_instance_path[path].append(connection_entry)
+                formal = f"{path}.{connection.port.name}"
+                connected = connection_entry.output.get("connected_symbol")
+                actual = connected.get("hierarchical_path") if isinstance(connected, dict) else None
+                direction = connection_entry.output.get("direction")
+                if actual:
+                    if direction == "In":
+                        source, target = str(actual), formal
+                    elif direction == "Out":
+                        source, target = formal, str(actual)
+                    else:
+                        source, target = str(actual), formal
+                    _add_connectivity_edge(
+                        source=source,
+                        target=target,
+                        kind="port_binding",
+                        output={
+                            "source": source,
+                            "target": target,
+                            "kind": "port_binding",
+                            "instance_path": path,
+                            "design_unit": getattr(
+                                getattr(symbol, "definition", None), "name", None
+                            ),
+                            "port": connection.port.name,
+                            "direction": direction,
+                            "expression_snippet": connection_entry.output.get(
+                                "expression_snippet"
+                            ),
+                            "location": connection_entry.output.get("source_location"),
+                        },
+                        edges_by_source=edges_by_source,
+                        edges_by_target=edges_by_target,
+                    )
+                    if direction == "InOut":
+                        _add_connectivity_edge(
+                            source=formal,
+                            target=str(actual),
+                            kind="port_binding",
+                            output={
+                                "source": formal,
+                                "target": str(actual),
+                                "kind": "port_binding",
+                                "instance_path": path,
+                                "design_unit": getattr(
+                                    getattr(symbol, "definition", None), "name", None
+                                ),
+                                "port": connection.port.name,
+                                "direction": direction,
+                                "expression_snippet": connection_entry.output.get(
+                                    "expression_snippet"
+                                ),
+                                "location": connection_entry.output.get("source_location"),
+                            },
+                            edges_by_source=edges_by_source,
+                            edges_by_target=edges_by_target,
+                        )
 
         references.extend(
             _collect_reference_index_entries(
@@ -941,6 +1083,28 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 expression=symbol,
             )
             if assignment_entry is not None:
+                for rhs_hit in assignment_entry.output["rhs_symbols"]:
+                    for lhs_hit in assignment_entry.output["lhs_symbols"]:
+                        _add_connectivity_edge(
+                            source=str(rhs_hit["hierarchical_path"]),
+                            target=str(lhs_hit["hierarchical_path"]),
+                            kind="assignment",
+                            output={
+                                "source": str(rhs_hit["hierarchical_path"]),
+                                "target": str(lhs_hit["hierarchical_path"]),
+                                "kind": "assignment",
+                                "instance_path": None,
+                                "design_unit": assignment_entry.design_unit,
+                                "port": None,
+                                "direction": None,
+                                "expression_snippet": assignment_entry.output.get(
+                                    "expression_snippet"
+                                ),
+                                "location": assignment_entry.output.get("location"),
+                            },
+                            edges_by_source=edges_by_source,
+                            edges_by_target=edges_by_target,
+                        )
                 location = assignment_entry.output.get("location")
                 key = (
                     assignment_entry.design_unit,
@@ -1011,6 +1175,18 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 )
             )
             for key, values in assignments_by_design_unit.items()
+        },
+        connectivity_edges_by_source={
+            key: tuple(
+                sorted(values, key=lambda edge: (edge.target, edge.kind, str(edge.output)))
+            )
+            for key, values in edges_by_source.items()
+        },
+        connectivity_edges_by_target={
+            key: tuple(
+                sorted(values, key=lambda edge: (edge.source, edge.kind, str(edge.output)))
+            )
+            for key, values in edges_by_target.items()
         },
     )
 
@@ -1405,6 +1581,60 @@ def _make_assignment_entry(
         lhs_candidates=_candidate_tuple(lhs_candidates),
         rhs_candidates=_candidate_tuple(rhs_candidates),
         output=output,
+    )
+
+
+def _add_connectivity_edge(
+    *,
+    source: str,
+    target: str,
+    kind: str,
+    output: dict[str, Any],
+    edges_by_source: defaultdict[str, list[ConnectivityEdge]],
+    edges_by_target: defaultdict[str, list[ConnectivityEdge]],
+) -> None:
+    if not source or not target or source == target:
+        return
+    edge = ConnectivityEdge(source=source, target=target, kind=kind, output=output)
+    edges_by_source[source].append(edge)
+    edges_by_target[target].append(edge)
+
+
+def _resolve_connectivity_starts(index: AnalysisIndex, start: str) -> list[str]:
+    candidates: set[str] = set()
+    all_nodes = set(index.connectivity_edges_by_source) | set(
+        index.connectivity_edges_by_target
+    )
+    for node in all_nodes:
+        if node == start or node.endswith(f".{start}"):
+            candidates.add(node)
+    return sorted(candidates)
+
+
+def _trace_edges_for_direction(
+    index: AnalysisIndex,
+    node: str,
+    direction: TraceDirection,
+) -> tuple[ConnectivityEdge, ...]:
+    forward = index.connectivity_edges_by_source.get(node, ())
+    reverse = tuple(
+        ConnectivityEdge(
+            source=edge.target,
+            target=edge.source,
+            kind=edge.kind,
+            output={**edge.output, "source": edge.target, "target": edge.source},
+        )
+        for edge in index.connectivity_edges_by_target.get(node, ())
+    )
+    if direction == "load":
+        return forward
+    if direction == "driver":
+        return reverse
+    return tuple(
+        sorted(
+            (*forward, *reverse),
+            key=lambda edge: (edge.target, edge.kind, str(edge.output)),
+        )
     )
 
 

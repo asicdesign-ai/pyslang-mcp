@@ -252,6 +252,41 @@ class GetAssignmentsResult(StrictModel):
     assignments: list[AssignmentRecord]
 
 
+class ConnectivityHop(StrictModel):
+    source: str
+    target: str
+    kind: Literal["assignment", "port_binding"]
+    instance_path: str | None = None
+    design_unit: str | None = None
+    port: str | None = None
+    direction: str | None = None
+    expression_snippet: str | None = None
+    location: Location | None = None
+
+
+class ConnectivityPath(StrictModel):
+    start: str
+    end: str
+    hops: list[ConnectivityHop]
+    stop_reason: str
+
+
+class TraceConnectivitySummary(StrictModel):
+    path_count: int
+    edge_count_considered: int
+    max_depth_requested: int
+    truncation: TruncationInfo
+
+
+class TraceConnectivityResult(StrictModel):
+    project_status: ProjectStatus
+    start: str
+    direction: Literal["driver", "load", "both"]
+    resolved_starts: list[str]
+    summary: TraceConnectivitySummary
+    paths: list[ConnectivityPath]
+
+
 class HierarchyPortConnection(StrictModel):
     port: str
     expression_kind: str

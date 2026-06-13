@@ -264,6 +264,31 @@ def test_get_assignments_verilog_fixture() -> None:
     )
 
 
+def test_trace_connectivity_verilog_fixture() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    trace = analysis_module.trace_connectivity(
+        bundle,
+        start="debug_top.ctrl_out__rdy",
+        direction="load",
+        max_depth=5,
+        max_edges=20,
+    )
+
+    assert "debug_top.ctrl_out__rdy" in trace["resolved_starts"]
+    assert trace["summary"]["path_count"] >= 1
+    flattened_targets = {
+        hop["target"] for path in trace["paths"] for hop in path["hops"]
+    }
+    assert any(target.endswith("u_stage.ctrl_out__rdy") for target in flattened_targets)
+    assert any(target.endswith("u_stage.response__vld") for target in flattened_targets)
+
+
 def test_diagnostics_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",

@@ -2088,7 +2088,7 @@ git commit -m "feat: add assignment lookup"
 - Supported claim: The tool traces bounded structural connectivity through assignment edges and parent-child instance port bindings visible in the elaborated pyslang model.
 - Unsupported claim: The tool proves complete fanin/fanout cones, CDC/RDC safety, timing paths, or multiple-driver correctness.
 
-- [ ] **Step 1: Add trace schemas**
+- [x] **Step 1: Add trace schemas**
 
 Add to `schemas.py`:
 
@@ -2128,7 +2128,7 @@ class TraceConnectivityResult(StrictModel):
     paths: list[ConnectivityPath]
 ```
 
-- [ ] **Step 2: Add edge helper**
+- [x] **Step 2: Add edge helper**
 
 Add:
 
@@ -2149,7 +2149,7 @@ def _add_connectivity_edge(
     edges_by_target[target].append(edge)
 ```
 
-- [ ] **Step 3: Add assignment edges**
+- [x] **Step 3: Add assignment edges**
 
 In `_build_index`, add containers:
 
@@ -2183,7 +2183,7 @@ After adding an `assignment_entry`, add:
                             )
 ```
 
-- [ ] **Step 4: Add port-binding edges**
+- [x] **Step 4: Add port-binding edges**
 
 Inside the instance `portConnections` loop, after serializing the connection:
 
@@ -2249,7 +2249,7 @@ In `AnalysisIndex` return:
         },
 ```
 
-- [ ] **Step 5: Add start resolver and BFS**
+- [x] **Step 5: Add start resolver and BFS**
 
 Add:
 
@@ -2297,7 +2297,7 @@ def _trace_edges_for_direction(
     )
 ```
 
-- [ ] **Step 6: Add core trace function**
+- [x] **Step 6: Add core trace function**
 
 Add:
 
@@ -2374,7 +2374,7 @@ def trace_connectivity(
     )
 ```
 
-- [ ] **Step 7: Wire server tool**
+- [x] **Step 7: Wire server tool**
 
 Add imports and public name.
 
@@ -2482,7 +2482,7 @@ Register:
         )
 ```
 
-- [ ] **Step 8: Add tests**
+- [x] **Step 8: Add tests**
 
 In `tests/test_analysis.py`, import `trace_connectivity` and append:
 
@@ -2535,7 +2535,7 @@ def test_trace_connectivity_tool() -> None:
     assert payload["summary"]["path_count"] >= 1
 ```
 
-- [ ] **Step 9: Run focused tests**
+- [x] **Step 9: Run focused tests**
 
 Run:
 
@@ -2545,7 +2545,7 @@ Run:
 
 Expected: both tests pass.
 
-- [ ] **Step 10: Commit connectivity tracing**
+- [x] **Step 10: Commit connectivity tracing**
 
 ```bash
 git add src/pyslang_mcp/analysis.py src/pyslang_mcp/schemas.py src/pyslang_mcp/server.py tests/test_analysis.py tests/test_server.py

@@ -22,6 +22,8 @@ from pyslang_mcp.server import (
     MAX_NODE_KINDS,
     MAX_SUMMARY_FILES,
     MAX_SYMBOL_RESULTS,
+    MAX_TRACE_DEPTH,
+    MAX_TRACE_EDGES,
     PUBLIC_TOOL_NAMES,
     create_server,
 )
@@ -55,6 +57,7 @@ def test_tools_list_exposes_output_schema() -> None:
         PUBLIC_TOOL_NAMES["describe_design_unit"]: "DescribeDesignUnitResult",
         PUBLIC_TOOL_NAMES["find_member"]: "FindMemberResult",
         PUBLIC_TOOL_NAMES["get_assignments"]: "GetAssignmentsResult",
+        PUBLIC_TOOL_NAMES["trace_connectivity"]: "TraceConnectivityResult",
         PUBLIC_TOOL_NAMES["get_hierarchy"]: "HierarchyResult",
         PUBLIC_TOOL_NAMES["get_instance_connections"]: "GetInstanceConnectionsResult",
         PUBLIC_TOOL_NAMES["find_symbol"]: "FindSymbolResult",
@@ -117,6 +120,8 @@ def test_tools_list_exposes_hard_limit_bounds() -> None:
         ),
         (PUBLIC_TOOL_NAMES["find_member"], "max_results", 0, MAX_MEMBER_RESULTS),
         (PUBLIC_TOOL_NAMES["get_assignments"], "max_results", 0, MAX_ASSIGNMENT_RESULTS),
+        (PUBLIC_TOOL_NAMES["trace_connectivity"], "max_depth", 1, MAX_TRACE_DEPTH),
+        (PUBLIC_TOOL_NAMES["trace_connectivity"], "max_edges", 0, MAX_TRACE_EDGES),
         (PUBLIC_TOOL_NAMES["find_symbol"], "max_results", 0, MAX_SYMBOL_RESULTS),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_files", 0, MAX_SUMMARY_FILES),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_node_kinds", 0, MAX_NODE_KINDS),
@@ -218,6 +223,25 @@ def test_get_assignments_tool() -> None:
     assert not is_error
     assert payload["summary"]["total"] == 1
     assert payload["assignments"][0]["lhs_snippet"] == "response__vld"
+
+
+def test_trace_connectivity_tool() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["trace_connectivity"],
+        {
+            "project_root": str(FIXTURES / "verilog_debug"),
+            "filelist": "project.f",
+            "top_modules": ["debug_top"],
+            "start": "debug_top.ctrl_out__rdy",
+            "direction": "load",
+            "max_depth": 5,
+            "max_edges": 20,
+        },
+    )
+
+    assert not is_error
+    assert "debug_top.ctrl_out__rdy" in payload["resolved_starts"]
+    assert payload["summary"]["path_count"] >= 1
 
 
 def test_get_hierarchy_tool() -> None:

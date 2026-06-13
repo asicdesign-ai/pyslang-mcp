@@ -13,7 +13,14 @@ from pydantic import AnyHttpUrl, BaseModel, Field, ValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from .analysis import AssignmentRole, MatchMode, build_analysis, filelist_summary, parse_summary
+from .analysis import (
+    AssignmentRole,
+    MatchMode,
+    TraceDirection,
+    build_analysis,
+    filelist_summary,
+    parse_summary,
+)
 from .analysis import describe_design_unit as describe_design_unit_core
 from .analysis import dump_syntax_tree_summary as dump_syntax_tree_summary_core
 from .analysis import find_member as find_member_core
@@ -26,6 +33,7 @@ from .analysis import get_project_summary as get_project_summary_core
 from .analysis import list_design_units as list_design_units_core
 from .analysis import preprocess_files as preprocess_files_core
 from .analysis import summarize_diagnostics_by_code as summarize_diagnostics_by_code_core
+from .analysis import trace_connectivity as trace_connectivity_core
 from .auth import StaticBearerTokenVerifier
 from .cache import DEFAULT_CACHE, AnalysisCache
 from .project_loader import (
@@ -49,6 +57,7 @@ from .schemas import (
     ProjectSummaryResult,
     SummarizeDiagnosticsByCodeResult,
     SyntaxTreeSummaryResult,
+    TraceConnectivityResult,
     ToolErrorDetail,
     ToolErrorResult,
 )
@@ -85,6 +94,7 @@ PUBLIC_TOOL_NAMES = {
     "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
     "find_member": f"{TOOL_NAME_PREFIX}find_member",
     "get_assignments": f"{TOOL_NAME_PREFIX}get_assignments",
+    "trace_connectivity": f"{TOOL_NAME_PREFIX}trace_connectivity",
     "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
     "get_instance_connections": f"{TOOL_NAME_PREFIX}get_instance_connections",
     "find_symbol": f"{TOOL_NAME_PREFIX}find_symbol",
@@ -211,6 +221,18 @@ AssignmentRoleArg = Annotated[
         json_schema_extra={"enum": ["lhs", "rhs", "both"]},
     ),
 ]
+TraceStartArg = Annotated[
+    str,
+    Field(description="Hierarchical signal path or unambiguous signal/instance.port suffix."),
+]
+TraceDirectionArg = Annotated[
+    str,
+    Field(
+        default="both",
+        description="Trace direction: `driver`, `load`, or `both`.",
+        json_schema_extra={"enum": ["driver", "load", "both"]},
+    ),
+]
 MatchModeArg = Annotated[
     str,
     Field(
@@ -278,6 +300,22 @@ MaxAssignmentResultsArg = Annotated[
         default=100,
         description="Maximum assignment hits to return before truncation.",
         json_schema_extra={"minimum": 0, "maximum": MAX_ASSIGNMENT_RESULTS},
+    ),
+]
+TraceDepthArg = Annotated[
+    int,
+    Field(
+        default=5,
+        description="Maximum connectivity hops to traverse.",
+        json_schema_extra={"minimum": 1, "maximum": MAX_TRACE_DEPTH},
+    ),
+]
+MaxTraceEdgesArg = Annotated[
+    int,
+    Field(
+        default=200,
+        description="Maximum connectivity edges to consider before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_TRACE_EDGES},
     ),
 ]
 MaxResultsArg = Annotated[
@@ -461,6 +499,12 @@ def create_server(
         if role not in valid_roles:
             raise ToolInputError("`role` must be one of `lhs`, `rhs`, or `both`.")
         return cast(AssignmentRole, role)
+
+    def validate_trace_direction(direction: str) -> TraceDirection:
+        valid_directions = {"driver", "load", "both"}
+        if direction not in valid_directions:
+            raise ToolInputError("`direction` must be one of `driver`, `load`, or `both`.")
+        return cast(TraceDirection, direction)
 
     def success_result(schema: type[SchemaT], payload: dict[str, Any]) -> CallToolResult:
         validated = schema.model_validate(payload)
@@ -918,6 +962,63 @@ def create_server(
                     max_results,
                     minimum=0,
                     maximum=MAX_ASSIGNMENT_RESULTS,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["trace_connectivity"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Trace bounded structural connectivity through assignment edges and instance port "
+            "bindings. This is frontend structural evidence only; it is not simulation, formal, "
+            "CDC, timing, or multiple-driver signoff."
+        ),
+    )
+    def trace_connectivity(
+        project_root: ProjectRootArg,
+        start: TraceStartArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        direction: TraceDirectionArg = "both",
+        max_depth: TraceDepthArg = 5,
+        max_edges: MaxTraceEdgesArg = 200,
+    ) -> Annotated[CallToolResult, TraceConnectivityResult | ToolErrorResult]:
+        return run_project_tool(
+            TraceConnectivityResult,
+            tool_name="trace_connectivity",
+            tool_args={
+                "start": start,
+                "direction": direction,
+                "max_depth": max_depth,
+                "max_edges": max_edges,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: trace_connectivity_core(
+                bundle,
+                start=start,
+                direction=validate_trace_direction(direction),
+                max_depth=bounded_int(
+                    "max_depth",
+                    max_depth,
+                    minimum=1,
+                    maximum=MAX_TRACE_DEPTH,
+                ),
+                max_edges=bounded_int(
+                    "max_edges",
+                    max_edges,
+                    minimum=0,
+                    maximum=MAX_TRACE_EDGES,
                 ),
             ),
         )
