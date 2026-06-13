@@ -1647,7 +1647,7 @@ git commit -m "feat: add focused instance connections"
 - Supported claim: The tool reports continuous and procedural assignment expressions involving a named signal when pyslang exposes semantic expression bindings.
 - Unsupported claim: The tool proves complete assignment coverage, absence of latches, or reset/timing correctness.
 
-- [ ] **Step 1: Add assignment schemas**
+- [x] **Step 1: Add assignment schemas**
 
 Add to `schemas.py`:
 
@@ -1691,7 +1691,7 @@ class GetAssignmentsResult(StrictModel):
     assignments: list[AssignmentRecord]
 ```
 
-- [ ] **Step 2: Add assignment context helper**
+- [x] **Step 2: Add assignment context helper**
 
 Add to `analysis.py`:
 
@@ -1730,7 +1730,7 @@ def _is_partial_or_select_lhs(expression: Any) -> bool:
     return kind not in {"NamedValue"}
 ```
 
-- [ ] **Step 3: Add assignment serializer**
+- [x] **Step 3: Add assignment serializer**
 
 Add:
 
@@ -1775,7 +1775,7 @@ def _make_assignment_entry(
     )
 ```
 
-- [ ] **Step 4: Collect assignment entries in `_build_index`**
+- [x] **Step 4: Collect assignment entries in `_build_index`**
 
 Add containers:
 
@@ -1819,7 +1819,7 @@ In `AnalysisIndex` return:
         },
 ```
 
-- [ ] **Step 5: Add core function**
+- [x] **Step 5: Add core function**
 
 Add:
 
@@ -1895,7 +1895,7 @@ def get_assignments(
     )
 ```
 
-- [ ] **Step 6: Wire server tool**
+- [x] **Step 6: Wire server tool**
 
 Add schema/core imports and public name.
 
@@ -1986,7 +1986,7 @@ Register:
         )
 ```
 
-- [ ] **Step 7: Add tests**
+- [x] **Step 7: Add tests**
 
 In `tests/test_analysis.py`, import `get_assignments` and append:
 
@@ -2018,7 +2018,17 @@ def test_get_assignments_generated_fixture() -> None:
         role="rhs",
     )
     assert loads["summary"]["total"] >= 1
-    assert {"continuous", "procedural"} <= set(loads["summary"]["by_assignment_kind"])
+    assert set(loads["summary"]["by_assignment_kind"]) == {"continuous"}
+
+    mixed_roles = get_assignments(
+        bundle,
+        design_unit="debug_sink",
+        signal="sampled_data",
+        role="both",
+    )
+    assert {"continuous", "procedural"} <= set(
+        mixed_roles["summary"]["by_assignment_kind"]
+    )
 ```
 
 In `tests/test_server.py`, append:
@@ -2043,7 +2053,7 @@ def test_get_assignments_tool() -> None:
     assert payload["assignments"][0]["lhs_snippet"] == "response__vld"
 ```
 
-- [ ] **Step 8: Run focused tests**
+- [x] **Step 8: Run focused tests**
 
 Run:
 
@@ -2053,7 +2063,7 @@ Run:
 
 Expected: both tests pass.
 
-- [ ] **Step 9: Commit assignment extraction**
+- [x] **Step 9: Commit assignment extraction**
 
 ```bash
 git add src/pyslang_mcp/analysis.py src/pyslang_mcp/schemas.py src/pyslang_mcp/server.py tests/test_analysis.py tests/test_server.py

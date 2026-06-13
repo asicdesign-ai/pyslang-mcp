@@ -224,6 +224,46 @@ def test_get_instance_connections_verilog_fixture() -> None:
     assert by_port["response__vld"]["connected_symbol"]["name"] == "response__vld"
 
 
+def test_get_assignments_verilog_fixture() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    drivers = analysis_module.get_assignments(
+        bundle,
+        design_unit="debug_stage",
+        signal="response__vld",
+        role="lhs",
+    )
+    assert drivers["found_design_unit"] is True
+    assert drivers["summary"]["total"] == 1
+    assert drivers["assignments"][0]["assignment_kind"] == "continuous"
+    assert drivers["assignments"][0]["lhs_snippet"] == "response__vld"
+    assert "stage_enable" in drivers["assignments"][0]["rhs_snippet"]
+
+    loads = analysis_module.get_assignments(
+        bundle,
+        design_unit="debug_sink",
+        signal="response__vld",
+        role="rhs",
+    )
+    assert loads["summary"]["total"] >= 1
+    assert set(loads["summary"]["by_assignment_kind"]) == {"continuous"}
+
+    mixed_roles = analysis_module.get_assignments(
+        bundle,
+        design_unit="debug_sink",
+        signal="sampled_data",
+        role="both",
+    )
+    assert {"continuous", "procedural"} <= set(
+        mixed_roles["summary"]["by_assignment_kind"]
+    )
+
+
 def test_diagnostics_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",

@@ -40,6 +40,7 @@ from .types import (
 )
 
 MatchMode = Literal["exact", "contains", "startswith"]
+AssignmentRole = Literal["lhs", "rhs", "both"]
 
 
 def build_analysis(project: ProjectConfig) -> AnalysisBundle:
@@ -543,6 +544,82 @@ def get_instance_connections(
     )
 
 
+def get_assignments(
+    bundle: AnalysisBundle,
+    *,
+    design_unit: str,
+    signal: str,
+    role: AssignmentRole = "both",
+    max_results: int = 100,
+) -> dict[str, Any]:
+    """Return assignments involving a signal in a design unit."""
+
+    selected, candidates, ambiguous = _resolve_design_unit(bundle, name=design_unit)
+    if selected is None:
+        return stabilize_json(
+            {
+                "project_status": _project_status(bundle),
+                "design_unit_query": design_unit,
+                "found_design_unit": False,
+                "ambiguous_design_unit": ambiguous,
+                "design_unit_candidates": candidates,
+                "signal": signal,
+                "role": role,
+                "summary": {
+                    "total": 0,
+                    "by_assignment_kind": {},
+                    "truncation": _truncation(returned=0, total=0),
+                },
+                "assignments": [],
+            }
+        )
+
+    entries = _analysis_index(bundle).assignments_by_design_unit.get(str(selected["name"]), ())
+    outputs: list[dict[str, Any]] = []
+    kind_counts: Counter[str] = Counter()
+    total = 0
+    limit = max(max_results, 0)
+    for entry in entries:
+        lhs_match = _matches_text(
+            query=signal,
+            match_mode="exact",
+            candidates=entry.lhs_candidates,
+        )
+        rhs_match = _matches_text(
+            query=signal,
+            match_mode="exact",
+            candidates=entry.rhs_candidates,
+        )
+        if role == "lhs" and not lhs_match:
+            continue
+        if role == "rhs" and not rhs_match:
+            continue
+        if role == "both" and not (lhs_match or rhs_match):
+            continue
+        total += 1
+        kind_counts[str(entry.output["assignment_kind"])] += 1
+        if len(outputs) < limit:
+            outputs.append(entry.output)
+
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "design_unit_query": design_unit,
+            "found_design_unit": True,
+            "ambiguous_design_unit": False,
+            "design_unit_candidates": [],
+            "signal": signal,
+            "role": role,
+            "summary": {
+                "total": total,
+                "by_assignment_kind": dict(sorted(kind_counts.items())),
+                "truncation": _truncation(returned=len(outputs), total=total),
+            },
+            "assignments": outputs,
+        }
+    )
+
+
 def find_symbol(
     bundle: AnalysisBundle,
     *,
@@ -801,12 +878,14 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
     connections_by_instance_path: defaultdict[
         str, list[IndexedInstanceConnection]
     ] = defaultdict(list)
+    assignments_by_design_unit: defaultdict[str, list[IndexedAssignment]] = defaultdict(list)
     instances: list[Any] = []
     instance_records_by_path: dict[str, dict[str, Any]] = {}
     children_by_parent: defaultdict[str | None, list[str]] = defaultdict(list)
     seen_declarations: set[tuple[str, str, str | None]] = set()
     seen_references: set[tuple[str, str, str | None, str | None]] = set()
     seen_members: set[tuple[str, str, str]] = set()
+    seen_assignments: set[tuple[str, str | None, int | None, int | None]] = set()
 
     for symbol in design_units:
         record = _serialize_design_unit_record(bundle, symbol)
@@ -852,6 +931,29 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 seen_members.add(key)
                 members_by_design_unit[member_entry.design_unit].append(member_entry)
 
+        if type(symbol).__name__ == "AssignmentExpression" and getattr(
+            symbol, "syntax", None
+        ) is not None:
+            assignment_kind = _assignment_kind_from_syntax(symbol.syntax)
+            assignment_entry = _make_assignment_entry(
+                bundle,
+                assignment_kind=assignment_kind,
+                expression=symbol,
+            )
+            if assignment_entry is not None:
+                location = assignment_entry.output.get("location")
+                key = (
+                    assignment_entry.design_unit,
+                    location.get("path") if isinstance(location, dict) else None,
+                    int(location.get("line", 0)) if isinstance(location, dict) else None,
+                    int(location.get("column", 0)) if isinstance(location, dict) else None,
+                )
+                if key not in seen_assignments:
+                    seen_assignments.add(key)
+                    assignments_by_design_unit[assignment_entry.design_unit].append(
+                        assignment_entry
+                    )
+
         if kind is not None and kind.name == "NamedValue":
             return True
         if getattr(symbol, "name", None):
@@ -896,6 +998,19 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
         },
         connections_by_instance_path={
             key: tuple(values) for key, values in connections_by_instance_path.items()
+        },
+        assignments_by_design_unit={
+            key: tuple(
+                sorted(
+                    values,
+                    key=lambda item: (
+                        str((item.output.get("location") or {}).get("path", "")),
+                        int((item.output.get("location") or {}).get("line", 0)),
+                        int((item.output.get("location") or {}).get("column", 0)),
+                    ),
+                )
+            )
+            for key, values in assignments_by_design_unit.items()
         },
     )
 
@@ -1203,6 +1318,92 @@ def _serialize_instance_connection(
                 connected_symbol.get("hierarchical_path") if connected_symbol else None,
             )
         ),
+        output=output,
+    )
+
+
+def _enclosing_syntax_kinds(syntax: Any) -> list[str]:
+    kinds: list[str] = []
+    parent = getattr(syntax, "parent", None)
+    while parent is not None and len(kinds) < 12:
+        kind = getattr(getattr(parent, "kind", None), "name", None)
+        if kind in {
+            "ConditionalStatement",
+            "ForLoopStatement",
+            "CaseStatement",
+            "AlwaysBlock",
+            "AlwaysFFBlock",
+            "AlwaysCombBlock",
+            "AlwaysLatchBlock",
+            "InitialBlock",
+            "FinalBlock",
+            "ContinuousAssign",
+        }:
+            kinds.append(kind)
+        parent = getattr(parent, "parent", None)
+    return kinds
+
+
+def _assignment_kind_from_syntax(syntax: Any) -> str | None:
+    constructs = _enclosing_syntax_kinds(syntax)
+    if "ContinuousAssign" in constructs:
+        return "continuous"
+    if any(
+        kind.startswith("Always") or kind in {"InitialBlock", "FinalBlock"}
+        for kind in constructs
+    ):
+        return "procedural"
+    return None
+
+
+def _is_partial_or_select_lhs(expression: Any) -> bool:
+    kind = getattr(getattr(expression, "kind", None), "name", "")
+    return kind not in {"NamedValue"}
+
+
+def _make_assignment_entry(
+    bundle: AnalysisBundle,
+    *,
+    assignment_kind: str | None,
+    expression: Any,
+) -> IndexedAssignment | None:
+    if assignment_kind is None or type(expression).__name__ != "AssignmentExpression":
+        return None
+    lhs_symbols = [dict(hit) for hit in _expression_symbol_hits(expression.left)]
+    rhs_symbols = [dict(hit) for hit in _expression_symbol_hits(expression.right)]
+    if not lhs_symbols and not rhs_symbols:
+        return None
+    design_units = {
+        unit
+        for hit in lhs_symbols
+        if (unit := _design_unit_from_lexical_path(str(hit.get("lexical_path", ""))))
+    }
+    if len(design_units) != 1:
+        return None
+    design_unit = next(iter(design_units))
+    output = {
+        "design_unit": design_unit,
+        "assignment_kind": assignment_kind,
+        "location": _serialize_range_location(bundle, expression.sourceRange),
+        "lhs_snippet": _source_snippet(bundle, expression.left.sourceRange),
+        "rhs_snippet": _source_snippet(bundle, expression.right.sourceRange),
+        "expression_snippet": _source_snippet(bundle, expression.sourceRange),
+        "lhs_symbols": lhs_symbols,
+        "rhs_symbols": rhs_symbols,
+        "enclosing_constructs": _enclosing_syntax_kinds(expression.syntax),
+        "is_partial_or_select": _is_partial_or_select_lhs(expression.left),
+        "evidence_source": "semantic",
+    }
+    lhs_candidates: list[str] = []
+    rhs_candidates: list[str] = []
+    for hit in lhs_symbols:
+        lhs_candidates.extend(_symbol_hit_candidates(hit))
+    for hit in rhs_symbols:
+        rhs_candidates.extend(_symbol_hit_candidates(hit))
+    return IndexedAssignment(
+        design_unit=design_unit,
+        lhs_candidates=_candidate_tuple(lhs_candidates),
+        rhs_candidates=_candidate_tuple(rhs_candidates),
         output=output,
     )
 

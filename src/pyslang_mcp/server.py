@@ -13,12 +13,13 @@ from pydantic import AnyHttpUrl, BaseModel, Field, ValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from .analysis import MatchMode, build_analysis, filelist_summary, parse_summary
+from .analysis import AssignmentRole, MatchMode, build_analysis, filelist_summary, parse_summary
 from .analysis import describe_design_unit as describe_design_unit_core
 from .analysis import dump_syntax_tree_summary as dump_syntax_tree_summary_core
 from .analysis import find_member as find_member_core
 from .analysis import find_symbol as find_symbol_core
 from .analysis import get_diagnostics as get_diagnostics_core
+from .analysis import get_assignments as get_assignments_core
 from .analysis import get_hierarchy as get_hierarchy_core
 from .analysis import get_instance_connections as get_instance_connections_core
 from .analysis import get_project_summary as get_project_summary_core
@@ -38,6 +39,7 @@ from .schemas import (
     DiagnosticsResult,
     FindMemberResult,
     FindSymbolResult,
+    GetAssignmentsResult,
     GetInstanceConnectionsResult,
     HierarchyResult,
     ListDesignUnitsResult,
@@ -82,6 +84,7 @@ PUBLIC_TOOL_NAMES = {
     "list_design_units": f"{TOOL_NAME_PREFIX}list_design_units",
     "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
     "find_member": f"{TOOL_NAME_PREFIX}find_member",
+    "get_assignments": f"{TOOL_NAME_PREFIX}get_assignments",
     "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
     "get_instance_connections": f"{TOOL_NAME_PREFIX}get_instance_connections",
     "find_symbol": f"{TOOL_NAME_PREFIX}find_symbol",
@@ -200,6 +203,14 @@ InstancePathArg = Annotated[
         )
     ),
 ]
+AssignmentRoleArg = Annotated[
+    str,
+    Field(
+        default="both",
+        description="Signal role filter: `lhs`, `rhs`, or `both`.",
+        json_schema_extra={"enum": ["lhs", "rhs", "both"]},
+    ),
+]
 MatchModeArg = Annotated[
     str,
     Field(
@@ -259,6 +270,14 @@ MaxConnectionsArg = Annotated[
         default=200,
         description="Maximum port connections to return before truncation.",
         json_schema_extra={"minimum": 0, "maximum": MAX_CONNECTION_RESULTS},
+    ),
+]
+MaxAssignmentResultsArg = Annotated[
+    int,
+    Field(
+        default=100,
+        description="Maximum assignment hits to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_ASSIGNMENT_RESULTS},
     ),
 ]
 MaxResultsArg = Annotated[
@@ -436,6 +455,12 @@ def create_server(
                 "`match_mode` must be one of `exact`, `contains`, or `startswith`."
             )
         return cast(MatchMode, match_mode)
+
+    def validate_assignment_role(role: str) -> AssignmentRole:
+        valid_roles = {"lhs", "rhs", "both"}
+        if role not in valid_roles:
+            raise ToolInputError("`role` must be one of `lhs`, `rhs`, or `both`.")
+        return cast(AssignmentRole, role)
 
     def success_result(schema: type[SchemaT], payload: dict[str, Any]) -> CallToolResult:
         validated = schema.model_validate(payload)
@@ -841,6 +866,58 @@ def create_server(
                     max_results,
                     minimum=0,
                     maximum=MAX_MEMBER_RESULTS,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["get_assignments"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Return continuous and procedural assignments involving a local signal in one "
+            "design unit. Results include LHS/RHS snippets, referenced symbols, source location, "
+            "and whether the LHS is structurally partial or select-based."
+        ),
+    )
+    def get_assignments(
+        project_root: ProjectRootArg,
+        design_unit: DesignUnitNameArg,
+        signal: SymbolQueryArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        role: AssignmentRoleArg = "both",
+        max_results: MaxAssignmentResultsArg = 100,
+    ) -> Annotated[CallToolResult, GetAssignmentsResult | ToolErrorResult]:
+        return run_project_tool(
+            GetAssignmentsResult,
+            tool_name="get_assignments",
+            tool_args={
+                "design_unit": design_unit,
+                "signal": signal,
+                "role": role,
+                "max_results": max_results,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: get_assignments_core(
+                bundle,
+                design_unit=design_unit,
+                signal=signal,
+                role=validate_assignment_role(role),
+                max_results=bounded_int(
+                    "max_results",
+                    max_results,
+                    minimum=0,
+                    maximum=MAX_ASSIGNMENT_RESULTS,
                 ),
             ),
         )

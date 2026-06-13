@@ -213,6 +213,45 @@ class FindMemberResult(StrictModel):
     members: list[MemberRecord]
 
 
+class AssignmentSymbolRef(StrictModel):
+    name: str | None = None
+    kind: str
+    hierarchical_path: str
+    lexical_path: str
+
+
+class AssignmentRecord(StrictModel):
+    design_unit: str
+    assignment_kind: Literal["continuous", "procedural"]
+    location: Location | None = None
+    lhs_snippet: str | None = None
+    rhs_snippet: str | None = None
+    expression_snippet: str | None = None
+    lhs_symbols: list[AssignmentSymbolRef]
+    rhs_symbols: list[AssignmentSymbolRef]
+    enclosing_constructs: list[str]
+    is_partial_or_select: bool
+    evidence_source: Literal["semantic"]
+
+
+class GetAssignmentsSummary(StrictModel):
+    total: int
+    by_assignment_kind: dict[str, int]
+    truncation: TruncationInfo
+
+
+class GetAssignmentsResult(StrictModel):
+    project_status: ProjectStatus
+    design_unit_query: str
+    found_design_unit: bool
+    ambiguous_design_unit: bool
+    design_unit_candidates: list[DesignUnitRecord]
+    signal: str
+    role: Literal["lhs", "rhs", "both"]
+    summary: GetAssignmentsSummary
+    assignments: list[AssignmentRecord]
+
+
 class HierarchyPortConnection(StrictModel):
     port: str
     expression_kind: str

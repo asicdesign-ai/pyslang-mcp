@@ -10,6 +10,7 @@ from mcp.types import CallToolResult
 import pyslang_mcp.server as server_module
 from pyslang_mcp.cache import AnalysisCache
 from pyslang_mcp.server import (
+    MAX_ASSIGNMENT_RESULTS,
     MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
     MAX_DIAGNOSTIC_GROUPS,
     MAX_EXCERPT_LINES,
@@ -53,6 +54,7 @@ def test_tools_list_exposes_output_schema() -> None:
         PUBLIC_TOOL_NAMES["list_design_units"]: "ListDesignUnitsResult",
         PUBLIC_TOOL_NAMES["describe_design_unit"]: "DescribeDesignUnitResult",
         PUBLIC_TOOL_NAMES["find_member"]: "FindMemberResult",
+        PUBLIC_TOOL_NAMES["get_assignments"]: "GetAssignmentsResult",
         PUBLIC_TOOL_NAMES["get_hierarchy"]: "HierarchyResult",
         PUBLIC_TOOL_NAMES["get_instance_connections"]: "GetInstanceConnectionsResult",
         PUBLIC_TOOL_NAMES["find_symbol"]: "FindSymbolResult",
@@ -114,6 +116,7 @@ def test_tools_list_exposes_hard_limit_bounds() -> None:
             MAX_CONNECTION_RESULTS,
         ),
         (PUBLIC_TOOL_NAMES["find_member"], "max_results", 0, MAX_MEMBER_RESULTS),
+        (PUBLIC_TOOL_NAMES["get_assignments"], "max_results", 0, MAX_ASSIGNMENT_RESULTS),
         (PUBLIC_TOOL_NAMES["find_symbol"], "max_results", 0, MAX_SYMBOL_RESULTS),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_files", 0, MAX_SUMMARY_FILES),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_node_kinds", 0, MAX_NODE_KINDS),
@@ -196,6 +199,25 @@ def test_get_instance_connections_tool() -> None:
     assert not is_error
     assert payload["found"] is True
     assert payload["summary"]["total"] == 6
+
+
+def test_get_assignments_tool() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["get_assignments"],
+        {
+            "project_root": str(FIXTURES / "verilog_debug"),
+            "filelist": "project.f",
+            "top_modules": ["debug_top"],
+            "design_unit": "debug_stage",
+            "signal": "response__vld",
+            "role": "lhs",
+            "max_results": 5,
+        },
+    )
+
+    assert not is_error
+    assert payload["summary"]["total"] == 1
+    assert payload["assignments"][0]["lhs_snippet"] == "response__vld"
 
 
 def test_get_hierarchy_tool() -> None:
