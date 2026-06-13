@@ -220,6 +220,15 @@ class HierarchyPortConnection(StrictModel):
     symbol: str | None = None
 
 
+class InstanceConnectionRecord(StrictModel):
+    port: str
+    direction: str | None = None
+    expression_kind: str
+    expression_snippet: str | None = None
+    connected_symbol: SymbolDeclaration | None = None
+    source_location: Location | None = None
+
+
 class HierarchyNode(StrictModel):
     name: str
     definition: str | None = None
@@ -240,6 +249,22 @@ class HierarchyResult(StrictModel):
     project_status: ProjectStatus
     summary: HierarchySummary
     hierarchy: list[HierarchyNode]
+
+
+class GetInstanceConnectionsSummary(StrictModel):
+    total: int
+    truncation: TruncationInfo
+
+
+class GetInstanceConnectionsResult(StrictModel):
+    project_status: ProjectStatus
+    query: str
+    found: bool
+    ambiguous: bool
+    candidates: list[HierarchyNode]
+    instance: HierarchyNode | None = None
+    summary: GetInstanceConnectionsSummary
+    connections: list[InstanceConnectionRecord]
 
 
 class SymbolDeclaration(StrictModel):

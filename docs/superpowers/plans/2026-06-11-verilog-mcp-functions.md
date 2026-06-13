@@ -1293,7 +1293,7 @@ git commit -m "feat: add design-unit member lookup"
 - Supported claim: Focused instance port bindings are available with direction, expression snippet, and resolved actual symbol when pyslang exposes it.
 - Unsupported claim: A port-connection dump proves end-to-end connectivity or driver validity.
 
-- [ ] **Step 1: Add connection schemas**
+- [x] **Step 1: Add connection schemas**
 
 Add to `schemas.py` after `HierarchyPortConnection`:
 
@@ -1323,7 +1323,7 @@ class GetInstanceConnectionsResult(StrictModel):
     connections: list[InstanceConnectionRecord]
 ```
 
-- [ ] **Step 2: Add expression unwrapping helper for port actuals**
+- [x] **Step 2: Add expression unwrapping helper for port actuals**
 
 Add to `analysis.py`:
 
@@ -1346,7 +1346,7 @@ def _symbol_declaration_from_hit(hit: dict[str, Any]) -> dict[str, Any]:
     }
 ```
 
-- [ ] **Step 3: Add connection serializer**
+- [x] **Step 3: Add connection serializer**
 
 Add:
 
@@ -1391,7 +1391,7 @@ def _serialize_instance_connection(
     )
 ```
 
-- [ ] **Step 4: Populate connection index**
+- [x] **Step 4: Populate connection index**
 
 In `_build_index`, add:
 
@@ -1416,7 +1416,7 @@ In the `AnalysisIndex` return:
         },
 ```
 
-- [ ] **Step 5: Add core function**
+- [x] **Step 5: Add core function**
 
 Add after `get_hierarchy`:
 
@@ -1491,7 +1491,7 @@ def get_instance_connections(
     )
 ```
 
-- [ ] **Step 6: Wire server tool**
+- [x] **Step 6: Wire server tool**
 
 Add `GetInstanceConnectionsResult`, `get_instance_connections_core`, and `PUBLIC_TOOL_NAMES["get_instance_connections"]`.
 
@@ -1566,7 +1566,7 @@ Register:
         )
 ```
 
-- [ ] **Step 7: Add tests**
+- [x] **Step 7: Add tests**
 
 In `tests/test_analysis.py`, import `get_instance_connections` and append:
 
@@ -1612,7 +1612,7 @@ def test_get_instance_connections_tool() -> None:
     assert payload["summary"]["total"] == 6
 ```
 
-- [ ] **Step 8: Run focused tests**
+- [x] **Step 8: Run focused tests**
 
 Run:
 
@@ -1622,7 +1622,7 @@ Run:
 
 Expected: both tests pass.
 
-- [ ] **Step 9: Commit instance connections**
+- [x] **Step 9: Commit instance connections**
 
 ```bash
 git add src/pyslang_mcp/analysis.py src/pyslang_mcp/schemas.py src/pyslang_mcp/server.py tests/test_analysis.py tests/test_server.py

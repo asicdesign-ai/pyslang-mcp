@@ -20,6 +20,7 @@ from .analysis import find_member as find_member_core
 from .analysis import find_symbol as find_symbol_core
 from .analysis import get_diagnostics as get_diagnostics_core
 from .analysis import get_hierarchy as get_hierarchy_core
+from .analysis import get_instance_connections as get_instance_connections_core
 from .analysis import get_project_summary as get_project_summary_core
 from .analysis import list_design_units as list_design_units_core
 from .analysis import preprocess_files as preprocess_files_core
@@ -37,6 +38,7 @@ from .schemas import (
     DiagnosticsResult,
     FindMemberResult,
     FindSymbolResult,
+    GetInstanceConnectionsResult,
     HierarchyResult,
     ListDesignUnitsResult,
     ParseFilelistResult,
@@ -81,6 +83,7 @@ PUBLIC_TOOL_NAMES = {
     "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
     "find_member": f"{TOOL_NAME_PREFIX}find_member",
     "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
+    "get_instance_connections": f"{TOOL_NAME_PREFIX}get_instance_connections",
     "find_symbol": f"{TOOL_NAME_PREFIX}find_symbol",
     "dump_syntax_tree_summary": f"{TOOL_NAME_PREFIX}dump_syntax_tree_summary",
     "preprocess_files": f"{TOOL_NAME_PREFIX}preprocess_files",
@@ -188,6 +191,15 @@ MemberQueryArg = Annotated[
     str,
     Field(description="Member name or path to match inside `design_unit`."),
 ]
+InstancePathArg = Annotated[
+    str,
+    Field(
+        description=(
+            "Exact elaborated instance path such as `top.u_child`, or an unambiguous instance "
+            "name such as `u_child`."
+        )
+    ),
+]
 MatchModeArg = Annotated[
     str,
     Field(
@@ -239,6 +251,14 @@ MaxMemberResultsArg = Annotated[
         default=100,
         description="Maximum member hits to return before truncation.",
         json_schema_extra={"minimum": 0, "maximum": MAX_MEMBER_RESULTS},
+    ),
+]
+MaxConnectionsArg = Annotated[
+    int,
+    Field(
+        default=200,
+        description="Maximum port connections to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_CONNECTION_RESULTS},
     ),
 ]
 MaxResultsArg = Annotated[
@@ -872,6 +892,51 @@ def create_server(
                     max_children,
                     minimum=0,
                     maximum=MAX_HIERARCHY_CHILDREN,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["get_instance_connections"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Return a focused port-connection dump for one elaborated instance without "
+            "expanding the full hierarchy tree."
+        ),
+    )
+    def get_instance_connections(
+        project_root: ProjectRootArg,
+        instance_path_or_name: InstancePathArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        max_connections: MaxConnectionsArg = 200,
+    ) -> Annotated[CallToolResult, GetInstanceConnectionsResult | ToolErrorResult]:
+        return run_project_tool(
+            GetInstanceConnectionsResult,
+            tool_name="get_instance_connections",
+            tool_args={
+                "instance_path_or_name": instance_path_or_name,
+                "max_connections": max_connections,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: get_instance_connections_core(
+                bundle,
+                instance_path_or_name=instance_path_or_name,
+                max_connections=bounded_int(
+                    "max_connections",
+                    max_connections,
+                    minimum=0,
+                    maximum=MAX_CONNECTION_RESULTS,
                 ),
             ),
         )

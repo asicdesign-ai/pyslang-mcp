@@ -13,6 +13,7 @@ from pyslang_mcp.server import (
     MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
     MAX_DIAGNOSTIC_GROUPS,
     MAX_EXCERPT_LINES,
+    MAX_CONNECTION_RESULTS,
     MAX_HIERARCHY_CHILDREN,
     MAX_HIERARCHY_DEPTH,
     MAX_LIST_ITEMS,
@@ -53,6 +54,7 @@ def test_tools_list_exposes_output_schema() -> None:
         PUBLIC_TOOL_NAMES["describe_design_unit"]: "DescribeDesignUnitResult",
         PUBLIC_TOOL_NAMES["find_member"]: "FindMemberResult",
         PUBLIC_TOOL_NAMES["get_hierarchy"]: "HierarchyResult",
+        PUBLIC_TOOL_NAMES["get_instance_connections"]: "GetInstanceConnectionsResult",
         PUBLIC_TOOL_NAMES["find_symbol"]: "FindSymbolResult",
         PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"]: "SyntaxTreeSummaryResult",
         PUBLIC_TOOL_NAMES["preprocess_files"]: "PreprocessFilesResult",
@@ -105,6 +107,12 @@ def test_tools_list_exposes_hard_limit_bounds() -> None:
         (PUBLIC_TOOL_NAMES["list_design_units"], "max_items", 0, MAX_LIST_ITEMS),
         (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_depth", 1, MAX_HIERARCHY_DEPTH),
         (PUBLIC_TOOL_NAMES["get_hierarchy"], "max_children", 0, MAX_HIERARCHY_CHILDREN),
+        (
+            PUBLIC_TOOL_NAMES["get_instance_connections"],
+            "max_connections",
+            0,
+            MAX_CONNECTION_RESULTS,
+        ),
         (PUBLIC_TOOL_NAMES["find_member"], "max_results", 0, MAX_MEMBER_RESULTS),
         (PUBLIC_TOOL_NAMES["find_symbol"], "max_results", 0, MAX_SYMBOL_RESULTS),
         (PUBLIC_TOOL_NAMES["dump_syntax_tree_summary"], "max_files", 0, MAX_SUMMARY_FILES),
@@ -171,6 +179,23 @@ def test_find_member_tool() -> None:
     assert payload["found_design_unit"] is True
     assert payload["summary"]["total"] == 1
     assert payload["members"][0]["name"] == "response_pop_fifo__rdy"
+
+
+def test_get_instance_connections_tool() -> None:
+    payload, is_error = _call_tool_json(
+        PUBLIC_TOOL_NAMES["get_instance_connections"],
+        {
+            "project_root": str(FIXTURES / "verilog_debug"),
+            "filelist": "project.f",
+            "top_modules": ["debug_top"],
+            "instance_path_or_name": "debug_top.u_stage",
+            "max_connections": 10,
+        },
+    )
+
+    assert not is_error
+    assert payload["found"] is True
+    assert payload["summary"]["total"] == 6
 
 
 def test_get_hierarchy_tool() -> None:

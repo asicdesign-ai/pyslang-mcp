@@ -203,6 +203,27 @@ def test_find_member_verilog_nets() -> None:
     assert child_instance["members"][0]["kind"] == "instance"
 
 
+def test_get_instance_connections_verilog_fixture() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    connections = analysis_module.get_instance_connections(
+        bundle,
+        instance_path_or_name="debug_top.u_stage",
+    )
+
+    assert connections["found"] is True
+    by_port = {connection["port"]: connection for connection in connections["connections"]}
+    assert by_port["ctrl_out__rdy"]["direction"] == "In"
+    assert by_port["ctrl_out__rdy"]["connected_symbol"]["name"] == "ctrl_out__rdy"
+    assert by_port["response__vld"]["direction"] == "Out"
+    assert by_port["response__vld"]["connected_symbol"]["name"] == "response__vld"
+
+
 def test_diagnostics_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",

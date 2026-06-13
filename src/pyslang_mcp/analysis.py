@@ -470,6 +470,79 @@ def get_hierarchy(
     )
 
 
+def get_instance_connections(
+    bundle: AnalysisBundle,
+    *,
+    instance_path_or_name: str,
+    max_connections: int = 200,
+) -> dict[str, Any]:
+    """Return focused port connections for one elaborated instance."""
+
+    index = _analysis_index(bundle)
+    exact_paths = [
+        path
+        for path, record in index.instance_records_by_path.items()
+        if path == instance_path_or_name
+        or path.endswith(f".{instance_path_or_name}")
+        or record["name"] == instance_path_or_name
+    ]
+    exact_paths = sorted(set(exact_paths))
+    if len(exact_paths) != 1:
+        candidates = [
+            index.instance_records_by_path[path]
+            for path in sorted(index.instance_records_by_path)
+            if _matches_text(
+                query=instance_path_or_name,
+                match_mode="contains",
+                candidates={
+                    path,
+                    index.instance_records_by_path[path]["name"],
+                    index.instance_records_by_path[path].get("definition"),
+                },
+            )
+        ][:10]
+        return stabilize_json(
+            {
+                "project_status": _project_status(bundle),
+                "query": instance_path_or_name,
+                "found": False,
+                "ambiguous": len(exact_paths) > 1,
+                "candidates": [
+                    index.instance_records_by_path[path] for path in exact_paths
+                ]
+                or candidates,
+                "instance": None,
+                "summary": {
+                    "total": 0,
+                    "truncation": _truncation(returned=0, total=0),
+                },
+                "connections": [],
+            }
+        )
+
+    instance_path = exact_paths[0]
+    entries = index.connections_by_instance_path.get(instance_path, ())
+    limited_entries, truncation = limit_list(
+        [entry.output for entry in entries],
+        max_items=max_connections,
+    )
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "query": instance_path_or_name,
+            "found": True,
+            "ambiguous": False,
+            "candidates": [],
+            "instance": index.instance_records_by_path[instance_path],
+            "summary": {
+                "total": len(entries),
+                "truncation": truncation,
+            },
+            "connections": limited_entries,
+        }
+    )
+
+
 def find_symbol(
     bundle: AnalysisBundle,
     *,
@@ -725,6 +798,9 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
     declarations: list[IndexedDeclaration] = []
     references: list[IndexedReference] = []
     members_by_design_unit: defaultdict[str, list[IndexedMember]] = defaultdict(list)
+    connections_by_instance_path: defaultdict[
+        str, list[IndexedInstanceConnection]
+    ] = defaultdict(list)
     instances: list[Any] = []
     instance_records_by_path: dict[str, dict[str, Any]] = {}
     children_by_parent: defaultdict[str | None, list[str]] = defaultdict(list)
@@ -752,6 +828,10 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
             instance_records_by_path[path] = _serialize_instance(bundle, symbol)
             parent = path.rsplit(".", 1)[0] if "." in path else None
             children_by_parent[parent].append(path)
+            for connection in getattr(symbol, "portConnections", []):
+                connections_by_instance_path[path].append(
+                    _serialize_instance_connection(bundle, symbol, connection)
+                )
 
         references.extend(
             _collect_reference_index_entries(
@@ -813,6 +893,9 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 )
             )
             for key, values in members_by_design_unit.items()
+        },
+        connections_by_instance_path={
+            key: tuple(values) for key, values in connections_by_instance_path.items()
         },
     )
 
@@ -1064,6 +1147,64 @@ def _serialize_instance(bundle: AnalysisBundle, instance: Any) -> dict[str, Any]
             for connection in instance.portConnections
         ],
     }
+
+
+def _connection_actual_expression(connection: Any) -> Any:
+    expression = connection.expression
+    direction = getattr(getattr(connection.port, "direction", None), "name", None)
+    if type(expression).__name__ == "AssignmentExpression" and direction in {"Out", "InOut"}:
+        return expression.left
+    return expression
+
+
+def _symbol_declaration_from_hit(hit: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "name": hit.get("name"),
+        "kind": hit.get("kind", "Unknown"),
+        "hierarchical_path": hit.get("hierarchical_path", ""),
+        "lexical_path": hit.get("lexical_path", ""),
+        "location": hit.get("location"),
+    }
+
+
+def _serialize_instance_connection(
+    bundle: AnalysisBundle,
+    instance: Any,
+    connection: Any,
+) -> IndexedInstanceConnection:
+    actual = _connection_actual_expression(connection)
+    symbol_hits = _expression_symbol_hits(actual)
+    connected_symbol = None
+    if symbol_hits:
+        first = dict(symbol_hits[0])
+        first["location"] = _serialize_location(
+            bundle,
+            getattr(getattr(actual, "symbol", None), "location", None),
+        )
+        connected_symbol = _symbol_declaration_from_hit(first)
+    output = {
+        "port": connection.port.name,
+        "direction": _direction_name(connection.port),
+        "expression_kind": connection.expression.kind.name,
+        "expression_snippet": _source_snippet(bundle, connection.expression.sourceRange),
+        "connected_symbol": connected_symbol,
+        "source_location": _serialize_range_location(bundle, connection.expression.sourceRange),
+    }
+    return IndexedInstanceConnection(
+        instance_path=str(instance.hierarchicalPath),
+        port_name=connection.port.name,
+        candidates=_candidate_tuple(
+            (
+                connection.port.name,
+                str(instance.hierarchicalPath),
+                getattr(instance, "name", None),
+                output.get("expression_snippet"),
+                connected_symbol.get("name") if connected_symbol else None,
+                connected_symbol.get("hierarchical_path") if connected_symbol else None,
+            )
+        ),
+        output=output,
+    )
 
 
 def _source_snippet(bundle: AnalysisBundle, source_range: Any, *, limit: int = 80) -> str | None:
