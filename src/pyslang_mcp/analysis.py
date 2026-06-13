@@ -30,7 +30,11 @@ from .serializers import (
 from .types import (
     AnalysisBundle,
     AnalysisIndex,
+    ConnectivityEdge,
+    IndexedAssignment,
     IndexedDeclaration,
+    IndexedInstanceConnection,
+    IndexedMember,
     IndexedReference,
     ProjectConfig,
 )

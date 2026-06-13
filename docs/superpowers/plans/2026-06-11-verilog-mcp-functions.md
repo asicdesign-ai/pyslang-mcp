@@ -243,7 +243,7 @@ git commit -m "test: add Verilog debug HDL fixture"
 - Supported claim: Internal Python types compile and preserve existing analysis behavior.
 - Unsupported claim: New MCP tools are functional before later tasks.
 
-- [ ] **Step 1: Add index dataclasses**
+- [x] **Step 1: Add index dataclasses**
 
 In `src/pyslang_mcp/types.py`, add these dataclasses below `IndexedReference`:
 
@@ -287,7 +287,7 @@ class ConnectivityEdge:
     output: dict[str, Any]
 ```
 
-- [ ] **Step 2: Extend `AnalysisIndex`**
+- [x] **Step 2: Extend `AnalysisIndex`**
 
 In `AnalysisIndex`, add these fields after `references`:
 
@@ -299,7 +299,7 @@ In `AnalysisIndex`, add these fields after `references`:
     connectivity_edges_by_target: dict[str, tuple[ConnectivityEdge, ...]]
 ```
 
-- [ ] **Step 3: Import new dataclasses in `analysis.py`**
+- [x] **Step 3: Import new dataclasses in `analysis.py`**
 
 Update the import block in `src/pyslang_mcp/analysis.py`:
 
@@ -317,7 +317,7 @@ from .types import (
 )
 ```
 
-- [ ] **Step 4: Add server hard-limit constants**
+- [x] **Step 4: Add server hard-limit constants**
 
 In `src/pyslang_mcp/server.py`, add these constants near existing `MAX_*` values:
 
@@ -331,7 +331,7 @@ MAX_DIAGNOSTIC_GROUPS = 1000
 MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP = 20
 ```
 
-- [ ] **Step 5: Run compile check**
+- [x] **Step 5: Run compile check**
 
 Run:
 
@@ -341,7 +341,7 @@ Run:
 
 Expected: command exits with status 0.
 
-- [ ] **Step 6: Commit the internal type expansion**
+- [x] **Step 6: Commit the internal type expansion**
 
 ```bash
 git add src/pyslang_mcp/types.py src/pyslang_mcp/analysis.py src/pyslang_mcp/server.py

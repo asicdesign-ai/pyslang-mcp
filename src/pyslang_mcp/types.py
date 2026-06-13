@@ -44,6 +44,45 @@ class IndexedReference:
 
 
 @dataclass(slots=True)
+class IndexedMember:
+    """Precomputed design-unit member lookup entry."""
+
+    design_unit: str
+    candidates: tuple[str, ...]
+    output: dict[str, Any]
+
+
+@dataclass(slots=True)
+class IndexedAssignment:
+    """Precomputed assignment lookup entry."""
+
+    design_unit: str
+    lhs_candidates: tuple[str, ...]
+    rhs_candidates: tuple[str, ...]
+    output: dict[str, Any]
+
+
+@dataclass(slots=True)
+class IndexedInstanceConnection:
+    """Precomputed instance port-connection entry."""
+
+    instance_path: str
+    port_name: str
+    candidates: tuple[str, ...]
+    output: dict[str, Any]
+
+
+@dataclass(slots=True)
+class ConnectivityEdge:
+    """Directed structural edge used by connectivity tracing."""
+
+    source: str
+    target: str
+    kind: str
+    output: dict[str, Any]
+
+
+@dataclass(slots=True)
 class AnalysisIndex:
     """Warm-query index derived from a compiled project."""
 
@@ -56,6 +95,19 @@ class AnalysisIndex:
     top_instance_paths: tuple[str, ...]
     declarations: tuple[IndexedDeclaration, ...]
     references: tuple[IndexedReference, ...]
+    members_by_design_unit: dict[str, tuple[IndexedMember, ...]] = field(default_factory=dict)
+    assignments_by_design_unit: dict[str, tuple[IndexedAssignment, ...]] = field(
+        default_factory=dict
+    )
+    connections_by_instance_path: dict[str, tuple[IndexedInstanceConnection, ...]] = field(
+        default_factory=dict
+    )
+    connectivity_edges_by_source: dict[str, tuple[ConnectivityEdge, ...]] = field(
+        default_factory=dict
+    )
+    connectivity_edges_by_target: dict[str, tuple[ConnectivityEdge, ...]] = field(
+        default_factory=dict
+    )
     design_unit_description_cache: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
