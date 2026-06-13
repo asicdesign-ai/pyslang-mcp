@@ -363,7 +363,7 @@ git commit -m "refactor: add Verilog debug analysis index types"
 - Supported claim: Shared helpers preserve existing symbol and hierarchy behavior.
 - Unsupported claim: Assignment or connectivity tools are complete before their dedicated tasks.
 
-- [ ] **Step 1: Add helper functions for stable symbol metadata**
+- [x] **Step 1: Add helper functions for stable symbol metadata**
 
 Add these helpers near `_symbol_candidates` in `src/pyslang_mcp/analysis.py`:
 
@@ -412,7 +412,7 @@ def _direction_name(symbol: Any) -> str | None:
     return getattr(direction, "name", None) if direction is not None else None
 ```
 
-- [ ] **Step 2: Add expression symbol collection**
+- [x] **Step 2: Add expression symbol collection**
 
 Add this helper near `_collect_reference_index_entries`:
 
@@ -445,7 +445,7 @@ def _expression_symbol_hits(expression: Any) -> tuple[dict[str, Any], ...]:
     return tuple(hits)
 ```
 
-- [ ] **Step 3: Add candidate helper for serialized symbol hits**
+- [x] **Step 3: Add candidate helper for serialized symbol hits**
 
 Add:
 
@@ -461,7 +461,7 @@ def _symbol_hit_candidates(hit: dict[str, Any]) -> tuple[str, ...]:
     )
 ```
 
-- [ ] **Step 4: Add a helper regression test**
+- [x] **Step 4: Add a helper regression test**
 
 Append to `tests/test_analysis.py`:
 
@@ -483,7 +483,7 @@ def test_verilog_debug_symbol_helpers_preserve_existing_index() -> None:
     assert "debug_top.u_stage.response_pop_fifo__rdy" in declarations
 ```
 
-- [ ] **Step 5: Run focused tests**
+- [x] **Step 5: Run focused tests**
 
 Run:
 
@@ -497,7 +497,7 @@ Expected:
 2 passed
 ```
 
-- [ ] **Step 6: Commit helper groundwork**
+- [x] **Step 6: Commit helper groundwork**
 
 ```bash
 git add src/pyslang_mcp/analysis.py tests/test_analysis.py

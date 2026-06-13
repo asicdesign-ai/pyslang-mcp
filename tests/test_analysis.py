@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast
 
+import pyslang_mcp.analysis as analysis_module
 from pyslang_mcp.analysis import (
     _format_diagnostic_message,
     build_analysis,
@@ -129,6 +130,35 @@ def test_verilog_debug_fixture_baseline() -> None:
     assert hierarchy["summary"]["total_instances"] == 3
     assert hierarchy["hierarchy"][0]["name"] == "debug_top"
     assert hierarchy["hierarchy"][0]["children"][0]["name"] == "u_stage"
+
+
+def test_verilog_debug_symbol_helpers_preserve_stable_metadata() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+    symbols: list[Any] = []
+
+    def visit(symbol: Any) -> bool:
+        if getattr(symbol, "name", None) == "response__vld":
+            symbols.append(symbol)
+        return True
+
+    bundle.compilation.getRoot().visit(visit)
+    response_symbol = next(
+        symbol
+        for symbol in symbols
+        if analysis_module._symbol_hierarchical_path(symbol)
+        == "debug_top.u_stage.response__vld"
+    )
+
+    assert analysis_module._symbol_kind_name(response_symbol) == "Port"
+    assert analysis_module._symbol_lexical_path(response_symbol).endswith("response__vld")
+    assert analysis_module._symbol_design_unit(response_symbol) == "debug_stage"
+    assert analysis_module._data_type_text(response_symbol) == "logic"
+    assert analysis_module._direction_name(response_symbol) == "Out"
 
 
 def test_diagnostics_on_broken_fixture() -> None:

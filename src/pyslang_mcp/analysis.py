@@ -781,6 +781,50 @@ def _matches_symbol(query: str, match_mode: MatchMode, symbol: Any) -> bool:
     return _matches_text(query=query, match_mode=match_mode, candidates=_symbol_candidates(symbol))
 
 
+def _symbol_kind_name(symbol: Any) -> str:
+    kind = getattr(symbol, "kind", None)
+    return kind.name if kind is not None else type(symbol).__name__
+
+
+def _symbol_hierarchical_path(symbol: Any) -> str:
+    return str(getattr(symbol, "hierarchicalPath", getattr(symbol, "name", "")))
+
+
+def _symbol_lexical_path(symbol: Any) -> str:
+    return str(getattr(symbol, "lexicalPath", getattr(symbol, "name", "")))
+
+
+def _design_unit_from_lexical_path(path: str) -> str | None:
+    if not path:
+        return None
+    cleaned = path.split("::", 1)[0] if "::" in path else path
+    return cleaned.split(".", 1)[0] or None
+
+
+def _symbol_design_unit(symbol: Any) -> str | None:
+    lexical = _symbol_lexical_path(symbol)
+    from_lexical = _design_unit_from_lexical_path(lexical)
+    if from_lexical:
+        return from_lexical
+    parent_scope = getattr(symbol, "parentScope", None)
+    parent_lexical = _symbol_lexical_path(parent_scope) if parent_scope is not None else ""
+    return _design_unit_from_lexical_path(parent_lexical)
+
+
+def _data_type_text(symbol: Any) -> str | None:
+    type_obj = getattr(symbol, "type", None)
+    if type_obj is None:
+        declared_type = getattr(symbol, "declaredType", None)
+        type_obj = getattr(declared_type, "type", None)
+    text = str(type_obj) if type_obj is not None else ""
+    return text or None
+
+
+def _direction_name(symbol: Any) -> str | None:
+    direction = getattr(symbol, "direction", None)
+    return getattr(direction, "name", None) if direction is not None else None
+
+
 def _symbol_candidates(symbol: Any) -> tuple[str, ...]:
     return _candidate_tuple(
         (
@@ -830,6 +874,45 @@ def _leaf_type_name(value: str | None) -> str | None:
         cleaned = cleaned.rsplit(".", 1)[-1]
     cleaned = cleaned.strip()
     return cleaned or None
+
+
+def _expression_symbol_hits(expression: Any) -> tuple[dict[str, Any], ...]:
+    hits: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def visit(node: Any) -> bool:
+        if type(node).__name__ == "NamedValueExpression" and getattr(node, "symbol", None):
+            symbol = node.symbol
+            path = _symbol_hierarchical_path(symbol)
+            if path and path not in seen:
+                seen.add(path)
+                hits.append(
+                    {
+                        "name": getattr(symbol, "name", None),
+                        "kind": _symbol_kind_name(symbol),
+                        "hierarchical_path": path,
+                        "lexical_path": _symbol_lexical_path(symbol),
+                    }
+                )
+        return True
+
+    if expression is not None:
+        try:
+            expression.visit(visit)
+        except Exception:
+            visit(expression)
+    return tuple(hits)
+
+
+def _symbol_hit_candidates(hit: dict[str, Any]) -> tuple[str, ...]:
+    return _candidate_tuple(
+        (
+            hit.get("name"),
+            hit.get("hierarchical_path"),
+            hit.get("lexical_path"),
+            hit.get("kind"),
+        )
+    )
 
 
 def _collect_reference_index_entries(
