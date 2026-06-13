@@ -108,6 +108,29 @@ def test_analysis_over_filelist_fixture() -> None:
     assert summary["limits"]["max_diagnostics"] == 10
 
 
+def test_verilog_debug_fixture_baseline() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    diagnostics = get_diagnostics(bundle)
+    assert diagnostics["project_status"]["status"] == "ok"
+    assert diagnostics["summary"]["total"] == 0
+
+    units = list_design_units(bundle)
+    assert {"debug_top", "debug_stage", "debug_sink"} <= {
+        unit["name"] for unit in units["design_units"]
+    }
+
+    hierarchy = get_hierarchy(bundle, max_depth=4)
+    assert hierarchy["summary"]["total_instances"] == 3
+    assert hierarchy["hierarchy"][0]["name"] == "debug_top"
+    assert hierarchy["hierarchy"][0]["children"][0]["name"] == "u_stage"
+
+
 def test_diagnostics_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",
