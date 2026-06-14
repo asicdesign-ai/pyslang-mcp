@@ -13,15 +13,27 @@ from pydantic import AnyHttpUrl, BaseModel, Field, ValidationError
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from .analysis import MatchMode, build_analysis, filelist_summary, parse_summary
+from .analysis import (
+    AssignmentRole,
+    MatchMode,
+    TraceDirection,
+    build_analysis,
+    filelist_summary,
+    parse_summary,
+)
 from .analysis import describe_design_unit as describe_design_unit_core
 from .analysis import dump_syntax_tree_summary as dump_syntax_tree_summary_core
+from .analysis import find_member as find_member_core
 from .analysis import find_symbol as find_symbol_core
+from .analysis import get_assignments as get_assignments_core
 from .analysis import get_diagnostics as get_diagnostics_core
 from .analysis import get_hierarchy as get_hierarchy_core
+from .analysis import get_instance_connections as get_instance_connections_core
 from .analysis import get_project_summary as get_project_summary_core
 from .analysis import list_design_units as list_design_units_core
 from .analysis import preprocess_files as preprocess_files_core
+from .analysis import summarize_diagnostics_by_code as summarize_diagnostics_by_code_core
+from .analysis import trace_connectivity as trace_connectivity_core
 from .auth import StaticBearerTokenVerifier
 from .cache import DEFAULT_CACHE, AnalysisCache
 from .project_loader import (
@@ -33,16 +45,21 @@ from .project_loader import (
 from .schemas import (
     DescribeDesignUnitResult,
     DiagnosticsResult,
+    FindMemberResult,
     FindSymbolResult,
+    GetAssignmentsResult,
+    GetInstanceConnectionsResult,
     HierarchyResult,
     ListDesignUnitsResult,
     ParseFilelistResult,
     ParseFilesResult,
     PreprocessFilesResult,
     ProjectSummaryResult,
+    SummarizeDiagnosticsByCodeResult,
     SyntaxTreeSummaryResult,
     ToolErrorDetail,
     ToolErrorResult,
+    TraceConnectivityResult,
 )
 from .types import ProjectConfig
 
@@ -59,15 +76,27 @@ MAX_HIERARCHY_CHILDREN = 1000
 MAX_SUMMARY_FILES = 500
 MAX_NODE_KINDS = 200
 MAX_EXCERPT_LINES = 200
+MAX_MEMBER_RESULTS = 1000
+MAX_ASSIGNMENT_RESULTS = 1000
+MAX_CONNECTION_RESULTS = 1000
+MAX_TRACE_DEPTH = 16
+MAX_TRACE_EDGES = 1000
+MAX_DIAGNOSTIC_GROUPS = 1000
+MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP = 20
 
 TOOL_NAME_PREFIX = "pyslang_"
 PUBLIC_TOOL_NAMES = {
     "parse_files": f"{TOOL_NAME_PREFIX}parse_files",
     "parse_filelist": f"{TOOL_NAME_PREFIX}parse_filelist",
     "get_diagnostics": f"{TOOL_NAME_PREFIX}get_diagnostics",
+    "summarize_diagnostics_by_code": f"{TOOL_NAME_PREFIX}summarize_diagnostics_by_code",
     "list_design_units": f"{TOOL_NAME_PREFIX}list_design_units",
     "describe_design_unit": f"{TOOL_NAME_PREFIX}describe_design_unit",
+    "find_member": f"{TOOL_NAME_PREFIX}find_member",
+    "get_assignments": f"{TOOL_NAME_PREFIX}get_assignments",
+    "trace_connectivity": f"{TOOL_NAME_PREFIX}trace_connectivity",
     "get_hierarchy": f"{TOOL_NAME_PREFIX}get_hierarchy",
+    "get_instance_connections": f"{TOOL_NAME_PREFIX}get_instance_connections",
     "find_symbol": f"{TOOL_NAME_PREFIX}find_symbol",
     "dump_syntax_tree_summary": f"{TOOL_NAME_PREFIX}dump_syntax_tree_summary",
     "preprocess_files": f"{TOOL_NAME_PREFIX}preprocess_files",
@@ -171,6 +200,39 @@ SymbolQueryArg = Annotated[
         )
     ),
 ]
+MemberQueryArg = Annotated[
+    str,
+    Field(description="Member name or path to match inside `design_unit`."),
+]
+InstancePathArg = Annotated[
+    str,
+    Field(
+        description=(
+            "Exact elaborated instance path such as `top.u_child`, or an unambiguous instance "
+            "name such as `u_child`."
+        )
+    ),
+]
+AssignmentRoleArg = Annotated[
+    str,
+    Field(
+        default="both",
+        description="Signal role filter: `lhs`, `rhs`, or `both`.",
+        json_schema_extra={"enum": ["lhs", "rhs", "both"]},
+    ),
+]
+TraceStartArg = Annotated[
+    str,
+    Field(description="Hierarchical signal path or unambiguous signal/instance.port suffix."),
+]
+TraceDirectionArg = Annotated[
+    str,
+    Field(
+        default="both",
+        description="Trace direction: `driver`, `load`, or `both`.",
+        json_schema_extra={"enum": ["driver", "load", "both"]},
+    ),
+]
 MatchModeArg = Annotated[
     str,
     Field(
@@ -198,6 +260,62 @@ MaxItemsArg = Annotated[
         default=200,
         description="Maximum number of list items to return before truncation.",
         json_schema_extra={"minimum": 0, "maximum": MAX_LIST_ITEMS},
+    ),
+]
+MaxDiagnosticGroupsArg = Annotated[
+    int,
+    Field(
+        default=200,
+        description="Maximum diagnostic-code groups to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_DIAGNOSTIC_GROUPS},
+    ),
+]
+MaxDiagnosticExamplesPerGroupArg = Annotated[
+    int,
+    Field(
+        default=3,
+        description="Maximum representative diagnostics to include per group.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP},
+    ),
+]
+MaxMemberResultsArg = Annotated[
+    int,
+    Field(
+        default=100,
+        description="Maximum member hits to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_MEMBER_RESULTS},
+    ),
+]
+MaxConnectionsArg = Annotated[
+    int,
+    Field(
+        default=200,
+        description="Maximum port connections to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_CONNECTION_RESULTS},
+    ),
+]
+MaxAssignmentResultsArg = Annotated[
+    int,
+    Field(
+        default=100,
+        description="Maximum assignment hits to return before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_ASSIGNMENT_RESULTS},
+    ),
+]
+TraceDepthArg = Annotated[
+    int,
+    Field(
+        default=5,
+        description="Maximum connectivity hops to traverse.",
+        json_schema_extra={"minimum": 1, "maximum": MAX_TRACE_DEPTH},
+    ),
+]
+MaxTraceEdgesArg = Annotated[
+    int,
+    Field(
+        default=200,
+        description="Maximum connectivity edges to consider before truncation.",
+        json_schema_extra={"minimum": 0, "maximum": MAX_TRACE_EDGES},
     ),
 ]
 MaxResultsArg = Annotated[
@@ -375,6 +493,18 @@ def create_server(
                 "`match_mode` must be one of `exact`, `contains`, or `startswith`."
             )
         return cast(MatchMode, match_mode)
+
+    def validate_assignment_role(role: str) -> AssignmentRole:
+        valid_roles = {"lhs", "rhs", "both"}
+        if role not in valid_roles:
+            raise ToolInputError("`role` must be one of `lhs`, `rhs`, or `both`.")
+        return cast(AssignmentRole, role)
+
+    def validate_trace_direction(direction: str) -> TraceDirection:
+        valid_directions = {"driver", "load", "both"}
+        if direction not in valid_directions:
+            raise ToolInputError("`direction` must be one of `driver`, `load`, or `both`.")
+        return cast(TraceDirection, direction)
 
     def success_result(schema: type[SchemaT], payload: dict[str, Any]) -> CallToolResult:
         validated = schema.model_validate(payload)
@@ -587,6 +717,58 @@ def create_server(
         )
 
     @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Group parse and semantic diagnostics by diagnostic code and severity. Use this for "
+            "large projects where raw diagnostics contain repeated warnings or errors; results "
+            "include counts, representative examples, affected-file counts, and "
+            "unresolved-reference correlation counts."
+        ),
+    )
+    def summarize_diagnostics_by_code(
+        project_root: ProjectRootArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        max_groups: MaxDiagnosticGroupsArg = 200,
+        max_examples_per_group: MaxDiagnosticExamplesPerGroupArg = 3,
+    ) -> Annotated[CallToolResult, SummarizeDiagnosticsByCodeResult | ToolErrorResult]:
+        return run_project_tool(
+            SummarizeDiagnosticsByCodeResult,
+            tool_name="summarize_diagnostics_by_code",
+            tool_args={
+                "max_groups": max_groups,
+                "max_examples_per_group": max_examples_per_group,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: summarize_diagnostics_by_code_core(
+                bundle,
+                max_groups=bounded_int(
+                    "max_groups",
+                    max_groups,
+                    minimum=0,
+                    maximum=MAX_DIAGNOSTIC_GROUPS,
+                ),
+                max_examples_per_group=bounded_int(
+                    "max_examples_per_group",
+                    max_examples_per_group,
+                    minimum=0,
+                    maximum=MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
+                ),
+            ),
+        )
+
+    @mcp.tool(
         name=PUBLIC_TOOL_NAMES["list_design_units"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
@@ -667,6 +849,181 @@ def create_server(
         )
 
     @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["find_member"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Find ports, nets, variables, parameters, and child instances inside one design "
+            "unit. Use this when `find_symbol` is too broad and the query is for a local name."
+        ),
+    )
+    def find_member(
+        project_root: ProjectRootArg,
+        design_unit: DesignUnitNameArg,
+        query: MemberQueryArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        match_mode: MatchModeArg = "exact",
+        include_ports: bool = True,
+        include_nets: bool = True,
+        include_variables: bool = True,
+        include_instances: bool = True,
+        include_parameters: bool = True,
+        max_results: MaxMemberResultsArg = 100,
+    ) -> Annotated[CallToolResult, FindMemberResult | ToolErrorResult]:
+        return run_project_tool(
+            FindMemberResult,
+            tool_name="find_member",
+            tool_args={
+                "design_unit": design_unit,
+                "query": query,
+                "match_mode": match_mode,
+                "include_ports": include_ports,
+                "include_nets": include_nets,
+                "include_variables": include_variables,
+                "include_instances": include_instances,
+                "include_parameters": include_parameters,
+                "max_results": max_results,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: find_member_core(
+                bundle,
+                design_unit=design_unit,
+                query=query,
+                match_mode=validate_match_mode(match_mode),
+                include_ports=include_ports,
+                include_nets=include_nets,
+                include_variables=include_variables,
+                include_instances=include_instances,
+                include_parameters=include_parameters,
+                max_results=bounded_int(
+                    "max_results",
+                    max_results,
+                    minimum=0,
+                    maximum=MAX_MEMBER_RESULTS,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["get_assignments"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Return continuous and procedural assignments involving a local signal in one "
+            "design unit. Results include LHS/RHS snippets, referenced symbols, source location, "
+            "and whether the LHS is structurally partial or select-based."
+        ),
+    )
+    def get_assignments(
+        project_root: ProjectRootArg,
+        design_unit: DesignUnitNameArg,
+        signal: SymbolQueryArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        role: AssignmentRoleArg = "both",
+        max_results: MaxAssignmentResultsArg = 100,
+    ) -> Annotated[CallToolResult, GetAssignmentsResult | ToolErrorResult]:
+        return run_project_tool(
+            GetAssignmentsResult,
+            tool_name="get_assignments",
+            tool_args={
+                "design_unit": design_unit,
+                "signal": signal,
+                "role": role,
+                "max_results": max_results,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: get_assignments_core(
+                bundle,
+                design_unit=design_unit,
+                signal=signal,
+                role=validate_assignment_role(role),
+                max_results=bounded_int(
+                    "max_results",
+                    max_results,
+                    minimum=0,
+                    maximum=MAX_ASSIGNMENT_RESULTS,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["trace_connectivity"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Trace bounded structural connectivity through assignment edges and instance port "
+            "bindings. This is frontend structural evidence only; it is not simulation, formal, "
+            "CDC, timing, or multiple-driver signoff."
+        ),
+    )
+    def trace_connectivity(
+        project_root: ProjectRootArg,
+        start: TraceStartArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        direction: TraceDirectionArg = "both",
+        max_depth: TraceDepthArg = 5,
+        max_edges: MaxTraceEdgesArg = 200,
+    ) -> Annotated[CallToolResult, TraceConnectivityResult | ToolErrorResult]:
+        return run_project_tool(
+            TraceConnectivityResult,
+            tool_name="trace_connectivity",
+            tool_args={
+                "start": start,
+                "direction": direction,
+                "max_depth": max_depth,
+                "max_edges": max_edges,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: trace_connectivity_core(
+                bundle,
+                start=start,
+                direction=validate_trace_direction(direction),
+                max_depth=bounded_int(
+                    "max_depth",
+                    max_depth,
+                    minimum=1,
+                    maximum=MAX_TRACE_DEPTH,
+                ),
+                max_edges=bounded_int(
+                    "max_edges",
+                    max_edges,
+                    minimum=0,
+                    maximum=MAX_TRACE_EDGES,
+                ),
+            ),
+        )
+
+    @mcp.tool(
         name=PUBLIC_TOOL_NAMES["get_hierarchy"],
         annotations=READ_ONLY_ANNOTATIONS,
         description=(
@@ -713,6 +1070,51 @@ def create_server(
                     max_children,
                     minimum=0,
                     maximum=MAX_HIERARCHY_CHILDREN,
+                ),
+            ),
+        )
+
+    @mcp.tool(
+        name=PUBLIC_TOOL_NAMES["get_instance_connections"],
+        annotations=READ_ONLY_ANNOTATIONS,
+        description=(
+            "Return a focused port-connection dump for one elaborated instance without "
+            "expanding the full hierarchy tree."
+        ),
+    )
+    def get_instance_connections(
+        project_root: ProjectRootArg,
+        instance_path_or_name: InstancePathArg,
+        files: OptionalFilesArg = None,
+        filelist: OptionalFilelistArg = None,
+        include_dirs: IncludeDirsArg = None,
+        defines: DefinesArg = None,
+        top_modules: TopModulesArg = None,
+        max_connections: MaxConnectionsArg = 200,
+    ) -> Annotated[CallToolResult, GetInstanceConnectionsResult | ToolErrorResult]:
+        return run_project_tool(
+            GetInstanceConnectionsResult,
+            tool_name="get_instance_connections",
+            tool_args={
+                "instance_path_or_name": instance_path_or_name,
+                "max_connections": max_connections,
+            },
+            project_factory=lambda: resolve_project(
+                project_root=project_root,
+                files=files,
+                filelist=filelist,
+                include_dirs=include_dirs,
+                defines=defines,
+                top_modules=top_modules,
+            ),
+            callback=lambda bundle: get_instance_connections_core(
+                bundle,
+                instance_path_or_name=instance_path_or_name,
+                max_connections=bounded_int(
+                    "max_connections",
+                    max_connections,
+                    minimum=0,
+                    maximum=MAX_CONNECTION_RESULTS,
                 ),
             ),
         )

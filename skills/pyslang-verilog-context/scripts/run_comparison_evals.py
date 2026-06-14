@@ -16,7 +16,6 @@ from mcp.types import CallToolResult
 from pyslang_mcp.cache import AnalysisCache
 from pyslang_mcp.server import PUBLIC_TOOL_NAMES, create_server
 
-
 MODULE_RE = re.compile(r"^\s*(?:module|interface|package)\s+([A-Za-z_][A-Za-z0-9_$]*)", re.M)
 HDL_SUFFIXES = {".sv", ".svh", ".v", ".vh"}
 
@@ -104,7 +103,9 @@ def run_baseline(case: dict[str, Any], evals_dir: Path) -> dict[str, Any]:
     }
 
 
-async def call_tool(server: Any, tool_name: str, arguments: dict[str, Any]) -> tuple[dict[str, Any], bool]:
+async def call_tool(
+    server: Any, tool_name: str, arguments: dict[str, Any]
+) -> tuple[dict[str, Any], bool]:
     result = await server.call_tool(tool_name, arguments)
     assert isinstance(result, CallToolResult)
     assert result.structuredContent is not None
@@ -130,7 +131,9 @@ def project_args(case: dict[str, Any], evals_dir: Path) -> dict[str, Any]:
     return args
 
 
-def summarize_tool_payload(tool_name: str, payload: dict[str, Any], is_error: bool) -> dict[str, Any]:
+def summarize_tool_payload(
+    tool_name: str, payload: dict[str, Any], is_error: bool
+) -> dict[str, Any]:
     if is_error:
         error = payload.get("error", {})
         return {
@@ -154,6 +157,13 @@ def summarize_tool_payload(tool_name: str, payload: dict[str, Any], is_error: bo
             "status": payload.get("project_status", {}).get("status"),
             "diagnostic_total": summary.get("total"),
             "severity_counts": summary.get("severity_counts", {}),
+        }
+    if tool_name == "pyslang_summarize_diagnostics_by_code":
+        summary = payload.get("summary", {})
+        return {
+            "ok": True,
+            "group_total": summary.get("total_groups"),
+            "diagnostic_total": summary.get("total_diagnostics"),
         }
     if tool_name == "pyslang_list_design_units":
         summary = payload.get("summary", {})
@@ -186,6 +196,39 @@ def summarize_tool_payload(tool_name: str, payload: dict[str, Any], is_error: bo
             "declaration_count": summary.get("declaration_count"),
             "reference_count": summary.get("reference_count"),
         }
+    if tool_name == "pyslang_find_member":
+        summary = payload.get("summary", {})
+        return {
+            "ok": True,
+            "found_design_unit": payload.get("found_design_unit"),
+            "member_total": summary.get("total"),
+            "matched_names": [member.get("name") for member in payload.get("members", [])],
+        }
+    if tool_name == "pyslang_get_assignments":
+        summary = payload.get("summary", {})
+        return {
+            "ok": True,
+            "found_design_unit": payload.get("found_design_unit"),
+            "assignment_total": summary.get("total"),
+            "signal": payload.get("signal"),
+            "by_assignment_kind": summary.get("by_assignment_kind", {}),
+        }
+    if tool_name == "pyslang_get_instance_connections":
+        summary = payload.get("summary", {})
+        return {
+            "ok": True,
+            "found": payload.get("found"),
+            "connection_total": summary.get("total"),
+            "instance_path": (payload.get("instance") or {}).get("hierarchical_path"),
+        }
+    if tool_name == "pyslang_trace_connectivity":
+        summary = payload.get("summary", {})
+        return {
+            "ok": True,
+            "resolved_starts": payload.get("resolved_starts", []),
+            "path_count": summary.get("path_count"),
+            "edge_count": summary.get("edge_count_considered"),
+        }
     if tool_name == "pyslang_dump_syntax_tree_summary":
         summary = payload.get("summary", {})
         return {
@@ -215,8 +258,17 @@ async def run_skill_mode(case: dict[str, Any], evals_dir: Path) -> dict[str, Any
         elif expected_tool == "pyslang_get_diagnostics":
             payload, is_error = await call_tool(server, PUBLIC_TOOL_NAMES["get_diagnostics"], args)
             tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
+        elif expected_tool == "pyslang_summarize_diagnostics_by_code":
+            payload, is_error = await call_tool(
+                server,
+                PUBLIC_TOOL_NAMES["summarize_diagnostics_by_code"],
+                {**args, "max_groups": 10, "max_examples_per_group": 2},
+            )
+            tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
         elif expected_tool == "pyslang_list_design_units":
-            payload, is_error = await call_tool(server, PUBLIC_TOOL_NAMES["list_design_units"], args)
+            payload, is_error = await call_tool(
+                server, PUBLIC_TOOL_NAMES["list_design_units"], args
+            )
             tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
         elif expected_tool == "pyslang_describe_design_unit":
             summaries = []
@@ -227,7 +279,10 @@ async def run_skill_mode(case: dict[str, Any], evals_dir: Path) -> dict[str, Any
                     {**args, "name": top},
                 )
                 summaries.append(summarize_tool_payload(expected_tool, payload, is_error))
-            tool_runs[expected_tool] = {"ok": all(item.get("ok") for item in summaries), "runs": summaries}
+            tool_runs[expected_tool] = {
+                "ok": all(item.get("ok") for item in summaries),
+                "runs": summaries,
+            }
         elif expected_tool == "pyslang_get_hierarchy":
             payload, is_error = await call_tool(server, PUBLIC_TOOL_NAMES["get_hierarchy"], args)
             tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
@@ -241,6 +296,70 @@ async def run_skill_mode(case: dict[str, Any], evals_dir: Path) -> dict[str, Any
                 tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
             else:
                 tool_runs[expected_tool] = {"ok": False, "error_message": "case has no query"}
+        elif expected_tool == "pyslang_find_member":
+            design_unit = case_input.get("design_unit")
+            if isinstance(design_unit, str) and isinstance(query, str):
+                payload, is_error = await call_tool(
+                    server,
+                    PUBLIC_TOOL_NAMES["find_member"],
+                    {
+                        **args,
+                        "design_unit": design_unit,
+                        "query": query,
+                        "match_mode": "exact",
+                    },
+                )
+                tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
+            else:
+                tool_runs[expected_tool] = {
+                    "ok": False,
+                    "error_message": "case lacks design_unit/query",
+                }
+        elif expected_tool == "pyslang_get_assignments":
+            design_unit = case_input.get("design_unit")
+            signal = case_input.get("signal")
+            if isinstance(design_unit, str) and isinstance(signal, str):
+                payload, is_error = await call_tool(
+                    server,
+                    PUBLIC_TOOL_NAMES["get_assignments"],
+                    {
+                        **args,
+                        "design_unit": design_unit,
+                        "signal": signal,
+                        "role": "both",
+                    },
+                )
+                tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
+            else:
+                tool_runs[expected_tool] = {
+                    "ok": False,
+                    "error_message": "case lacks design_unit/signal",
+                }
+        elif expected_tool == "pyslang_get_instance_connections":
+            instance_path = case_input.get("instance_path_or_name")
+            if isinstance(instance_path, str):
+                payload, is_error = await call_tool(
+                    server,
+                    PUBLIC_TOOL_NAMES["get_instance_connections"],
+                    {**args, "instance_path_or_name": instance_path},
+                )
+                tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
+            else:
+                tool_runs[expected_tool] = {
+                    "ok": False,
+                    "error_message": "case lacks instance_path_or_name",
+                }
+        elif expected_tool == "pyslang_trace_connectivity":
+            start = case_input.get("start")
+            if isinstance(start, str):
+                payload, is_error = await call_tool(
+                    server,
+                    PUBLIC_TOOL_NAMES["trace_connectivity"],
+                    {**args, "start": start, "direction": "both", "max_depth": 5, "max_edges": 20},
+                )
+                tool_runs[expected_tool] = summarize_tool_payload(expected_tool, payload, is_error)
+            else:
+                tool_runs[expected_tool] = {"ok": False, "error_message": "case lacks start"}
         elif expected_tool == "pyslang_dump_syntax_tree_summary":
             payload, is_error = await call_tool(
                 server,
@@ -282,10 +401,7 @@ def write_reports(report: dict[str, Any], output_dir: Path) -> None:
                 id=case["id"],
                 files=baseline["source_file_count"],
                 units=len(baseline["regex_design_units"]),
-                tools=(
-                    f"{skill['successful_tool_count']}/"
-                    f"{skill['expected_tool_count']}"
-                ),
+                tools=(f"{skill['successful_tool_count']}/{skill['expected_tool_count']}"),
                 rate=skill["tool_success_rate"],
             )
         )
@@ -315,9 +431,7 @@ async def run(args: argparse.Namespace) -> int:
     evals_dir = manifest_path.parent
     selected = set(args.case or [])
     cases = [
-        case
-        for case in manifest.get("cases", [])
-        if not selected or case.get("id") in selected
+        case for case in manifest.get("cases", []) if not selected or case.get("id") in selected
     ]
 
     report_cases = []

@@ -26,9 +26,35 @@ The public tool surface is:
 - `pyslang_describe_design_unit`
 - `pyslang_get_hierarchy`
 - `pyslang_find_symbol`
+- `pyslang_find_member`
+- `pyslang_get_assignments`
+- `pyslang_trace_connectivity`
+- `pyslang_get_instance_connections`
+- `pyslang_summarize_diagnostics_by_code`
 - `pyslang_dump_syntax_tree_summary`
 - `pyslang_preprocess_files`
 - `pyslang_get_project_summary`
+
+Planned tools are not part of the public tool surface until implemented,
+tested, and documented.
+
+## Current Implementation Plan
+
+Issue #15 Verilog analysis work has a public-safe implementation
+plan at
+[docs/superpowers/plans/2026-06-11-verilog-mcp-functions.md](./docs/superpowers/plans/2026-06-11-verilog-mcp-functions.md).
+
+When executing that plan:
+
+- follow the plan task-by-task and update checkboxes as work completes
+- implement `pyslang_find_member`, `pyslang_get_assignments`,
+  `pyslang_trace_connectivity`, `pyslang_get_instance_connections`, and
+  `pyslang_summarize_diagnostics_by_code`
+- do not implement `pyslang_parse_generated_cache` as part of that plan
+- do not advertise planned tools as released behavior until the code, tests,
+  docs, and MCP protocol smoke coverage are complete
+- preserve the read-only, project-root, bounded-output, and cache invariants
+  in this file
 
 Non-goals:
 

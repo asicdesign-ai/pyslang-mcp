@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import re
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Literal
@@ -30,12 +30,18 @@ from .serializers import (
 from .types import (
     AnalysisBundle,
     AnalysisIndex,
+    ConnectivityEdge,
+    IndexedAssignment,
     IndexedDeclaration,
+    IndexedInstanceConnection,
+    IndexedMember,
     IndexedReference,
     ProjectConfig,
 )
 
 MatchMode = Literal["exact", "contains", "startswith"]
+AssignmentRole = Literal["lhs", "rhs", "both"]
+TraceDirection = Literal["driver", "load", "both"]
 
 
 def build_analysis(project: ProjectConfig) -> AnalysisBundle:
@@ -177,6 +183,85 @@ def get_diagnostics(bundle: AnalysisBundle, *, max_items: int = 200) -> dict[str
     )
 
 
+def summarize_diagnostics_by_code(
+    bundle: AnalysisBundle,
+    *,
+    max_groups: int = 200,
+    max_examples_per_group: int = 3,
+) -> dict[str, Any]:
+    """Group parse and semantic diagnostics by code and severity."""
+
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    severity_counts: Counter[str] = Counter()
+    total_diagnostics = 0
+
+    for diagnostic in bundle.compilation.getAllDiagnostics():
+        total_diagnostics += 1
+        entry = _serialize_diagnostic(bundle, diagnostic)
+        severity = str(entry["severity"])
+        code = str(entry["code"])
+        severity_counts[severity] += 1
+        group = grouped.setdefault(
+            (code, severity),
+            {
+                "code": code,
+                "severity": severity,
+                "count": 0,
+                "affected_files": set(),
+                "affected_design_units": set(),
+                "unresolved_reference_count": 0,
+                "message_samples": [],
+                "examples": [],
+            },
+        )
+        group["count"] += 1
+        location = entry.get("location")
+        if isinstance(location, dict) and location.get("path"):
+            group["affected_files"].add(str(location["path"]))
+        for unit in _diagnostic_design_unit_candidates(bundle, location):
+            group["affected_design_units"].add(unit)
+        message = str(entry["message"])
+        if message not in group["message_samples"] and len(group["message_samples"]) < 3:
+            group["message_samples"].append(message)
+        if _diagnostic_looks_unresolved(entry):
+            group["unresolved_reference_count"] += 1
+        if len(group["examples"]) < max(max_examples_per_group, 0):
+            group["examples"].append(entry)
+
+    groups: list[dict[str, Any]] = []
+    for group in grouped.values():
+        examples = list(group["examples"])
+        groups.append(
+            {
+                "code": group["code"],
+                "severity": group["severity"],
+                "count": group["count"],
+                "affected_files_count": len(group["affected_files"]),
+                "affected_design_units_count": len(group["affected_design_units"]),
+                "unresolved_reference_count": group["unresolved_reference_count"],
+                "message_samples": list(group["message_samples"]),
+                "examples": examples,
+                "truncation": _truncation(returned=len(examples), total=group["count"]),
+            }
+        )
+
+    groups.sort(key=lambda item: (-int(item["count"]), str(item["code"]), str(item["severity"])))
+    limited_groups, group_truncation = limit_list(groups, max_items=max_groups)
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "project_root": bundle.project.project_root.as_posix(),
+            "summary": {
+                "total_diagnostics": total_diagnostics,
+                "total_groups": len(groups),
+                "severity_counts": dict(sorted(severity_counts.items())),
+                "truncation": group_truncation,
+            },
+            "groups": limited_groups,
+        }
+    )
+
+
 def list_design_units(bundle: AnalysisBundle, *, max_items: int = 200) -> dict[str, Any]:
     """List project-local modules, interfaces, and packages."""
 
@@ -259,6 +344,88 @@ def describe_design_unit(bundle: AnalysisBundle, *, name: str) -> dict[str, Any]
     return stable
 
 
+def find_member(
+    bundle: AnalysisBundle,
+    *,
+    design_unit: str,
+    query: str,
+    match_mode: MatchMode = "exact",
+    include_ports: bool = True,
+    include_nets: bool = True,
+    include_variables: bool = True,
+    include_instances: bool = True,
+    include_parameters: bool = True,
+    max_results: int = 100,
+) -> dict[str, Any]:
+    """Find local members inside a specific design unit."""
+
+    selected, candidates, ambiguous = _resolve_design_unit(bundle, name=design_unit)
+    if selected is None:
+        return stabilize_json(
+            {
+                "project_status": _project_status(bundle),
+                "design_unit_query": design_unit,
+                "found_design_unit": False,
+                "ambiguous_design_unit": ambiguous,
+                "design_unit_candidates": candidates,
+                "query": query,
+                "match_mode": match_mode,
+                "summary": {
+                    "total": 0,
+                    "by_kind": {},
+                    "truncation": _truncation(returned=0, total=0),
+                },
+                "members": [],
+            }
+        )
+
+    allowed: set[str] = set()
+    if include_ports:
+        allowed.add("port")
+    if include_nets:
+        allowed.add("net")
+    if include_variables:
+        allowed.add("variable")
+    if include_instances:
+        allowed.add("instance")
+    if include_parameters:
+        allowed.add("parameter")
+
+    entries = _analysis_index(bundle).members_by_design_unit.get(str(selected["name"]), ())
+    matching: list[dict[str, Any]] = []
+    kind_counts: Counter[str] = Counter()
+    total = 0
+    limit = max(max_results, 0)
+    for entry in entries:
+        kind = str(entry.output["kind"])
+        if kind not in allowed:
+            continue
+        if not _matches_text(query=query, match_mode=match_mode, candidates=entry.candidates):
+            continue
+        total += 1
+        kind_counts[kind] += 1
+        if len(matching) < limit:
+            matching.append(entry.output)
+
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "design_unit_query": design_unit,
+            "found_design_unit": True,
+            "ambiguous_design_unit": False,
+            "design_unit_candidates": [],
+            "query": query,
+            "match_mode": match_mode,
+            "summary": {
+                "total": total,
+                "by_kind": dict(sorted(kind_counts.items())),
+                "truncation": _truncation(returned=len(matching), total=total),
+            },
+            "members": matching,
+        }
+    )
+
+
 def get_hierarchy(
     bundle: AnalysisBundle,
     *,
@@ -301,6 +468,235 @@ def get_hierarchy(
                 "max_depth_requested": max_depth,
             },
             "hierarchy": hierarchy,
+        }
+    )
+
+
+def get_instance_connections(
+    bundle: AnalysisBundle,
+    *,
+    instance_path_or_name: str,
+    max_connections: int = 200,
+) -> dict[str, Any]:
+    """Return focused port connections for one elaborated instance."""
+
+    index = _analysis_index(bundle)
+    exact_paths = [
+        path
+        for path, record in index.instance_records_by_path.items()
+        if path == instance_path_or_name
+        or path.endswith(f".{instance_path_or_name}")
+        or record["name"] == instance_path_or_name
+    ]
+    exact_paths = sorted(set(exact_paths))
+    if len(exact_paths) != 1:
+        candidates = [
+            index.instance_records_by_path[path]
+            for path in sorted(index.instance_records_by_path)
+            if _matches_text(
+                query=instance_path_or_name,
+                match_mode="contains",
+                candidates={
+                    path,
+                    index.instance_records_by_path[path]["name"],
+                    index.instance_records_by_path[path].get("definition"),
+                },
+            )
+        ][:10]
+        return stabilize_json(
+            {
+                "project_status": _project_status(bundle),
+                "query": instance_path_or_name,
+                "found": False,
+                "ambiguous": len(exact_paths) > 1,
+                "candidates": [index.instance_records_by_path[path] for path in exact_paths]
+                or candidates,
+                "instance": None,
+                "summary": {
+                    "total": 0,
+                    "truncation": _truncation(returned=0, total=0),
+                },
+                "connections": [],
+            }
+        )
+
+    instance_path = exact_paths[0]
+    entries = index.connections_by_instance_path.get(instance_path, ())
+    limited_entries, truncation = limit_list(
+        [entry.output for entry in entries],
+        max_items=max_connections,
+    )
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "query": instance_path_or_name,
+            "found": True,
+            "ambiguous": False,
+            "candidates": [],
+            "instance": index.instance_records_by_path[instance_path],
+            "summary": {
+                "total": len(entries),
+                "truncation": truncation,
+            },
+            "connections": limited_entries,
+        }
+    )
+
+
+def get_assignments(
+    bundle: AnalysisBundle,
+    *,
+    design_unit: str,
+    signal: str,
+    role: AssignmentRole = "both",
+    max_results: int = 100,
+) -> dict[str, Any]:
+    """Return assignments involving a signal in a design unit."""
+
+    selected, candidates, ambiguous = _resolve_design_unit(bundle, name=design_unit)
+    if selected is None:
+        return stabilize_json(
+            {
+                "project_status": _project_status(bundle),
+                "design_unit_query": design_unit,
+                "found_design_unit": False,
+                "ambiguous_design_unit": ambiguous,
+                "design_unit_candidates": candidates,
+                "signal": signal,
+                "role": role,
+                "summary": {
+                    "total": 0,
+                    "by_assignment_kind": {},
+                    "truncation": _truncation(returned=0, total=0),
+                },
+                "assignments": [],
+            }
+        )
+
+    entries = _analysis_index(bundle).assignments_by_design_unit.get(str(selected["name"]), ())
+    outputs: list[dict[str, Any]] = []
+    kind_counts: Counter[str] = Counter()
+    total = 0
+    limit = max(max_results, 0)
+    for entry in entries:
+        lhs_match = _matches_text(
+            query=signal,
+            match_mode="exact",
+            candidates=entry.lhs_candidates,
+        )
+        rhs_match = _matches_text(
+            query=signal,
+            match_mode="exact",
+            candidates=entry.rhs_candidates,
+        )
+        if role == "lhs" and not lhs_match:
+            continue
+        if role == "rhs" and not rhs_match:
+            continue
+        if role == "both" and not (lhs_match or rhs_match):
+            continue
+        total += 1
+        kind_counts[str(entry.output["assignment_kind"])] += 1
+        if len(outputs) < limit:
+            outputs.append(entry.output)
+
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "design_unit_query": design_unit,
+            "found_design_unit": True,
+            "ambiguous_design_unit": False,
+            "design_unit_candidates": [],
+            "signal": signal,
+            "role": role,
+            "summary": {
+                "total": total,
+                "by_assignment_kind": dict(sorted(kind_counts.items())),
+                "truncation": _truncation(returned=len(outputs), total=total),
+            },
+            "assignments": outputs,
+        }
+    )
+
+
+def trace_connectivity(
+    bundle: AnalysisBundle,
+    *,
+    start: str,
+    direction: TraceDirection = "both",
+    max_depth: int = 5,
+    max_edges: int = 200,
+) -> dict[str, Any]:
+    """Trace bounded structural connectivity through assignments and port bindings."""
+
+    index = _analysis_index(bundle)
+    starts = _resolve_connectivity_starts(index, start)
+    paths: list[dict[str, Any]] = []
+    edge_count = 0
+    limit = max(max_edges, 0)
+    queue: deque[tuple[str, str, list[dict[str, Any]], set[str]]] = deque(
+        (node, node, [], {node}) for node in starts
+    )
+    budget_exhausted = False
+
+    while queue and len(paths) < limit:
+        path_start, node, hops, visited = queue.popleft()
+        if len(hops) >= max_depth:
+            paths.append(
+                {
+                    "start": path_start,
+                    "end": node,
+                    "hops": hops,
+                    "stop_reason": "max_depth",
+                }
+            )
+            continue
+        next_edges = _trace_edges_for_direction(index, node, direction)
+        if not next_edges:
+            paths.append(
+                {
+                    "start": path_start,
+                    "end": node,
+                    "hops": hops,
+                    "stop_reason": "no_edges",
+                }
+            )
+            continue
+        for edge in next_edges:
+            if edge_count >= limit:
+                budget_exhausted = True
+                break
+            edge_count += 1
+            next_hops = [*hops, edge.output]
+            if edge.target in visited:
+                paths.append(
+                    {
+                        "start": path_start,
+                        "end": edge.target,
+                        "hops": next_hops,
+                        "stop_reason": "cycle",
+                    }
+                )
+                continue
+            queue.append((path_start, edge.target, next_hops, {*visited, edge.target}))
+        if budget_exhausted:
+            break
+
+    pending = len(queue) + (1 if budget_exhausted else 0)
+    truncation = _truncation(returned=len(paths), total=len(paths) + pending)
+    return stabilize_json(
+        {
+            "project_status": _project_status(bundle),
+            "start": start,
+            "direction": direction,
+            "resolved_starts": starts,
+            "summary": {
+                "path_count": len(paths),
+                "edge_count_considered": edge_count,
+                "max_depth_requested": max_depth,
+                "truncation": truncation,
+            },
+            "paths": paths,
         }
     )
 
@@ -499,6 +895,43 @@ def _project_status(bundle: AnalysisBundle) -> dict[str, Any]:
     }
 
 
+def _diagnostic_looks_unresolved(entry: dict[str, Any]) -> bool:
+    text = f"{entry.get('code', '')} {entry.get('message', '')}".lower()
+    return any(
+        marker in text
+        for marker in (
+            "undeclared",
+            "unresolved",
+            "unknown module",
+            "unknown type",
+            "could not find",
+        )
+    )
+
+
+def _diagnostic_design_unit_candidates(
+    bundle: AnalysisBundle,
+    location: dict[str, Any] | None,
+) -> tuple[str, ...]:
+    if not location:
+        return ()
+    path = location.get("path")
+    if not isinstance(path, str):
+        return ()
+    line = int(location.get("line", 0))
+    candidates: list[tuple[int, str]] = []
+    for record in _analysis_index(bundle).design_unit_records:
+        record_location = record.get("location")
+        if not isinstance(record_location, dict):
+            continue
+        record_line = int(record_location.get("line", 0))
+        if record_location.get("path") == path and record_line <= line:
+            candidates.append((record_line, str(record["name"])))
+    if not candidates:
+        return ()
+    return (max(candidates)[1],)
+
+
 def _design_unit_symbols(bundle: AnalysisBundle) -> list[Any]:
     return [*bundle.compilation.getDefinitions(), *bundle.compilation.getPackages()]
 
@@ -522,11 +955,20 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
     design_unit_symbols_by_key: dict[tuple[str, str], Any] = {}
     declarations: list[IndexedDeclaration] = []
     references: list[IndexedReference] = []
+    members_by_design_unit: defaultdict[str, list[IndexedMember]] = defaultdict(list)
+    connections_by_instance_path: defaultdict[str, list[IndexedInstanceConnection]] = defaultdict(
+        list
+    )
+    assignments_by_design_unit: defaultdict[str, list[IndexedAssignment]] = defaultdict(list)
+    edges_by_source: defaultdict[str, list[ConnectivityEdge]] = defaultdict(list)
+    edges_by_target: defaultdict[str, list[ConnectivityEdge]] = defaultdict(list)
     instances: list[Any] = []
     instance_records_by_path: dict[str, dict[str, Any]] = {}
     children_by_parent: defaultdict[str | None, list[str]] = defaultdict(list)
     seen_declarations: set[tuple[str, str, str | None]] = set()
     seen_references: set[tuple[str, str, str | None, str | None]] = set()
+    seen_members: set[tuple[str, str, str]] = set()
+    seen_assignments: set[tuple[str, str | None, int | None, int | None]] = set()
 
     for symbol in design_units:
         record = _serialize_design_unit_record(bundle, symbol)
@@ -548,6 +990,63 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
             instance_records_by_path[path] = _serialize_instance(bundle, symbol)
             parent = path.rsplit(".", 1)[0] if "." in path else None
             children_by_parent[parent].append(path)
+            for connection in getattr(symbol, "portConnections", []):
+                connection_entry = _serialize_instance_connection(bundle, symbol, connection)
+                connections_by_instance_path[path].append(connection_entry)
+                formal = f"{path}.{connection.port.name}"
+                connected = connection_entry.output.get("connected_symbol")
+                actual = connected.get("hierarchical_path") if isinstance(connected, dict) else None
+                direction = connection_entry.output.get("direction")
+                if actual:
+                    if direction == "In":
+                        source, target = str(actual), formal
+                    elif direction == "Out":
+                        source, target = formal, str(actual)
+                    else:
+                        source, target = str(actual), formal
+                    _add_connectivity_edge(
+                        source=source,
+                        target=target,
+                        kind="port_binding",
+                        output={
+                            "source": source,
+                            "target": target,
+                            "kind": "port_binding",
+                            "instance_path": path,
+                            "design_unit": getattr(
+                                getattr(symbol, "definition", None), "name", None
+                            ),
+                            "port": connection.port.name,
+                            "direction": direction,
+                            "expression_snippet": connection_entry.output.get("expression_snippet"),
+                            "location": connection_entry.output.get("source_location"),
+                        },
+                        edges_by_source=edges_by_source,
+                        edges_by_target=edges_by_target,
+                    )
+                    if direction == "InOut":
+                        _add_connectivity_edge(
+                            source=formal,
+                            target=str(actual),
+                            kind="port_binding",
+                            output={
+                                "source": formal,
+                                "target": str(actual),
+                                "kind": "port_binding",
+                                "instance_path": path,
+                                "design_unit": getattr(
+                                    getattr(symbol, "definition", None), "name", None
+                                ),
+                                "port": connection.port.name,
+                                "direction": direction,
+                                "expression_snippet": connection_entry.output.get(
+                                    "expression_snippet"
+                                ),
+                                "location": connection_entry.output.get("source_location"),
+                            },
+                            edges_by_source=edges_by_source,
+                            edges_by_target=edges_by_target,
+                        )
 
         references.extend(
             _collect_reference_index_entries(
@@ -556,6 +1055,63 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 seen=seen_references,
             )
         )
+
+        member_entry = _make_member_entry(bundle, symbol)
+        if member_entry is not None:
+            key = (
+                member_entry.design_unit,
+                str(member_entry.output["kind"]),
+                str(member_entry.output["hierarchical_path"]),
+            )
+            if key not in seen_members:
+                seen_members.add(key)
+                members_by_design_unit[member_entry.design_unit].append(member_entry)
+
+        if (
+            type(symbol).__name__ == "AssignmentExpression"
+            and getattr(symbol, "syntax", None) is not None
+        ):
+            assignment_kind = _assignment_kind_from_syntax(symbol.syntax)
+            assignment_entry = _make_assignment_entry(
+                bundle,
+                assignment_kind=assignment_kind,
+                expression=symbol,
+            )
+            if assignment_entry is not None:
+                for rhs_hit in assignment_entry.output["rhs_symbols"]:
+                    for lhs_hit in assignment_entry.output["lhs_symbols"]:
+                        _add_connectivity_edge(
+                            source=str(rhs_hit["hierarchical_path"]),
+                            target=str(lhs_hit["hierarchical_path"]),
+                            kind="assignment",
+                            output={
+                                "source": str(rhs_hit["hierarchical_path"]),
+                                "target": str(lhs_hit["hierarchical_path"]),
+                                "kind": "assignment",
+                                "instance_path": None,
+                                "design_unit": assignment_entry.design_unit,
+                                "port": None,
+                                "direction": None,
+                                "expression_snippet": assignment_entry.output.get(
+                                    "expression_snippet"
+                                ),
+                                "location": assignment_entry.output.get("location"),
+                            },
+                            edges_by_source=edges_by_source,
+                            edges_by_target=edges_by_target,
+                        )
+                location = assignment_entry.output.get("location")
+                key = (
+                    assignment_entry.design_unit,
+                    location.get("path") if isinstance(location, dict) else None,
+                    int(location.get("line", 0)) if isinstance(location, dict) else None,
+                    int(location.get("column", 0)) if isinstance(location, dict) else None,
+                )
+                if key not in seen_assignments:
+                    seen_assignments.add(key)
+                    assignments_by_design_unit[assignment_entry.design_unit].append(
+                        assignment_entry
+                    )
 
         if kind is not None and kind.name == "NamedValue":
             return True
@@ -587,6 +1143,42 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
         top_instance_paths=top_instance_paths,
         declarations=tuple(declarations),
         references=tuple(references),
+        members_by_design_unit={
+            key: tuple(
+                sorted(
+                    values,
+                    key=lambda item: (
+                        str(item.output["hierarchical_path"]),
+                        str(item.output["kind"]),
+                    ),
+                )
+            )
+            for key, values in members_by_design_unit.items()
+        },
+        connections_by_instance_path={
+            key: tuple(values) for key, values in connections_by_instance_path.items()
+        },
+        assignments_by_design_unit={
+            key: tuple(
+                sorted(
+                    values,
+                    key=lambda item: (
+                        str((item.output.get("location") or {}).get("path", "")),
+                        int((item.output.get("location") or {}).get("line", 0)),
+                        int((item.output.get("location") or {}).get("column", 0)),
+                    ),
+                )
+            )
+            for key, values in assignments_by_design_unit.items()
+        },
+        connectivity_edges_by_source={
+            key: tuple(sorted(values, key=lambda edge: (edge.target, edge.kind, str(edge.output))))
+            for key, values in edges_by_source.items()
+        },
+        connectivity_edges_by_target={
+            key: tuple(sorted(values, key=lambda edge: (edge.source, edge.kind, str(edge.output))))
+            for key, values in edges_by_target.items()
+        },
     )
 
 
@@ -720,6 +1312,81 @@ def _serialize_design_unit_record(bundle: AnalysisBundle, symbol: Any) -> dict[s
     }
 
 
+def _resolve_design_unit(
+    bundle: AnalysisBundle,
+    *,
+    name: str,
+) -> tuple[dict[str, Any] | None, list[dict[str, Any]], bool]:
+    records = list(_analysis_index(bundle).design_unit_records)
+    exact = [record for record in records if record["name"] == name]
+    if len(exact) == 1:
+        return exact[0], [], False
+    suggestions = [
+        record
+        for record in records
+        if _matches_text(
+            query=name,
+            match_mode="contains",
+            candidates={record["name"], record["hierarchical_path"], record["lexical_path"]},
+        )
+        or str(record["name"]).lower().startswith(name.lower())
+    ][:10]
+    return None, exact or suggestions, len(exact) > 1
+
+
+def _member_kind(symbol: Any) -> str | None:
+    kind_name = _symbol_kind_name(symbol)
+    if kind_name == "Port":
+        return "port"
+    if kind_name == "Instance":
+        return "instance"
+    if kind_name == "Variable":
+        return "variable"
+    if kind_name == "Net":
+        return "net"
+    if kind_name in {"Parameter", "ParameterSymbol"}:
+        return "parameter"
+    if kind_name in {"TypeAlias", "TypeAliasType"}:
+        return "type"
+    return None
+
+
+def _make_member_entry(bundle: AnalysisBundle, symbol: Any) -> IndexedMember | None:
+    design_unit = _symbol_design_unit(symbol)
+    kind = _member_kind(symbol)
+    name = getattr(symbol, "name", None)
+    lexical_path = _symbol_lexical_path(symbol)
+    if not design_unit or not kind or not name:
+        return None
+    if kind == "instance" and "." not in lexical_path:
+        return None
+    output = {
+        "name": str(name),
+        "kind": kind,
+        "symbol_kind": _symbol_kind_name(symbol),
+        "design_unit": design_unit,
+        "hierarchical_path": _symbol_hierarchical_path(symbol),
+        "lexical_path": lexical_path,
+        "location": _serialize_location(bundle, getattr(symbol, "location", None)),
+        "direction": _direction_name(symbol),
+        "data_type": _data_type_text(symbol),
+        "evidence_source": "semantic",
+    }
+    return IndexedMember(
+        design_unit=design_unit,
+        candidates=_candidate_tuple(
+            (
+                output["name"],
+                output["kind"],
+                output["symbol_kind"],
+                output["hierarchical_path"],
+                output["lexical_path"],
+            )
+        ),
+        output=output,
+    )
+
+
 def _tracked_paths(project: ProjectConfig, source_manager: Any) -> tuple[Path, ...]:
     tracked: set[Path] = set(project.files) | set(project.filelists)
     for buffer_id in source_manager.getAllBuffers():
@@ -764,6 +1431,201 @@ def _serialize_instance(bundle: AnalysisBundle, instance: Any) -> dict[str, Any]
     }
 
 
+def _connection_actual_expression(connection: Any) -> Any:
+    expression = connection.expression
+    direction = getattr(getattr(connection.port, "direction", None), "name", None)
+    if type(expression).__name__ == "AssignmentExpression" and direction in {"Out", "InOut"}:
+        return expression.left
+    return expression
+
+
+def _symbol_declaration_from_hit(hit: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "name": hit.get("name"),
+        "kind": hit.get("kind", "Unknown"),
+        "hierarchical_path": hit.get("hierarchical_path", ""),
+        "lexical_path": hit.get("lexical_path", ""),
+        "location": hit.get("location"),
+    }
+
+
+def _serialize_instance_connection(
+    bundle: AnalysisBundle,
+    instance: Any,
+    connection: Any,
+) -> IndexedInstanceConnection:
+    actual = _connection_actual_expression(connection)
+    symbol_hits = _expression_symbol_hits(actual)
+    connected_symbol = None
+    if symbol_hits:
+        first = dict(symbol_hits[0])
+        first["location"] = _serialize_location(
+            bundle,
+            getattr(getattr(actual, "symbol", None), "location", None),
+        )
+        connected_symbol = _symbol_declaration_from_hit(first)
+    output = {
+        "port": connection.port.name,
+        "direction": _direction_name(connection.port),
+        "expression_kind": connection.expression.kind.name,
+        "expression_snippet": _source_snippet(bundle, connection.expression.sourceRange),
+        "connected_symbol": connected_symbol,
+        "source_location": _serialize_range_location(bundle, connection.expression.sourceRange),
+    }
+    return IndexedInstanceConnection(
+        instance_path=str(instance.hierarchicalPath),
+        port_name=connection.port.name,
+        candidates=_candidate_tuple(
+            (
+                connection.port.name,
+                str(instance.hierarchicalPath),
+                getattr(instance, "name", None),
+                output.get("expression_snippet"),
+                connected_symbol.get("name") if connected_symbol else None,
+                connected_symbol.get("hierarchical_path") if connected_symbol else None,
+            )
+        ),
+        output=output,
+    )
+
+
+def _enclosing_syntax_kinds(syntax: Any) -> list[str]:
+    kinds: list[str] = []
+    parent = getattr(syntax, "parent", None)
+    while parent is not None and len(kinds) < 12:
+        kind = getattr(getattr(parent, "kind", None), "name", None)
+        if kind in {
+            "ConditionalStatement",
+            "ForLoopStatement",
+            "CaseStatement",
+            "AlwaysBlock",
+            "AlwaysFFBlock",
+            "AlwaysCombBlock",
+            "AlwaysLatchBlock",
+            "InitialBlock",
+            "FinalBlock",
+            "ContinuousAssign",
+        }:
+            kinds.append(kind)
+        parent = getattr(parent, "parent", None)
+    return kinds
+
+
+def _assignment_kind_from_syntax(syntax: Any) -> str | None:
+    constructs = _enclosing_syntax_kinds(syntax)
+    if "ContinuousAssign" in constructs:
+        return "continuous"
+    if any(
+        kind.startswith("Always") or kind in {"InitialBlock", "FinalBlock"} for kind in constructs
+    ):
+        return "procedural"
+    return None
+
+
+def _is_partial_or_select_lhs(expression: Any) -> bool:
+    kind = getattr(getattr(expression, "kind", None), "name", "")
+    return kind not in {"NamedValue"}
+
+
+def _make_assignment_entry(
+    bundle: AnalysisBundle,
+    *,
+    assignment_kind: str | None,
+    expression: Any,
+) -> IndexedAssignment | None:
+    if assignment_kind is None or type(expression).__name__ != "AssignmentExpression":
+        return None
+    lhs_symbols = [dict(hit) for hit in _expression_symbol_hits(expression.left)]
+    rhs_symbols = [dict(hit) for hit in _expression_symbol_hits(expression.right)]
+    if not lhs_symbols and not rhs_symbols:
+        return None
+    design_units = {
+        unit
+        for hit in lhs_symbols
+        if (unit := _design_unit_from_lexical_path(str(hit.get("lexical_path", ""))))
+    }
+    if len(design_units) != 1:
+        return None
+    design_unit = next(iter(design_units))
+    output = {
+        "design_unit": design_unit,
+        "assignment_kind": assignment_kind,
+        "location": _serialize_range_location(bundle, expression.sourceRange),
+        "lhs_snippet": _source_snippet(bundle, expression.left.sourceRange),
+        "rhs_snippet": _source_snippet(bundle, expression.right.sourceRange),
+        "expression_snippet": _source_snippet(bundle, expression.sourceRange),
+        "lhs_symbols": lhs_symbols,
+        "rhs_symbols": rhs_symbols,
+        "enclosing_constructs": _enclosing_syntax_kinds(expression.syntax),
+        "is_partial_or_select": _is_partial_or_select_lhs(expression.left),
+        "evidence_source": "semantic",
+    }
+    lhs_candidates: list[str] = []
+    rhs_candidates: list[str] = []
+    for hit in lhs_symbols:
+        lhs_candidates.extend(_symbol_hit_candidates(hit))
+    for hit in rhs_symbols:
+        rhs_candidates.extend(_symbol_hit_candidates(hit))
+    return IndexedAssignment(
+        design_unit=design_unit,
+        lhs_candidates=_candidate_tuple(lhs_candidates),
+        rhs_candidates=_candidate_tuple(rhs_candidates),
+        output=output,
+    )
+
+
+def _add_connectivity_edge(
+    *,
+    source: str,
+    target: str,
+    kind: str,
+    output: dict[str, Any],
+    edges_by_source: defaultdict[str, list[ConnectivityEdge]],
+    edges_by_target: defaultdict[str, list[ConnectivityEdge]],
+) -> None:
+    if not source or not target or source == target:
+        return
+    edge = ConnectivityEdge(source=source, target=target, kind=kind, output=output)
+    edges_by_source[source].append(edge)
+    edges_by_target[target].append(edge)
+
+
+def _resolve_connectivity_starts(index: AnalysisIndex, start: str) -> list[str]:
+    candidates: set[str] = set()
+    all_nodes = set(index.connectivity_edges_by_source) | set(index.connectivity_edges_by_target)
+    for node in all_nodes:
+        if node == start or node.endswith(f".{start}"):
+            candidates.add(node)
+    return sorted(candidates)
+
+
+def _trace_edges_for_direction(
+    index: AnalysisIndex,
+    node: str,
+    direction: TraceDirection,
+) -> tuple[ConnectivityEdge, ...]:
+    forward = index.connectivity_edges_by_source.get(node, ())
+    reverse = tuple(
+        ConnectivityEdge(
+            source=edge.target,
+            target=edge.source,
+            kind=edge.kind,
+            output={**edge.output, "source": edge.target, "target": edge.source},
+        )
+        for edge in index.connectivity_edges_by_target.get(node, ())
+    )
+    if direction == "load":
+        return forward
+    if direction == "driver":
+        return reverse
+    return tuple(
+        sorted(
+            (*forward, *reverse),
+            key=lambda edge: (edge.target, edge.kind, str(edge.output)),
+        )
+    )
+
+
 def _source_snippet(bundle: AnalysisBundle, source_range: Any, *, limit: int = 80) -> str | None:
     try:
         text = bundle.source_manager.getSourceText(source_range.start.buffer)
@@ -775,6 +1637,50 @@ def _source_snippet(bundle: AnalysisBundle, source_range: Any, *, limit: int = 8
 
 def _matches_symbol(query: str, match_mode: MatchMode, symbol: Any) -> bool:
     return _matches_text(query=query, match_mode=match_mode, candidates=_symbol_candidates(symbol))
+
+
+def _symbol_kind_name(symbol: Any) -> str:
+    kind = getattr(symbol, "kind", None)
+    return kind.name if kind is not None else type(symbol).__name__
+
+
+def _symbol_hierarchical_path(symbol: Any) -> str:
+    return str(getattr(symbol, "hierarchicalPath", getattr(symbol, "name", "")))
+
+
+def _symbol_lexical_path(symbol: Any) -> str:
+    return str(getattr(symbol, "lexicalPath", getattr(symbol, "name", "")))
+
+
+def _design_unit_from_lexical_path(path: str) -> str | None:
+    if not path:
+        return None
+    cleaned = path.split("::", 1)[0] if "::" in path else path
+    return cleaned.split(".", 1)[0] or None
+
+
+def _symbol_design_unit(symbol: Any) -> str | None:
+    lexical = _symbol_lexical_path(symbol)
+    from_lexical = _design_unit_from_lexical_path(lexical)
+    if from_lexical:
+        return from_lexical
+    parent_scope = getattr(symbol, "parentScope", None)
+    parent_lexical = _symbol_lexical_path(parent_scope) if parent_scope is not None else ""
+    return _design_unit_from_lexical_path(parent_lexical)
+
+
+def _data_type_text(symbol: Any) -> str | None:
+    type_obj = getattr(symbol, "type", None)
+    if type_obj is None:
+        declared_type = getattr(symbol, "declaredType", None)
+        type_obj = getattr(declared_type, "type", None)
+    text = str(type_obj) if type_obj is not None else ""
+    return text or None
+
+
+def _direction_name(symbol: Any) -> str | None:
+    direction = getattr(symbol, "direction", None)
+    return getattr(direction, "name", None) if direction is not None else None
 
 
 def _symbol_candidates(symbol: Any) -> tuple[str, ...]:
@@ -826,6 +1732,45 @@ def _leaf_type_name(value: str | None) -> str | None:
         cleaned = cleaned.rsplit(".", 1)[-1]
     cleaned = cleaned.strip()
     return cleaned or None
+
+
+def _expression_symbol_hits(expression: Any) -> tuple[dict[str, Any], ...]:
+    hits: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def visit(node: Any) -> bool:
+        if type(node).__name__ == "NamedValueExpression" and getattr(node, "symbol", None):
+            symbol = node.symbol
+            path = _symbol_hierarchical_path(symbol)
+            if path and path not in seen:
+                seen.add(path)
+                hits.append(
+                    {
+                        "name": getattr(symbol, "name", None),
+                        "kind": _symbol_kind_name(symbol),
+                        "hierarchical_path": path,
+                        "lexical_path": _symbol_lexical_path(symbol),
+                    }
+                )
+        return True
+
+    if expression is not None:
+        try:
+            expression.visit(visit)
+        except Exception:
+            visit(expression)
+    return tuple(hits)
+
+
+def _symbol_hit_candidates(hit: dict[str, Any]) -> tuple[str, ...]:
+    return _candidate_tuple(
+        (
+            hit.get("name"),
+            hit.get("hierarchical_path"),
+            hit.get("lexical_path"),
+            hit.get("kind"),
+        )
+    )
 
 
 def _collect_reference_index_entries(

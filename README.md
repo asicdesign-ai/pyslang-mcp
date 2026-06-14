@@ -180,6 +180,11 @@ Find a symbol:
 | Inspect one design unit | `pyslang_describe_design_unit` |
 | Walk the elaborated instance tree | `pyslang_get_hierarchy` |
 | Find declarations and references | `pyslang_find_symbol` |
+| Find a local member in one design unit | `pyslang_find_member` |
+| Find assignments involving a signal | `pyslang_get_assignments` |
+| Trace bounded structural connectivity | `pyslang_trace_connectivity` |
+| Dump one instance's port connections | `pyslang_get_instance_connections` |
+| Group diagnostics by code | `pyslang_summarize_diagnostics_by_code` |
 | Summarize syntax node shapes | `pyslang_dump_syntax_tree_summary` |
 | Check preprocessing metadata and excerpts | `pyslang_preprocess_files` |
 | Get a compact project overview | `pyslang_get_project_summary` |
@@ -191,6 +196,22 @@ Typical flow:
 3. Use `pyslang_list_design_units` to see what the compiler frontend found.
 4. Use `pyslang_describe_design_unit`, `pyslang_get_hierarchy`, or
    `pyslang_find_symbol` for the actual review/debug question.
+
+## Verilog/SystemVerilog Analysis And Debugging Flow
+
+1. Use `pyslang_summarize_diagnostics_by_code` to separate repeated frontend
+   warnings from unresolved dependency errors.
+2. Use `pyslang_find_member` to locate local names such as `response__vld`.
+3. Use `pyslang_get_assignments` to inspect visible continuous or procedural
+   drivers and loads.
+4. Use `pyslang_get_instance_connections` for one instance's port binding
+   context.
+5. Use `pyslang_trace_connectivity` for bounded structural paths through
+   assignments and instance port bindings.
+
+Connectivity tracing is structural frontend evidence. It is not simulation,
+formal proof, CDC/RDC signoff, timing signoff, or a complete netlist-level
+driver/load database.
 
 ## Filelist Support
 
@@ -326,7 +347,7 @@ compares three local evidence modes:
 - MCP/no skill: targeted `pyslang-mcp` tool calls
 - skill + MCP: `pyslang-verilog-context` sequencing with `pyslang-mcp`
 
-Latest local result from 2026-05-23:
+Latest local result from 2026-06-14:
 
 | Benchmark | Text/no skill | MCP/no skill | Skill + MCP |
 |---|---:|---:|---:|
@@ -349,7 +370,7 @@ Verification commands used for the reported run:
 ./.venv/bin/python skills/pyslang-verilog-context/scripts/validate_eval_fixtures.py
 ./.venv/bin/python -m pytest
 ./.venv/bin/python skills/pyslang-verilog-context/scripts/run_comparison_evals.py
-./.venv/bin/python scripts/run_mcp_comparison.py --output-dir reports/mcp_comparison_comprehensive_20260523
+./.venv/bin/python scripts/run_mcp_comparison.py --output-dir reports/mcp_comparison_comprehensive_20260614
 ./.venv/bin/python reports/real_examples_75/run_real75_comparison.py
 ./.venv/bin/python -m py_compile reports/real_examples_75/run_real75_comparison.py
 ```
@@ -370,8 +391,9 @@ Implemented:
 - `FastMCP` stdio server
 - CLI entrypoint via `python -m pyslang_mcp` and `pyslang-mcp`
 - project loader with root checks and `.f` parsing
-- pyslang-backed diagnostics, design-unit listing, hierarchy, symbol lookup,
-  syntax summaries, and project summaries
+- pyslang-backed diagnostics and diagnostic grouping, design-unit and member
+  lookup, assignment and instance-connection analysis, bounded structural
+  connectivity, hierarchy, syntax summaries, and project summaries
 - bounded in-memory cache
 - fixture-backed tests and Ubuntu CI for Python 3.11 and 3.12
 - package smoke CI from a built wheel

@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast
 
+import pyslang_mcp.analysis as analysis_module
 from pyslang_mcp.analysis import (
     _format_diagnostic_message,
     build_analysis,
@@ -108,6 +109,181 @@ def test_analysis_over_filelist_fixture() -> None:
     assert summary["limits"]["max_diagnostics"] == 10
 
 
+def test_verilog_debug_fixture_baseline() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    diagnostics = get_diagnostics(bundle)
+    assert diagnostics["project_status"]["status"] == "ok"
+    assert diagnostics["summary"]["total"] == 0
+
+    units = list_design_units(bundle)
+    assert {"debug_top", "debug_stage", "debug_sink"} <= {
+        unit["name"] for unit in units["design_units"]
+    }
+
+    hierarchy = get_hierarchy(bundle, max_depth=4)
+    assert hierarchy["summary"]["total_instances"] == 3
+    assert hierarchy["hierarchy"][0]["name"] == "debug_top"
+    assert hierarchy["hierarchy"][0]["children"][0]["name"] == "u_stage"
+
+
+def test_verilog_debug_symbol_helpers_preserve_stable_metadata() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+    symbols: list[Any] = []
+
+    def visit(symbol: Any) -> bool:
+        if getattr(symbol, "name", None) == "response__vld":
+            symbols.append(symbol)
+        return True
+
+    bundle.compilation.getRoot().visit(visit)
+    response_symbol = next(
+        symbol
+        for symbol in symbols
+        if analysis_module._symbol_hierarchical_path(symbol) == "debug_top.u_stage.response__vld"
+    )
+
+    assert analysis_module._symbol_kind_name(response_symbol) == "Port"
+    assert analysis_module._symbol_lexical_path(response_symbol).endswith("response__vld")
+    assert analysis_module._symbol_design_unit(response_symbol) == "debug_stage"
+    assert analysis_module._data_type_text(response_symbol) == "logic"
+    assert analysis_module._direction_name(response_symbol) == "Out"
+
+
+def test_find_member_verilog_nets() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    response_valid = analysis_module.find_member(
+        bundle,
+        design_unit="debug_stage",
+        query="response__vld",
+        match_mode="exact",
+    )
+    assert response_valid["found_design_unit"] is True
+    assert response_valid["summary"]["total"] >= 1
+    assert response_valid["members"][0]["name"] == "response__vld"
+    assert response_valid["members"][0]["kind"] in {"port", "variable"}
+    assert response_valid["members"][0]["location"]["path"] == "verilog_debug.sv"
+
+    local_ready = analysis_module.find_member(
+        bundle,
+        design_unit="debug_stage",
+        query="response_pop_fifo__rdy",
+        match_mode="exact",
+        include_ports=False,
+    )
+    assert local_ready["summary"]["total"] == 1
+    assert local_ready["members"][0]["kind"] == "variable"
+
+    child_instance = analysis_module.find_member(
+        bundle,
+        design_unit="debug_stage",
+        query="u_sink",
+        match_mode="exact",
+        include_ports=False,
+        include_variables=False,
+    )
+    assert child_instance["summary"]["total"] == 1
+    assert child_instance["members"][0]["kind"] == "instance"
+
+
+def test_get_instance_connections_verilog_fixture() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    connections = analysis_module.get_instance_connections(
+        bundle,
+        instance_path_or_name="debug_top.u_stage",
+    )
+
+    assert connections["found"] is True
+    by_port = {connection["port"]: connection for connection in connections["connections"]}
+    assert by_port["ctrl_out__rdy"]["direction"] == "In"
+    assert by_port["ctrl_out__rdy"]["connected_symbol"]["name"] == "ctrl_out__rdy"
+    assert by_port["response__vld"]["direction"] == "Out"
+    assert by_port["response__vld"]["connected_symbol"]["name"] == "response__vld"
+
+
+def test_get_assignments_verilog_fixture() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    drivers = analysis_module.get_assignments(
+        bundle,
+        design_unit="debug_stage",
+        signal="response__vld",
+        role="lhs",
+    )
+    assert drivers["found_design_unit"] is True
+    assert drivers["summary"]["total"] == 1
+    assert drivers["assignments"][0]["assignment_kind"] == "continuous"
+    assert drivers["assignments"][0]["lhs_snippet"] == "response__vld"
+    assert "stage_enable" in drivers["assignments"][0]["rhs_snippet"]
+
+    loads = analysis_module.get_assignments(
+        bundle,
+        design_unit="debug_sink",
+        signal="response__vld",
+        role="rhs",
+    )
+    assert loads["summary"]["total"] >= 1
+    assert set(loads["summary"]["by_assignment_kind"]) == {"continuous"}
+
+    mixed_roles = analysis_module.get_assignments(
+        bundle,
+        design_unit="debug_sink",
+        signal="sampled_data",
+        role="both",
+    )
+    assert {"continuous", "procedural"} <= set(mixed_roles["summary"]["by_assignment_kind"])
+
+
+def test_trace_connectivity_verilog_fixture() -> None:
+    project = load_project_from_filelist(
+        project_root=FIXTURES / "verilog_debug",
+        filelist="project.f",
+        top_modules=["debug_top"],
+    )
+    bundle = build_analysis(project)
+
+    trace = analysis_module.trace_connectivity(
+        bundle,
+        start="debug_top.ctrl_out__rdy",
+        direction="load",
+        max_depth=5,
+        max_edges=20,
+    )
+
+    assert "debug_top.ctrl_out__rdy" in trace["resolved_starts"]
+    assert trace["summary"]["path_count"] >= 1
+    flattened_targets = {hop["target"] for path in trace["paths"] for hop in path["hops"]}
+    assert any(target.endswith("u_stage.ctrl_out__rdy") for target in flattened_targets)
+    assert any(target.endswith("u_stage.response__vld") for target in flattened_targets)
+
+
 def test_diagnostics_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",
@@ -132,6 +308,27 @@ def test_diagnostics_on_broken_fixture() -> None:
 
     hierarchy = get_hierarchy(bundle)
     assert hierarchy["project_status"]["status"] == "incomplete"
+
+
+def test_summarize_diagnostics_by_code_on_broken_fixture() -> None:
+    project = load_project_from_files(
+        project_root=FIXTURES / "broken",
+        files=["broken.sv"],
+    )
+    bundle = build_analysis(project)
+
+    summary = analysis_module.summarize_diagnostics_by_code(
+        bundle,
+        max_groups=10,
+        max_examples_per_group=1,
+    )
+
+    assert summary["project_status"]["status"] == "incomplete"
+    assert summary["summary"]["total_diagnostics"] == 1
+    assert summary["summary"]["total_groups"] == 1
+    assert summary["groups"][0]["count"] == 1
+    assert summary["groups"][0]["unresolved_reference_count"] == 1
+    assert len(summary["groups"][0]["examples"]) == 1
 
 
 def test_format_diagnostic_message_preserves_escaped_braces() -> None:

@@ -107,6 +107,32 @@ class DiagnosticsResult(StrictModel):
     diagnostics: list[DiagnosticEntry]
 
 
+class DiagnosticGroup(StrictModel):
+    code: str
+    severity: str
+    count: int
+    affected_files_count: int
+    affected_design_units_count: int
+    unresolved_reference_count: int
+    message_samples: list[str]
+    examples: list[DiagnosticEntry]
+    truncation: TruncationInfo
+
+
+class DiagnosticGroupSummary(StrictModel):
+    total_diagnostics: int
+    total_groups: int
+    severity_counts: dict[str, int]
+    truncation: TruncationInfo
+
+
+class SummarizeDiagnosticsByCodeResult(StrictModel):
+    project_status: ProjectStatus
+    project_root: str
+    summary: DiagnosticGroupSummary
+    groups: list[DiagnosticGroup]
+
+
 class DesignUnitRecord(StrictModel):
     name: str
     kind: str
@@ -156,11 +182,125 @@ class DescribeDesignUnitResult(StrictModel):
     design_unit: DesignUnitDescription | None = None
 
 
+class MemberRecord(StrictModel):
+    name: str
+    kind: str
+    symbol_kind: str
+    design_unit: str
+    hierarchical_path: str
+    lexical_path: str
+    location: Location | None = None
+    direction: str | None = None
+    data_type: str | None = None
+    evidence_source: Literal["semantic", "syntax"]
+
+
+class FindMemberSummary(StrictModel):
+    total: int
+    by_kind: dict[str, int]
+    truncation: TruncationInfo
+
+
+class FindMemberResult(StrictModel):
+    project_status: ProjectStatus
+    design_unit_query: str
+    found_design_unit: bool
+    ambiguous_design_unit: bool
+    design_unit_candidates: list[DesignUnitRecord]
+    query: str
+    match_mode: Literal["exact", "contains", "startswith"]
+    summary: FindMemberSummary
+    members: list[MemberRecord]
+
+
+class AssignmentSymbolRef(StrictModel):
+    name: str | None = None
+    kind: str
+    hierarchical_path: str
+    lexical_path: str
+
+
+class AssignmentRecord(StrictModel):
+    design_unit: str
+    assignment_kind: Literal["continuous", "procedural"]
+    location: Location | None = None
+    lhs_snippet: str | None = None
+    rhs_snippet: str | None = None
+    expression_snippet: str | None = None
+    lhs_symbols: list[AssignmentSymbolRef]
+    rhs_symbols: list[AssignmentSymbolRef]
+    enclosing_constructs: list[str]
+    is_partial_or_select: bool
+    evidence_source: Literal["semantic"]
+
+
+class GetAssignmentsSummary(StrictModel):
+    total: int
+    by_assignment_kind: dict[str, int]
+    truncation: TruncationInfo
+
+
+class GetAssignmentsResult(StrictModel):
+    project_status: ProjectStatus
+    design_unit_query: str
+    found_design_unit: bool
+    ambiguous_design_unit: bool
+    design_unit_candidates: list[DesignUnitRecord]
+    signal: str
+    role: Literal["lhs", "rhs", "both"]
+    summary: GetAssignmentsSummary
+    assignments: list[AssignmentRecord]
+
+
+class ConnectivityHop(StrictModel):
+    source: str
+    target: str
+    kind: Literal["assignment", "port_binding"]
+    instance_path: str | None = None
+    design_unit: str | None = None
+    port: str | None = None
+    direction: str | None = None
+    expression_snippet: str | None = None
+    location: Location | None = None
+
+
+class ConnectivityPath(StrictModel):
+    start: str
+    end: str
+    hops: list[ConnectivityHop]
+    stop_reason: str
+
+
+class TraceConnectivitySummary(StrictModel):
+    path_count: int
+    edge_count_considered: int
+    max_depth_requested: int
+    truncation: TruncationInfo
+
+
+class TraceConnectivityResult(StrictModel):
+    project_status: ProjectStatus
+    start: str
+    direction: Literal["driver", "load", "both"]
+    resolved_starts: list[str]
+    summary: TraceConnectivitySummary
+    paths: list[ConnectivityPath]
+
+
 class HierarchyPortConnection(StrictModel):
     port: str
     expression_kind: str
     snippet: str | None = None
     symbol: str | None = None
+
+
+class InstanceConnectionRecord(StrictModel):
+    port: str
+    direction: str | None = None
+    expression_kind: str
+    expression_snippet: str | None = None
+    connected_symbol: SymbolDeclaration | None = None
+    source_location: Location | None = None
 
 
 class HierarchyNode(StrictModel):
@@ -183,6 +323,22 @@ class HierarchyResult(StrictModel):
     project_status: ProjectStatus
     summary: HierarchySummary
     hierarchy: list[HierarchyNode]
+
+
+class GetInstanceConnectionsSummary(StrictModel):
+    total: int
+    truncation: TruncationInfo
+
+
+class GetInstanceConnectionsResult(StrictModel):
+    project_status: ProjectStatus
+    query: str
+    found: bool
+    ambiguous: bool
+    candidates: list[HierarchyNode]
+    instance: HierarchyNode | None = None
+    summary: GetInstanceConnectionsSummary
+    connections: list[InstanceConnectionRecord]
 
 
 class SymbolDeclaration(StrictModel):

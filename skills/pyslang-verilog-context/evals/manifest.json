@@ -25,6 +25,13 @@
       "contents": "Small HDL parser fixtures used for negative diagnostic and multi-file smoke evals."
     },
     {
+      "id": "verilog-debug-fixture",
+      "source": "tests/fixtures/verilog_debug",
+      "copied_to": "fixtures/pyslang-mcp-tests/verilog_debug",
+      "license": "Apache-2.0",
+      "contents": "Small SystemVerilog analysis fixture used to exercise member lookup, assignment lookup, instance connections, connectivity tracing, and diagnostic grouping."
+    },
+    {
       "id": "web-lowrisc-ibex",
       "source": "https://github.com/lowRISC/ibex",
       "copied_to": "fixtures/web/lowrisc-ibex",
@@ -172,6 +179,34 @@
         "Checks the current module interface and diagnostics before proposing an edit.",
         "Keeps the requested RTL change scoped.",
         "Plans or performs a diagnostics recheck after the change."
+      ]
+    },
+    {
+      "id": "verilog-debug-structural-evidence",
+      "prompt": "prompts/verilog-debug-structural-evidence.md",
+      "fixture_root": "fixtures/pyslang-mcp-tests/verilog_debug",
+      "input": {
+        "filelist": "project.f",
+        "top_modules": ["debug_top"],
+        "design_unit": "debug_stage",
+        "signal": "response__vld",
+        "instance_path_or_name": "debug_top.u_stage",
+        "start": "debug_top.ctrl_out__rdy",
+        "query": "response__vld"
+      },
+      "expected_tool_evidence": [
+        "pyslang_parse_filelist",
+        "pyslang_get_diagnostics",
+        "pyslang_summarize_diagnostics_by_code",
+        "pyslang_find_member",
+        "pyslang_get_assignments",
+        "pyslang_get_instance_connections",
+        "pyslang_trace_connectivity"
+      ],
+      "pass_criteria": [
+        "Uses compiler evidence before answering about the local SystemVerilog fixture.",
+        "Combines diagnostics grouping, member lookup, assignment lookup, instance connections, and connectivity tracing.",
+        "States that the evidence is structural frontend evidence only."
       ]
     },
     {
