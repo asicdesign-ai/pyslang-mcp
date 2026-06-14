@@ -2880,7 +2880,7 @@ Run:
 
 Expected: both commands complete successfully. If real LLM access is unavailable, document the exact failure and treat the skill changes as not fully validated.
 
-- [ ] **Step 8: Commit documentation and skill updates**
+- [x] **Step 8: Commit documentation and skill updates**
 
 ```bash
 git add README.md AGENTS.md docs/architecture.md skills/pyslang-verilog-context/SKILL.md skills/pyslang-verilog-context/evals
@@ -2985,7 +2985,7 @@ Expected:
 - New fixture is small, synthetic, and public-safe.
 - All new tools are read-only and bounded.
 
-- [ ] **Step 10: Commit final verification fixes**
+- [x] **Step 10: Commit final verification fixes**
 
 Only run this when verification required a small follow-up fix:
 
