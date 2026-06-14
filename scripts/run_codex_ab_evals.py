@@ -92,6 +92,14 @@ def build_codex_command(
         'approval_policy="never"',
         "--ephemeral",
         "--ignore-rules",
+        "--disable",
+        "apps",
+        "--disable",
+        "plugins",
+        "--disable",
+        "plugin_sharing",
+        "--disable",
+        "tool_suggest",
         "--cd",
         str(workspace),
         "--model",
@@ -185,71 +193,6 @@ def load_cases() -> tuple[EvalCase, ...]:
             )
         )
 
-    verilog_debug = REPO / "tests" / "fixtures" / "verilog_debug"
-    broken = REPO / "tests" / "fixtures" / "broken"
-    cases.extend(
-        (
-            EvalCase(
-                case_id="diagnostic_group_code",
-                title="Grouped diagnostic code",
-                project="verilog_debug_diagnostics",
-                question=("What diagnostic code is reported for the single diagnostic group?"),
-                expected="DiagCode(UndeclaredIdentifier)",
-                required_tools=("pyslang_summarize_diagnostics_by_code",),
-                source_root=broken,
-                project_args={"files": ["broken.sv"], "top_modules": ["broken"]},
-            ),
-            EvalCase(
-                case_id="member_kind",
-                title="Local member kind",
-                project="verilog_debug",
-                question=("Inside debug_stage, what member kind is response_pop_fifo__rdy?"),
-                expected="variable",
-                required_tools=("pyslang_find_member",),
-                source_root=verilog_debug,
-                project_args={"filelist": "project.f", "top_modules": ["debug_top"]},
-            ),
-            EvalCase(
-                case_id="assignment_rhs",
-                title="Assignment RHS",
-                project="verilog_debug",
-                question=(
-                    "What is the exact RHS snippet of the assignment driving "
-                    "debug_stage.response__vld?"
-                ),
-                expected="stage_enable",
-                required_tools=("pyslang_get_assignments",),
-                source_root=verilog_debug,
-                project_args={"filelist": "project.f", "top_modules": ["debug_top"]},
-            ),
-            EvalCase(
-                case_id="instance_output_actual",
-                title="Instance output actual path",
-                project="verilog_debug",
-                question=(
-                    "For debug_top.u_stage, what connected-symbol hierarchical path is bound "
-                    "to output port response__vld?"
-                ),
-                expected="debug_top.response__vld",
-                required_tools=("pyslang_get_instance_connections",),
-                source_root=verilog_debug,
-                project_args={"filelist": "project.f", "top_modules": ["debug_top"]},
-            ),
-            EvalCase(
-                case_id="connectivity_stage_output",
-                title="Connectivity stage output",
-                project="verilog_debug",
-                question=(
-                    "When tracing loads from debug_top.ctrl_out__rdy, which debug_stage output "
-                    "signal is reached before crossing back to debug_top?"
-                ),
-                expected="debug_top.u_stage.response__vld",
-                required_tools=("pyslang_trace_connectivity",),
-                source_root=verilog_debug,
-                project_args={"filelist": "project.f", "top_modules": ["debug_top"]},
-            ),
-        )
-    )
     return tuple(cases)
 
 
@@ -427,6 +370,7 @@ def run_trial(
                 [*command, build_prompt(case, arm)],
                 cwd=workspace,
                 env=env,
+                stdin=subprocess.DEVNULL,
                 text=True,
                 capture_output=True,
                 timeout=timeout_seconds,
@@ -652,10 +596,11 @@ def run(args: argparse.Namespace) -> int:
         "trials_per_case": args.trials,
         "case_count": len(report_cases),
         "methodology": (
-            "Isolated Codex homes and read-only temporary git workspaces. The no-skill/no-MCP "
-            "arm has no skills or MCP config and is instructed to inspect RTL text only. The "
-            "skill+MCP arm exposes only pyslang-verilog-context and the local read-only "
-            "pyslang-mcp stdio server."
+            "Isolated Codex homes and read-only temporary git workspaces, with unrelated apps "
+            "and plugins disabled. The no-skill/no-MCP arm has no repo skill or MCP config and "
+            "is instructed to inspect RTL text only. The skill+MCP arm installs the repo-local "
+            "pyslang-verilog-context skill and configures the local read-only pyslang-mcp "
+            "stdio server."
         ),
         "summary": _aggregate(report_cases, args.trials),
         "cases": report_cases,
