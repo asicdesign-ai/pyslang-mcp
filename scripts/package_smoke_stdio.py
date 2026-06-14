@@ -10,18 +10,9 @@ from mcp import ClientSession
 from mcp.client.stdio import StdioServerParameters, stdio_client
 from mcp.types import CallToolResult
 
-EXPECTED_TOOL_NAMES = {
-    "pyslang_parse_files",
-    "pyslang_parse_filelist",
-    "pyslang_get_diagnostics",
-    "pyslang_list_design_units",
-    "pyslang_describe_design_unit",
-    "pyslang_get_hierarchy",
-    "pyslang_find_symbol",
-    "pyslang_dump_syntax_tree_summary",
-    "pyslang_preprocess_files",
-    "pyslang_get_project_summary",
-}
+from pyslang_mcp.server import PUBLIC_TOOL_NAMES
+
+EXPECTED_TOOL_NAMES = set(PUBLIC_TOOL_NAMES.values())
 
 
 def main() -> int:
