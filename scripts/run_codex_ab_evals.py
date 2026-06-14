@@ -317,6 +317,23 @@ def _parse_events(stdout: str) -> tuple[list[str], dict[str, int]]:
     return tools, usage
 
 
+def _stdout_error_messages(stdout: str) -> list[str]:
+    messages: list[str] = []
+    for line in stdout.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        message: object | None = None
+        if event.get("type") == "error":
+            message = event.get("message")
+        elif event.get("type") == "turn.failed" and isinstance(event.get("error"), dict):
+            message = event["error"].get("message")
+        if isinstance(message, str) and message not in messages:
+            messages.append(message)
+    return messages
+
+
 def _sanitize(value: Any, workspace: Path) -> Any:
     marker = workspace.parent.as_posix()
     if isinstance(value, str):
@@ -326,6 +343,69 @@ def _sanitize(value: Any, workspace: Path) -> Any:
     if isinstance(value, dict):
         return {str(key): _sanitize(item, workspace) for key, item in value.items()}
     return value
+
+
+def _failure_message(
+    completed: subprocess.CompletedProcess[str],
+    workspace: Path,
+) -> str:
+    details = [f"return code: {completed.returncode}"]
+    details.extend(_stdout_error_messages(completed.stdout))
+    stderr = completed.stderr.strip()
+    if stderr:
+        details.append(stderr[-2000:])
+    return str(_sanitize("\n".join(details), workspace))
+
+
+def _completed_trial_results(
+    report: dict[str, Any],
+    *,
+    case_ids: set[str],
+    model: str,
+    reasoning_effort: str,
+    trials_per_arm: int,
+) -> dict[tuple[str, str, int], dict[str, Any]]:
+    expected_metadata = {
+        "model": model,
+        "reasoning_effort": reasoning_effort,
+        "trials_per_case": trials_per_arm,
+    }
+    mismatches = {
+        key: (report.get(key), value)
+        for key, value in expected_metadata.items()
+        if report.get(key) != value
+    }
+    if mismatches:
+        raise ValueError(f"Resume report metadata mismatch: {mismatches}")
+
+    report_cases = {
+        str(case.get("id")): case
+        for case in report.get("cases", [])
+        if isinstance(case, dict) and isinstance(case.get("id"), str)
+    }
+    missing_cases = case_ids - set(report_cases)
+    if missing_cases:
+        raise ValueError(f"Resume report is missing case ids: {', '.join(sorted(missing_cases))}")
+
+    completed: dict[tuple[str, str, int], dict[str, Any]] = {}
+    for case_id in case_ids:
+        arms = report_cases[case_id].get("arms", {})
+        if not isinstance(arms, dict):
+            continue
+        for arm in Arm:
+            summary = arms.get(arm.value, {})
+            if not isinstance(summary, dict):
+                continue
+            trials = summary.get("trials", [])
+            if not isinstance(trials, list):
+                continue
+            for result in trials:
+                if not isinstance(result, dict) or result.get("status") != "ok":
+                    continue
+                trial = result.get("trial")
+                if isinstance(trial, int) and 1 <= trial <= trials_per_arm:
+                    completed[(case_id, arm.value, trial)] = result
+    return completed
 
 
 def run_trial(
@@ -398,7 +478,7 @@ def run_trial(
                 "tools_used": event_tools,
                 "usage": usage,
                 "elapsed_seconds": round(time.perf_counter() - started, 3),
-                "error": _sanitize(completed.stderr[-2000:], workspace),
+                "error": _failure_message(completed, workspace),
             }
         try:
             payload = json.loads(output_path.read_text(encoding="utf-8"))
@@ -523,6 +603,25 @@ def run(args: argparse.Namespace) -> int:
     trial_results: dict[tuple[str, str], list[dict[str, Any]]] = {
         (case.case_id, arm.value): [] for case in cases for arm in Arm
     }
+    completed_trials: dict[tuple[str, str, int], dict[str, Any]] = {}
+    if args.resume:
+        report_path = args.output_dir / "results.json"
+        if not report_path.is_file():
+            raise FileNotFoundError(f"Resume report not found: {report_path}")
+        previous_report = json.loads(report_path.read_text(encoding="utf-8"))
+        completed_trials = _completed_trial_results(
+            previous_report,
+            case_ids={case.case_id for case in cases},
+            model=args.model,
+            reasoning_effort=args.reasoning_effort,
+            trials_per_arm=args.trials,
+        )
+        for (case_id, arm, _trial), result in completed_trials.items():
+            trial_results[(case_id, arm)].append(result)
+        jobs = [
+            job for job in jobs if (job[0].case_id, job[1].value, job[2]) not in completed_trials
+        ]
+        print(f"resuming {len(completed_trials)} completed trials; {len(jobs)} trials remain")
 
     with ThreadPoolExecutor(max_workers=args.jobs) as executor:
         future_map = {
@@ -624,6 +723,7 @@ def main() -> int:
     parser.add_argument("--reasoning-effort", default=DEFAULT_REASONING_EFFORT)
     parser.add_argument("--timeout-seconds", type=int, default=900)
     parser.add_argument("--codex-bin", default="codex")
+    parser.add_argument("--resume", action="store_true")
     parser.add_argument("--list-cases", action="store_true")
     args = parser.parse_args()
     if args.trials < 1:

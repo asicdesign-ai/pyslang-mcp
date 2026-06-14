@@ -14,6 +14,8 @@ from scripts import run_codex_ab_evals as codex_ab  # noqa: E402
 from scripts.run_codex_ab_evals import (  # noqa: E402
     Arm,
     EvalCase,
+    _completed_trial_results,
+    _failure_message,
     build_codex_command,
     normalize_answer,
     summarize_trials,
@@ -108,6 +110,68 @@ def test_run_trial_closes_inherited_stdin(
 
     assert result["status"] == "ok"
     assert captured["stdin"] is subprocess.DEVNULL
+
+
+def test_failure_message_includes_json_stdout_error(tmp_path: Path) -> None:
+    completed = subprocess.CompletedProcess(
+        ["codex", "exec"],
+        1,
+        stdout=(
+            '{"type":"error","message":"usage limit reached; retry later"}\n'
+            '{"type":"turn.failed","error":{"message":"usage limit reached"}}\n'
+        ),
+        stderr="Reading additional input from stdin...\n",
+    )
+
+    message = _failure_message(completed, tmp_path / "workspace")
+
+    assert "return code: 1" in message
+    assert "usage limit reached; retry later" in message
+    assert "Reading additional input from stdin" in message
+
+
+def test_completed_trial_results_keeps_only_successful_requested_trials() -> None:
+    report = {
+        "model": "gpt-5.5",
+        "reasoning_effort": "xhigh",
+        "trials_per_case": 3,
+        "cases": [
+            {
+                "id": "example",
+                "arms": {
+                    "no_skill_no_mcp": {
+                        "trials": [
+                            {"trial": 1, "status": "ok", "answer": "42"},
+                            {"trial": 2, "status": "error", "answer": ""},
+                            {"trial": 4, "status": "ok", "answer": "ignored"},
+                        ]
+                    },
+                    "skill_mcp": {"trials": [{"trial": 1, "status": "ok", "answer": "42"}]},
+                },
+            }
+        ],
+    }
+
+    completed = _completed_trial_results(
+        report,
+        case_ids={"example"},
+        model="gpt-5.5",
+        reasoning_effort="xhigh",
+        trials_per_arm=3,
+    )
+
+    assert completed == {
+        ("example", "no_skill_no_mcp", 1): {
+            "trial": 1,
+            "status": "ok",
+            "answer": "42",
+        },
+        ("example", "skill_mcp", 1): {
+            "trial": 1,
+            "status": "ok",
+            "answer": "42",
+        },
+    }
 
 
 def test_summarize_trials_reports_accuracy_consistency_and_tool_compliance() -> None:
