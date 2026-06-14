@@ -5,7 +5,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 0.5,
+          "elapsed_ms": 0.56,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -21,13 +21,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 3.664,
+          "elapsed_ms": 3.393,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 745,
-            "skill": 1003,
-            "total": 1750
+            "skill": 1208,
+            "total": 1955
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -61,7 +61,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.47,
+          "elapsed_ms": 0.461,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -77,13 +77,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 3.401,
+          "elapsed_ms": 3.45,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 135,
-            "skill": 1003,
-            "total": 1139
+            "skill": 1208,
+            "total": 1344
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -118,7 +118,7 @@
         "mcp_no_skill": {
           "answer": "9",
           "correct": true,
-          "elapsed_ms": 0.796,
+          "elapsed_ms": 0.881,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -135,13 +135,13 @@
         "skill_mcp": {
           "answer": "9",
           "correct": true,
-          "elapsed_ms": 9.398,
+          "elapsed_ms": 9.229,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 397,
-            "skill": 1003,
-            "total": 1401
+            "skill": 1208,
+            "total": 1606
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -154,7 +154,7 @@
         "text_no_skill": {
           "answer": "9",
           "correct": true,
-          "elapsed_ms": 0.242,
+          "elapsed_ms": 0.23,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -177,7 +177,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 0.586,
+          "elapsed_ms": 0.601,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -193,13 +193,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 6.944,
+          "elapsed_ms": 6.188,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 1977,
-            "skill": 1003,
-            "total": 2982
+            "skill": 1208,
+            "total": 3187
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -233,7 +233,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.422,
+          "elapsed_ms": 0.417,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -249,13 +249,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 14.41,
+          "elapsed_ms": 14.422,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 126,
-            "skill": 1003,
-            "total": 1130
+            "skill": 1208,
+            "total": 1335
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -290,7 +290,7 @@
         "mcp_no_skill": {
           "answer": "8",
           "correct": true,
-          "elapsed_ms": 0.819,
+          "elapsed_ms": 0.856,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -307,13 +307,13 @@
         "skill_mcp": {
           "answer": "8",
           "correct": true,
-          "elapsed_ms": 2.568,
+          "elapsed_ms": 2.158,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 338,
-            "skill": 1003,
-            "total": 1342
+            "skill": 1208,
+            "total": 1547
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -326,7 +326,7 @@
         "text_no_skill": {
           "answer": "8",
           "correct": true,
-          "elapsed_ms": 0.136,
+          "elapsed_ms": 0.14,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -349,7 +349,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.596,
+          "elapsed_ms": 0.601,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -365,13 +365,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 7.335,
+          "elapsed_ms": 7.131,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 1621,
-            "skill": 1003,
-            "total": 2627
+            "skill": 1208,
+            "total": 2832
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -405,7 +405,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.377,
+          "elapsed_ms": 0.378,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -421,13 +421,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 2.171,
+          "elapsed_ms": 2.164,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 124,
-            "skill": 1003,
-            "total": 1128
+            "skill": 1208,
+            "total": 1333
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -462,7 +462,7 @@
         "mcp_no_skill": {
           "answer": "51",
           "correct": true,
-          "elapsed_ms": 0.974,
+          "elapsed_ms": 0.889,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -479,13 +479,13 @@
         "skill_mcp": {
           "answer": "51",
           "correct": true,
-          "elapsed_ms": 12.93,
+          "elapsed_ms": 13.046,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 1243,
-            "skill": 1003,
-            "total": 2247
+            "skill": 1208,
+            "total": 2452
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -498,7 +498,7 @@
         "text_no_skill": {
           "answer": "51",
           "correct": true,
-          "elapsed_ms": 0.632,
+          "elapsed_ms": 0.546,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -521,7 +521,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.423,
+          "elapsed_ms": 0.447,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -537,13 +537,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 1.569,
+          "elapsed_ms": 1.452,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 308,
-            "skill": 1003,
-            "total": 1314
+            "skill": 1208,
+            "total": 1519
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -577,7 +577,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.404,
+          "elapsed_ms": 0.447,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -593,13 +593,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 4.672,
+          "elapsed_ms": 4.742,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 130,
-            "skill": 1003,
-            "total": 1134
+            "skill": 1208,
+            "total": 1339
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -634,7 +634,7 @@
         "mcp_no_skill": {
           "answer": "14",
           "correct": true,
-          "elapsed_ms": 0.894,
+          "elapsed_ms": 0.826,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -651,13 +651,13 @@
         "skill_mcp": {
           "answer": "14",
           "correct": true,
-          "elapsed_ms": 3.114,
+          "elapsed_ms": 3.3,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 543,
-            "skill": 1003,
-            "total": 1547
+            "skill": 1208,
+            "total": 1752
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -670,7 +670,7 @@
         "text_no_skill": {
           "answer": "14",
           "correct": true,
-          "elapsed_ms": 0.182,
+          "elapsed_ms": 0.192,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -693,7 +693,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 0.49,
+          "elapsed_ms": 0.543,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -709,13 +709,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 4.196,
+          "elapsed_ms": 3.853,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 971,
-            "skill": 1003,
-            "total": 1976
+            "skill": 1208,
+            "total": 2181
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -749,7 +749,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.449,
+          "elapsed_ms": 0.545,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -765,13 +765,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 26.688,
+          "elapsed_ms": 26.444,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 130,
-            "skill": 1003,
-            "total": 1134
+            "skill": 1208,
+            "total": 1339
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -806,7 +806,7 @@
         "mcp_no_skill": {
           "answer": "62",
           "correct": true,
-          "elapsed_ms": 0.967,
+          "elapsed_ms": 1.179,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -823,13 +823,13 @@
         "skill_mcp": {
           "answer": "62",
           "correct": true,
-          "elapsed_ms": 9.183,
+          "elapsed_ms": 9.217,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 1668,
-            "skill": 1003,
-            "total": 2672
+            "skill": 1208,
+            "total": 2877
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -842,7 +842,7 @@
         "text_no_skill": {
           "answer": "0",
           "correct": false,
-          "elapsed_ms": 0.153,
+          "elapsed_ms": 0.205,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -865,7 +865,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.385,
+          "elapsed_ms": 0.389,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -881,13 +881,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 1.357,
+          "elapsed_ms": 1.369,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 244,
-            "skill": 1003,
-            "total": 1250
+            "skill": 1208,
+            "total": 1455
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -921,7 +921,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.391,
+          "elapsed_ms": 0.538,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -937,13 +937,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 7.734,
+          "elapsed_ms": 8.08,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 133,
-            "skill": 1003,
-            "total": 1137
+            "skill": 1208,
+            "total": 1342
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -955,7 +955,7 @@
         "text_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.0,
+          "elapsed_ms": 0.001,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -978,7 +978,7 @@
         "mcp_no_skill": {
           "answer": "7",
           "correct": true,
-          "elapsed_ms": 0.769,
+          "elapsed_ms": 0.76,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -995,13 +995,13 @@
         "skill_mcp": {
           "answer": "7",
           "correct": true,
-          "elapsed_ms": 2.58,
+          "elapsed_ms": 3.012,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 307,
-            "skill": 1003,
-            "total": 1311
+            "skill": 1208,
+            "total": 1516
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -1014,7 +1014,7 @@
         "text_no_skill": {
           "answer": "7",
           "correct": true,
-          "elapsed_ms": 0.159,
+          "elapsed_ms": 0.162,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -1037,7 +1037,7 @@
         "mcp_no_skill": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.356,
+          "elapsed_ms": 0.361,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1053,13 +1053,13 @@
         "skill_mcp": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.804,
+          "elapsed_ms": 0.915,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 93,
-            "skill": 1003,
-            "total": 1097
+            "skill": 1208,
+            "total": 1302
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -1093,7 +1093,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.394,
+          "elapsed_ms": 0.415,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1109,13 +1109,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 2.534,
+          "elapsed_ms": 2.578,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 123,
-            "skill": 1003,
-            "total": 1127
+            "skill": 1208,
+            "total": 1332
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -1127,7 +1127,7 @@
         "text_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.0,
+          "elapsed_ms": 0.001,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -1150,7 +1150,7 @@
         "mcp_no_skill": {
           "answer": "13",
           "correct": true,
-          "elapsed_ms": 0.832,
+          "elapsed_ms": 0.846,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1167,13 +1167,13 @@
         "skill_mcp": {
           "answer": "13",
           "correct": true,
-          "elapsed_ms": 5.522,
+          "elapsed_ms": 6.123,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 526,
-            "skill": 1003,
-            "total": 1530
+            "skill": 1208,
+            "total": 1735
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -1186,7 +1186,7 @@
         "text_no_skill": {
           "answer": "13",
           "correct": true,
-          "elapsed_ms": 0.196,
+          "elapsed_ms": 0.19,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -1209,7 +1209,7 @@
         "mcp_no_skill": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.363,
+          "elapsed_ms": 0.402,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1225,13 +1225,13 @@
         "skill_mcp": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.843,
+          "elapsed_ms": 0.848,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 93,
-            "skill": 1003,
-            "total": 1097
+            "skill": 1208,
+            "total": 1302
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -1265,7 +1265,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.402,
+          "elapsed_ms": 0.457,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1281,13 +1281,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 1.271,
+          "elapsed_ms": 1.226,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 124,
-            "skill": 1003,
-            "total": 1128
+            "skill": 1208,
+            "total": 1333
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -1299,7 +1299,7 @@
         "text_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.0,
+          "elapsed_ms": 0.001,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -1322,7 +1322,7 @@
         "mcp_no_skill": {
           "answer": "10",
           "correct": true,
-          "elapsed_ms": 0.846,
+          "elapsed_ms": 0.831,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1339,13 +1339,13 @@
         "skill_mcp": {
           "answer": "10",
           "correct": true,
-          "elapsed_ms": 1.742,
+          "elapsed_ms": 1.824,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 372,
-            "skill": 1003,
-            "total": 1376
+            "skill": 1208,
+            "total": 1581
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -1358,7 +1358,7 @@
         "text_no_skill": {
           "answer": "10",
           "correct": true,
-          "elapsed_ms": 0.138,
+          "elapsed_ms": 0.143,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -1381,7 +1381,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.449,
+          "elapsed_ms": 0.57,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -1397,13 +1397,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 2.912,
+          "elapsed_ms": 3.035,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 859,
-            "skill": 1003,
-            "total": 1865
+            "skill": 1208,
+            "total": 2070
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -1437,7 +1437,7 @@
         "mcp_no_skill": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 0.475,
+          "elapsed_ms": 0.405,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1453,13 +1453,13 @@
         "skill_mcp": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 2.668,
+          "elapsed_ms": 2.989,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 246,
-            "skill": 1003,
-            "total": 1250
+            "skill": 1208,
+            "total": 1455
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -1494,7 +1494,7 @@
         "mcp_no_skill": {
           "answer": "10",
           "correct": true,
-          "elapsed_ms": 0.867,
+          "elapsed_ms": 0.834,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1511,13 +1511,13 @@
         "skill_mcp": {
           "answer": "10",
           "correct": true,
-          "elapsed_ms": 4.229,
+          "elapsed_ms": 4.284,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 435,
-            "skill": 1003,
-            "total": 1439
+            "skill": 1208,
+            "total": 1644
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -1530,7 +1530,7 @@
         "text_no_skill": {
           "answer": "10",
           "correct": true,
-          "elapsed_ms": 0.142,
+          "elapsed_ms": 0.15,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -1553,7 +1553,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.567,
+          "elapsed_ms": 0.489,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -1569,13 +1569,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 4.224,
+          "elapsed_ms": 4.229,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 1338,
-            "skill": 1003,
-            "total": 2344
+            "skill": 1208,
+            "total": 2549
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -1609,7 +1609,7 @@
         "mcp_no_skill": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 0.403,
+          "elapsed_ms": 0.416,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1625,13 +1625,13 @@
         "skill_mcp": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 8.887,
+          "elapsed_ms": 8.952,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 286,
-            "skill": 1003,
-            "total": 1290
+            "skill": 1208,
+            "total": 1495
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -1643,7 +1643,7 @@
         "text_no_skill": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 0.001,
+          "elapsed_ms": 0.0,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -1666,7 +1666,7 @@
         "mcp_no_skill": {
           "answer": "14",
           "correct": true,
-          "elapsed_ms": 0.799,
+          "elapsed_ms": 0.871,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1683,13 +1683,13 @@
         "skill_mcp": {
           "answer": "14",
           "correct": true,
-          "elapsed_ms": 3.665,
+          "elapsed_ms": 3.458,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 489,
-            "skill": 1003,
-            "total": 1493
+            "skill": 1208,
+            "total": 1698
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -1702,7 +1702,7 @@
         "text_no_skill": {
           "answer": "0",
           "correct": false,
-          "elapsed_ms": 0.125,
+          "elapsed_ms": 0.132,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -1725,7 +1725,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.446,
+          "elapsed_ms": 0.445,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -1741,13 +1741,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 1.804,
+          "elapsed_ms": 1.791,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 421,
-            "skill": 1003,
-            "total": 1427
+            "skill": 1208,
+            "total": 1632
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -1781,7 +1781,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.4,
+          "elapsed_ms": 0.478,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1797,13 +1797,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 1.407,
+          "elapsed_ms": 1.304,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 127,
-            "skill": 1003,
-            "total": 1131
+            "skill": 1208,
+            "total": 1336
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -1838,7 +1838,7 @@
         "mcp_no_skill": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 0.801,
+          "elapsed_ms": 0.854,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1855,13 +1855,13 @@
         "skill_mcp": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 5.15,
+          "elapsed_ms": 5.228,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 743,
-            "skill": 1003,
-            "total": 1747
+            "skill": 1208,
+            "total": 1952
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -1874,7 +1874,7 @@
         "text_no_skill": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 0.29,
+          "elapsed_ms": 0.268,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -1897,7 +1897,7 @@
         "mcp_no_skill": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.467,
+          "elapsed_ms": 0.505,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1913,13 +1913,13 @@
         "skill_mcp": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 2.941,
+          "elapsed_ms": 2.997,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 692,
-            "skill": 1003,
-            "total": 1696
+            "skill": 1208,
+            "total": 1901
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -1953,7 +1953,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.423,
+          "elapsed_ms": 0.391,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -1969,13 +1969,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 1.902,
+          "elapsed_ms": 1.835,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 140,
-            "skill": 1003,
-            "total": 1144
+            "skill": 1208,
+            "total": 1349
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -2010,7 +2010,7 @@
         "mcp_no_skill": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 0.787,
+          "elapsed_ms": 0.822,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2027,13 +2027,13 @@
         "skill_mcp": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 1.664,
+          "elapsed_ms": 1.702,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 655,
-            "skill": 1003,
-            "total": 1659
+            "skill": 1208,
+            "total": 1864
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -2046,7 +2046,7 @@
         "text_no_skill": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 0.251,
+          "elapsed_ms": 0.266,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -2069,7 +2069,7 @@
         "mcp_no_skill": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.388,
+          "elapsed_ms": 0.468,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2085,13 +2085,13 @@
         "skill_mcp": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 1.231,
+          "elapsed_ms": 1.144,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 158,
-            "skill": 1003,
-            "total": 1162
+            "skill": 1208,
+            "total": 1367
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -2125,7 +2125,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.478,
+          "elapsed_ms": 0.443,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2141,13 +2141,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 3.743,
+          "elapsed_ms": 3.223,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 133,
-            "skill": 1003,
-            "total": 1137
+            "skill": 1208,
+            "total": 1342
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -2182,7 +2182,7 @@
         "mcp_no_skill": {
           "answer": "17",
           "correct": true,
-          "elapsed_ms": 0.933,
+          "elapsed_ms": 0.824,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2199,13 +2199,13 @@
         "skill_mcp": {
           "answer": "17",
           "correct": true,
-          "elapsed_ms": 4.274,
+          "elapsed_ms": 4.342,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 579,
-            "skill": 1003,
-            "total": 1583
+            "skill": 1208,
+            "total": 1788
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -2218,7 +2218,7 @@
         "text_no_skill": {
           "answer": "17",
           "correct": true,
-          "elapsed_ms": 0.288,
+          "elapsed_ms": 0.25,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -2241,7 +2241,7 @@
         "mcp_no_skill": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.413,
+          "elapsed_ms": 0.457,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2257,13 +2257,13 @@
         "skill_mcp": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 1.694,
+          "elapsed_ms": 1.674,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 352,
-            "skill": 1003,
-            "total": 1356
+            "skill": 1208,
+            "total": 1561
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -2297,7 +2297,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.398,
+          "elapsed_ms": 0.443,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2313,13 +2313,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 5.366,
+          "elapsed_ms": 5.217,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 124,
-            "skill": 1003,
-            "total": 1128
+            "skill": 1208,
+            "total": 1333
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -2354,7 +2354,7 @@
         "mcp_no_skill": {
           "answer": "25",
           "correct": true,
-          "elapsed_ms": 0.812,
+          "elapsed_ms": 0.893,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2371,13 +2371,13 @@
         "skill_mcp": {
           "answer": "25",
           "correct": true,
-          "elapsed_ms": 2.259,
+          "elapsed_ms": 2.279,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 680,
-            "skill": 1003,
-            "total": 1684
+            "skill": 1208,
+            "total": 1889
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -2390,7 +2390,7 @@
         "text_no_skill": {
           "answer": "25",
           "correct": true,
-          "elapsed_ms": 0.309,
+          "elapsed_ms": 0.32,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -2413,7 +2413,7 @@
         "mcp_no_skill": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 0.484,
+          "elapsed_ms": 0.485,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2429,13 +2429,13 @@
         "skill_mcp": {
           "answer": "ok",
           "correct": true,
-          "elapsed_ms": 3.298,
+          "elapsed_ms": 2.855,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 769,
-            "skill": 1003,
-            "total": 1773
+            "skill": 1208,
+            "total": 1978
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -2469,7 +2469,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.372,
+          "elapsed_ms": 0.44,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2485,13 +2485,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 2.761,
+          "elapsed_ms": 2.81,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 129,
-            "skill": 1003,
-            "total": 1133
+            "skill": 1208,
+            "total": 1338
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -2503,7 +2503,7 @@
         "text_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.0,
+          "elapsed_ms": 0.001,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -2526,7 +2526,7 @@
         "mcp_no_skill": {
           "answer": "26",
           "correct": true,
-          "elapsed_ms": 0.839,
+          "elapsed_ms": 1.186,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2543,13 +2543,13 @@
         "skill_mcp": {
           "answer": "26",
           "correct": true,
-          "elapsed_ms": 31.933,
+          "elapsed_ms": 32.755,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 1033,
-            "skill": 1003,
-            "total": 2037
+            "skill": 1208,
+            "total": 2242
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -2562,7 +2562,7 @@
         "text_no_skill": {
           "answer": "26",
           "correct": true,
-          "elapsed_ms": 0.306,
+          "elapsed_ms": 0.409,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -2585,7 +2585,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.553,
+          "elapsed_ms": 0.567,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -2601,13 +2601,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 6.243,
+          "elapsed_ms": 6.239,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 2045,
-            "skill": 1003,
-            "total": 3051
+            "skill": 1208,
+            "total": 3256
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -2641,7 +2641,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.42,
+          "elapsed_ms": 0.394,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2657,13 +2657,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 6.133,
+          "elapsed_ms": 6.331,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 135,
-            "skill": 1003,
-            "total": 1139
+            "skill": 1208,
+            "total": 1344
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -2698,7 +2698,7 @@
         "mcp_no_skill": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 0.87,
+          "elapsed_ms": 1.001,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2715,13 +2715,13 @@
         "skill_mcp": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 45.144,
+          "elapsed_ms": 45.428,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 1035,
-            "skill": 1003,
-            "total": 2039
+            "skill": 1208,
+            "total": 2244
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -2734,7 +2734,7 @@
         "text_no_skill": {
           "answer": "18",
           "correct": true,
-          "elapsed_ms": 0.252,
+          "elapsed_ms": 0.248,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -2757,7 +2757,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.756,
+          "elapsed_ms": 0.753,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -2773,13 +2773,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 11.899,
+          "elapsed_ms": 11.163,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 3725,
-            "skill": 1003,
-            "total": 4731
+            "skill": 1208,
+            "total": 4936
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -2813,7 +2813,7 @@
         "mcp_no_skill": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 0.547,
+          "elapsed_ms": 0.427,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2829,13 +2829,13 @@
         "skill_mcp": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 20.86,
+          "elapsed_ms": 21.182,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 255,
-            "skill": 1003,
-            "total": 1259
+            "skill": 1208,
+            "total": 1464
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -2870,7 +2870,7 @@
         "mcp_no_skill": {
           "answer": "19",
           "correct": true,
-          "elapsed_ms": 0.944,
+          "elapsed_ms": 0.827,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -2887,13 +2887,13 @@
         "skill_mcp": {
           "answer": "19",
           "correct": true,
-          "elapsed_ms": 21.622,
+          "elapsed_ms": 20.795,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 658,
-            "skill": 1003,
-            "total": 1662
+            "skill": 1208,
+            "total": 1867
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -2906,7 +2906,7 @@
         "text_no_skill": {
           "answer": "19",
           "correct": true,
-          "elapsed_ms": 0.255,
+          "elapsed_ms": 0.263,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -2929,7 +2929,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 18.407,
+          "elapsed_ms": 1.295,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -2945,13 +2945,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 36.176,
+          "elapsed_ms": 37.859,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 5000,
-            "skill": 1003,
-            "total": 6005
+            "skill": 1208,
+            "total": 6210
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -2985,7 +2985,7 @@
         "mcp_no_skill": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 0.409,
+          "elapsed_ms": 0.458,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3001,13 +3001,13 @@
         "skill_mcp": {
           "answer": "3",
           "correct": true,
-          "elapsed_ms": 22.3,
+          "elapsed_ms": 22.703,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 243,
-            "skill": 1003,
-            "total": 1247
+            "skill": 1208,
+            "total": 1452
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -3042,7 +3042,7 @@
         "mcp_no_skill": {
           "answer": "6",
           "correct": true,
-          "elapsed_ms": 0.851,
+          "elapsed_ms": 0.819,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3059,13 +3059,13 @@
         "skill_mcp": {
           "answer": "6",
           "correct": true,
-          "elapsed_ms": 13.289,
+          "elapsed_ms": 13.871,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 330,
-            "skill": 1003,
-            "total": 1334
+            "skill": 1208,
+            "total": 1539
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -3078,7 +3078,7 @@
         "text_no_skill": {
           "answer": "6",
           "correct": true,
-          "elapsed_ms": 0.154,
+          "elapsed_ms": 0.145,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -3101,7 +3101,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.624,
+          "elapsed_ms": 0.645,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -3117,13 +3117,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 8.261,
+          "elapsed_ms": 8.426,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 2799,
-            "skill": 1003,
-            "total": 3805
+            "skill": 1208,
+            "total": 4010
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -3157,7 +3157,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.436,
+          "elapsed_ms": 0.409,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3173,13 +3173,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 3.06,
+          "elapsed_ms": 3.291,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 138,
-            "skill": 1003,
-            "total": 1142
+            "skill": 1208,
+            "total": 1347
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -3214,7 +3214,7 @@
         "mcp_no_skill": {
           "answer": "9",
           "correct": true,
-          "elapsed_ms": 0.812,
+          "elapsed_ms": 0.857,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3231,13 +3231,13 @@
         "skill_mcp": {
           "answer": "9",
           "correct": true,
-          "elapsed_ms": 45.666,
+          "elapsed_ms": 46.465,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 333,
-            "skill": 1003,
-            "total": 1337
+            "skill": 1208,
+            "total": 1542
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -3250,7 +3250,7 @@
         "text_no_skill": {
           "answer": "9",
           "correct": true,
-          "elapsed_ms": 0.219,
+          "elapsed_ms": 0.223,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -3273,7 +3273,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.504,
+          "elapsed_ms": 0.505,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -3289,13 +3289,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 4.099,
+          "elapsed_ms": 4.316,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 1345,
-            "skill": 1003,
-            "total": 2351
+            "skill": 1208,
+            "total": 2556
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -3329,7 +3329,7 @@
         "mcp_no_skill": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 0.403,
+          "elapsed_ms": 0.448,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3345,13 +3345,13 @@
         "skill_mcp": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 15.674,
+          "elapsed_ms": 16.076,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 200,
-            "skill": 1003,
-            "total": 1204
+            "skill": 1208,
+            "total": 1409
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -3386,7 +3386,7 @@
         "mcp_no_skill": {
           "answer": "6",
           "correct": true,
-          "elapsed_ms": 0.88,
+          "elapsed_ms": 0.928,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3403,13 +3403,13 @@
         "skill_mcp": {
           "answer": "6",
           "correct": true,
-          "elapsed_ms": 67.885,
+          "elapsed_ms": 69.996,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 621,
-            "skill": 1003,
-            "total": 1625
+            "skill": 1208,
+            "total": 1830
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -3422,7 +3422,7 @@
         "text_no_skill": {
           "answer": "6",
           "correct": true,
-          "elapsed_ms": 0.217,
+          "elapsed_ms": 0.23,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -3445,7 +3445,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 0.467,
+          "elapsed_ms": 0.599,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -3461,13 +3461,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 4.165,
+          "elapsed_ms": 4.603,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 1086,
-            "skill": 1003,
-            "total": 2091
+            "skill": 1208,
+            "total": 2296
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -3501,7 +3501,7 @@
         "mcp_no_skill": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 0.391,
+          "elapsed_ms": 0.5,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3517,13 +3517,13 @@
         "skill_mcp": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 16.916,
+          "elapsed_ms": 16.329,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 198,
-            "skill": 1003,
-            "total": 1202
+            "skill": 1208,
+            "total": 1407
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -3558,7 +3558,7 @@
         "mcp_no_skill": {
           "answer": "8",
           "correct": true,
-          "elapsed_ms": 0.79,
+          "elapsed_ms": 0.822,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3575,13 +3575,13 @@
         "skill_mcp": {
           "answer": "8",
           "correct": true,
-          "elapsed_ms": 3.071,
+          "elapsed_ms": 3.1,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 398,
-            "skill": 1003,
-            "total": 1402
+            "skill": 1208,
+            "total": 1607
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -3594,7 +3594,7 @@
         "text_no_skill": {
           "answer": "8",
           "correct": true,
-          "elapsed_ms": 0.155,
+          "elapsed_ms": 0.173,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -3617,7 +3617,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 0.394,
+          "elapsed_ms": 0.437,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -3633,13 +3633,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 1.188,
+          "elapsed_ms": 1.172,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 163,
-            "skill": 1003,
-            "total": 1168
+            "skill": 1208,
+            "total": 1373
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -3673,7 +3673,7 @@
         "mcp_no_skill": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 0.418,
+          "elapsed_ms": 0.419,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3689,13 +3689,13 @@
         "skill_mcp": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 10.344,
+          "elapsed_ms": 10.298,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 193,
-            "skill": 1003,
-            "total": 1197
+            "skill": 1208,
+            "total": 1402
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -3707,7 +3707,7 @@
         "text_no_skill": {
           "answer": "2",
           "correct": true,
-          "elapsed_ms": 0.0,
+          "elapsed_ms": 0.001,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -3730,7 +3730,7 @@
         "mcp_no_skill": {
           "answer": "15",
           "correct": true,
-          "elapsed_ms": 0.783,
+          "elapsed_ms": 0.819,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3747,13 +3747,13 @@
         "skill_mcp": {
           "answer": "15",
           "correct": true,
-          "elapsed_ms": 6.42,
+          "elapsed_ms": 6.332,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 457,
-            "skill": 1003,
-            "total": 1461
+            "skill": 1208,
+            "total": 1666
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -3766,7 +3766,7 @@
         "text_no_skill": {
           "answer": "15",
           "correct": true,
-          "elapsed_ms": 0.192,
+          "elapsed_ms": 0.178,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -3789,7 +3789,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.462,
+          "elapsed_ms": 0.504,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -3805,13 +3805,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 4.041,
+          "elapsed_ms": 3.45,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 834,
-            "skill": 1003,
-            "total": 1840
+            "skill": 1208,
+            "total": 2045
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -3845,7 +3845,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.388,
+          "elapsed_ms": 0.423,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3861,13 +3861,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 13.796,
+          "elapsed_ms": 13.101,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 124,
-            "skill": 1003,
-            "total": 1128
+            "skill": 1208,
+            "total": 1333
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -3902,7 +3902,7 @@
         "mcp_no_skill": {
           "answer": "7",
           "correct": true,
-          "elapsed_ms": 0.748,
+          "elapsed_ms": 0.804,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -3919,13 +3919,13 @@
         "skill_mcp": {
           "answer": "7",
           "correct": true,
-          "elapsed_ms": 1.618,
+          "elapsed_ms": 1.621,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 267,
-            "skill": 1003,
-            "total": 1271
+            "skill": 1208,
+            "total": 1476
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -3938,7 +3938,7 @@
         "text_no_skill": {
           "answer": "7",
           "correct": true,
-          "elapsed_ms": 0.135,
+          "elapsed_ms": 0.134,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -3961,7 +3961,7 @@
         "mcp_no_skill": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 0.395,
+          "elapsed_ms": 0.412,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
@@ -3977,13 +3977,13 @@
         "skill_mcp": {
           "answer": "degraded",
           "correct": true,
-          "elapsed_ms": 1.797,
+          "elapsed_ms": 1.763,
           "had_tool_error": false,
           "tokens": {
             "answer": 2,
             "evidence": 319,
-            "skill": 1003,
-            "total": 1324
+            "skill": 1208,
+            "total": 1529
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -4017,7 +4017,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.378,
+          "elapsed_ms": 0.379,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -4033,13 +4033,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 4.982,
+          "elapsed_ms": 4.702,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 139,
-            "skill": 1003,
-            "total": 1143
+            "skill": 1208,
+            "total": 1348
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -4051,7 +4051,7 @@
         "text_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.0,
+          "elapsed_ms": 0.001,
           "rationale": "Regex counted visible module/interface/package declarations.",
           "tokens": {
             "answer": 1,
@@ -4074,7 +4074,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.761,
+          "elapsed_ms": 0.755,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -4091,13 +4091,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 1.863,
+          "elapsed_ms": 1.693,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 175,
-            "skill": 1003,
-            "total": 1179
+            "skill": 1208,
+            "total": 1384
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -4110,7 +4110,7 @@
         "text_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.091,
+          "elapsed_ms": 0.087,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -4133,7 +4133,7 @@
         "mcp_no_skill": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 0.509,
+          "elapsed_ms": 0.532,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
@@ -4149,13 +4149,13 @@
         "skill_mcp": {
           "answer": "incomplete",
           "correct": true,
-          "elapsed_ms": 3.801,
+          "elapsed_ms": 3.854,
           "had_tool_error": false,
           "tokens": {
             "answer": 3,
             "evidence": 1001,
-            "skill": 1003,
-            "total": 2007
+            "skill": 1208,
+            "total": 2212
           },
           "tool_call_count": 2,
           "tool_calls": [
@@ -4189,7 +4189,7 @@
         "mcp_no_skill": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 0.371,
+          "elapsed_ms": 0.388,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -4205,13 +4205,13 @@
         "skill_mcp": {
           "answer": "1",
           "correct": true,
-          "elapsed_ms": 1.282,
+          "elapsed_ms": 1.306,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 123,
-            "skill": 1003,
-            "total": 1127
+            "skill": 1208,
+            "total": 1332
           },
           "tool_call_count": 3,
           "tool_calls": [
@@ -4246,7 +4246,7 @@
         "mcp_no_skill": {
           "answer": "0",
           "correct": true,
-          "elapsed_ms": 0.741,
+          "elapsed_ms": 0.79,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
@@ -4263,13 +4263,13 @@
         "skill_mcp": {
           "answer": "0",
           "correct": true,
-          "elapsed_ms": 5.401,
+          "elapsed_ms": 5.266,
           "had_tool_error": false,
           "tokens": {
             "answer": 1,
             "evidence": 189,
-            "skill": 1003,
-            "total": 1193
+            "skill": 1208,
+            "total": 1398
           },
           "tool_call_count": 4,
           "tool_calls": [
@@ -4282,7 +4282,7 @@
         "text_no_skill": {
           "answer": "0",
           "correct": true,
-          "elapsed_ms": 0.088,
+          "elapsed_ms": 0.076,
           "rationale": "Text parser counted the first visible module/interface port list.",
           "tokens": {
             "answer": 1,
@@ -4303,7 +4303,7 @@
   ],
   "metadata": {
     "comparison": "75 real public RTL files: text/no-skill vs MCP/no-skill vs pyslang-verilog-context skill+MCP",
-    "generated_at": "2026-05-23T18:47:00+00:00",
+    "generated_at": "2026-06-14T07:23:00+00:00",
     "methodology": "Each case uses one real public HDL file. Tasks cycle through frontend diagnostic status, design-unit inventory, and first design-unit port count. Text/no-skill uses local text heuristics. MCP/no-skill uses targeted pyslang-mcp tools. Skill+MCP uses parse + diagnostics before the structural query.",
     "repo": "pyslang-mcp",
     "skill": "skills/pyslang-verilog-context/SKILL.md",
@@ -4351,14 +4351,14 @@
       "mcp_no_skill": {
         "accuracy": 1.0,
         "correct": 75,
-        "median_ms": 0.484,
+        "median_ms": 0.532,
         "total_tokens_est": 47493
       },
       "skill_mcp": {
         "accuracy": 1.0,
         "correct": 75,
-        "median_ms": 4.165,
-        "total_tokens_est": 122718
+        "median_ms": 4.229,
+        "total_tokens_est": 138093
       },
       "text_no_skill": {
         "accuracy": 0.6267,

@@ -509,9 +509,7 @@ def get_instance_connections(
                 "query": instance_path_or_name,
                 "found": False,
                 "ambiguous": len(exact_paths) > 1,
-                "candidates": [
-                    index.instance_records_by_path[path] for path in exact_paths
-                ]
+                "candidates": [index.instance_records_by_path[path] for path in exact_paths]
                 or candidates,
                 "instance": None,
                 "summary": {
@@ -680,9 +678,7 @@ def trace_connectivity(
                     }
                 )
                 continue
-            queue.append(
-                (path_start, edge.target, next_hops, {*visited, edge.target})
-            )
+            queue.append((path_start, edge.target, next_hops, {*visited, edge.target}))
         if budget_exhausted:
             break
 
@@ -960,9 +956,9 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
     declarations: list[IndexedDeclaration] = []
     references: list[IndexedReference] = []
     members_by_design_unit: defaultdict[str, list[IndexedMember]] = defaultdict(list)
-    connections_by_instance_path: defaultdict[
-        str, list[IndexedInstanceConnection]
-    ] = defaultdict(list)
+    connections_by_instance_path: defaultdict[str, list[IndexedInstanceConnection]] = defaultdict(
+        list
+    )
     assignments_by_design_unit: defaultdict[str, list[IndexedAssignment]] = defaultdict(list)
     edges_by_source: defaultdict[str, list[ConnectivityEdge]] = defaultdict(list)
     edges_by_target: defaultdict[str, list[ConnectivityEdge]] = defaultdict(list)
@@ -1022,9 +1018,7 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                             ),
                             "port": connection.port.name,
                             "direction": direction,
-                            "expression_snippet": connection_entry.output.get(
-                                "expression_snippet"
-                            ),
+                            "expression_snippet": connection_entry.output.get("expression_snippet"),
                             "location": connection_entry.output.get("source_location"),
                         },
                         edges_by_source=edges_by_source,
@@ -1073,9 +1067,10 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
                 seen_members.add(key)
                 members_by_design_unit[member_entry.design_unit].append(member_entry)
 
-        if type(symbol).__name__ == "AssignmentExpression" and getattr(
-            symbol, "syntax", None
-        ) is not None:
+        if (
+            type(symbol).__name__ == "AssignmentExpression"
+            and getattr(symbol, "syntax", None) is not None
+        ):
             assignment_kind = _assignment_kind_from_syntax(symbol.syntax)
             assignment_entry = _make_assignment_entry(
                 bundle,
@@ -1177,15 +1172,11 @@ def _build_index(bundle: AnalysisBundle) -> AnalysisIndex:
             for key, values in assignments_by_design_unit.items()
         },
         connectivity_edges_by_source={
-            key: tuple(
-                sorted(values, key=lambda edge: (edge.target, edge.kind, str(edge.output)))
-            )
+            key: tuple(sorted(values, key=lambda edge: (edge.target, edge.kind, str(edge.output))))
             for key, values in edges_by_source.items()
         },
         connectivity_edges_by_target={
-            key: tuple(
-                sorted(values, key=lambda edge: (edge.source, edge.kind, str(edge.output)))
-            )
+            key: tuple(sorted(values, key=lambda edge: (edge.source, edge.kind, str(edge.output))))
             for key, values in edges_by_target.items()
         },
     )
@@ -1525,8 +1516,7 @@ def _assignment_kind_from_syntax(syntax: Any) -> str | None:
     if "ContinuousAssign" in constructs:
         return "continuous"
     if any(
-        kind.startswith("Always") or kind in {"InitialBlock", "FinalBlock"}
-        for kind in constructs
+        kind.startswith("Always") or kind in {"InitialBlock", "FinalBlock"} for kind in constructs
     ):
         return "procedural"
     return None
@@ -1602,9 +1592,7 @@ def _add_connectivity_edge(
 
 def _resolve_connectivity_starts(index: AnalysisIndex, start: str) -> list[str]:
     candidates: set[str] = set()
-    all_nodes = set(index.connectivity_edges_by_source) | set(
-        index.connectivity_edges_by_target
-    )
+    all_nodes = set(index.connectivity_edges_by_source) | set(index.connectivity_edges_by_target)
     for node in all_nodes:
         if node == start or node.endswith(f".{start}"):
             candidates.add(node)

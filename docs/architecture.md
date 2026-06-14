@@ -27,13 +27,13 @@ flowchart TD
     end
 
     subgraph Transport["Transport / MCP wrapper"]
-        Server["server.py<br/>FastMCP instance<br/>10 @mcp.tool defs<br/>/healthz custom route<br/>Annotated params + descriptions<br/>success_result / error_result / run_tool<br/>ToolInputError"]
+        Server["server.py<br/>FastMCP instance<br/>15 @mcp.tool defs<br/>/healthz custom route<br/>Annotated params + descriptions<br/>success_result / error_result / run_tool<br/>ToolInputError"]
         Auth["auth.py<br/>StaticBearerTokenVerifier<br/>simple internal HTTP bearer-token verifier"]
         Schemas["schemas.py<br/>Pydantic output models<br/>ToolErrorResult + ToolErrorDetail<br/>StrictModel (extra='forbid')<br/>HierarchyNode recursive rebuild"]
     end
 
     subgraph Core["Analysis core"]
-        Analysis["analysis.py<br/>build_analysis / parse_summary<br/>filelist_summary<br/>get_diagnostics / list_design_units<br/>describe_design_unit / get_hierarchy<br/>find_symbol / dump_syntax_tree_summary<br/>preprocess_files / get_project_summary<br/>symbol-walk visitors<br/>serialize_location / source_snippet"]
+        Analysis["analysis.py<br/>build_analysis / parse_summary<br/>filelist_summary<br/>get_diagnostics / summarize_diagnostics_by_code<br/>list_design_units / describe_design_unit / get_hierarchy<br/>find_symbol / find_member / get_assignments<br/>get_instance_connections / trace_connectivity<br/>dump_syntax_tree_summary / preprocess_files / get_project_summary<br/>symbol-walk visitors<br/>serialize_location / source_snippet"]
         Loader["project_loader.py<br/>resolve_project_root<br/>load_project_from_files / load_project_from_filelist<br/>_parse_filelist + _visit_filelist<br/>_strip_inline_comments (quote-aware)<br/>_normalize_path (relative_to-root guard)<br/>_normalize_defines / _normalize_top_modules<br/>ProjectLoadError / PathOutsideRootError"]
     end
 
@@ -138,10 +138,10 @@ sequenceDiagram
 | Module | Role | Depends on |
 |---|---|---|
 | `__main__.py` | CLI. Parses `--transport`, invokes `create_server().run(transport)`. | `server` |
-| `server.py` | MCP surface. Registers ten read-only `@mcp.tool`s with `Annotated` input schemas, typed return schemas, a `/healthz` HTTP route, and a central `run_tool` wrapper that converts load / input errors into structured tool errors. | `analysis`, `project_loader`, `cache`, `schemas`, `types`, `auth`, `mcp.server.fastmcp` |
+| `server.py` | MCP surface. Registers fifteen read-only `@mcp.tool`s with `Annotated` input schemas, typed return schemas, a `/healthz` HTTP route, and a central `run_tool` wrapper that converts load / input errors into structured tool errors. | `analysis`, `project_loader`, `cache`, `schemas`, `types`, `auth`, `mcp.server.fastmcp` |
 | `auth.py` | Simple static bearer-token verifier used by the internal MaaS HTTP path. This is not a replacement for company SSO in a broader team deployment. | `mcp.server.auth.provider` |
 | `schemas.py` | Pydantic output models (one per tool) plus `ToolErrorResult`. `StrictModel` forbids extra keys; `HierarchyNode.model_rebuild()` enables recursive `children`. FastMCP reads these via `Annotated[CallToolResult, Result \| Error]`. | `pydantic` |
-| `analysis.py` | pyslang-backed analysis functions. Builds `Compilation`, elaborates, extracts diagnostics, design units, hierarchy, symbols, syntax-tree summaries, and preprocessing metadata. Everything flows through `stabilize_json` + `limit_list`. | `pyslang`, `serializers`, `types` |
+| `analysis.py` | pyslang-backed analysis functions. Builds `Compilation`, elaborates, and extracts diagnostics, design units, hierarchy, symbols, assignments, instance connections, bounded structural connectivity, syntax-tree summaries, and preprocessing metadata. Everything flows through `stabilize_json` + `limit_list`. | `pyslang`, `serializers`, `types` |
 | `project_loader.py` | Normalizes and safety-checks project inputs. Resolves project roots, expands nested `.f` filelists (`-f`, `-F`, `+incdir+`, `-I`, `+define+`), records unsupported tokens, and enforces `relative_to(root)` on every path. | `types` |
 | `cache.py` | Bounded LRU analysis cache. Key = sha256 of normalized `project_config_json`; invalidation = tuple of `(posix_path, mtime_ns)` over `tracked_paths`. `max_entries=16`. | `serializers`, `types` |
 | `serializers.py` | Stable JSON helpers: `stabilize_json` (deep sort), `limit_list` (truncation metadata), `relative_path`, `top_counts`, `project_config_json`, `ensure_jsonable_paths`. | `types` |
@@ -168,7 +168,10 @@ sequenceDiagram
 
 - **New tool.** Add a Pydantic result model in `schemas.py`, implement
   the query in `analysis.py`, register an `@mcp.tool` in `server.py`
-  with `Annotated` args + `run_tool` wrapper.
+  with `Annotated` args + `run_tool` wrapper. The current Verilog
+  analysis extensions include member lookup, assignment lookup,
+  instance-connection summaries, bounded connectivity tracing, and
+  diagnostic grouping by code.
 - **New filelist directive.** Extend the token handlers in
   `project_loader._visit_filelist`; unknown tokens already land in
   `unsupported_filelist_entries`, so tightening coverage there is the

@@ -2740,7 +2740,7 @@ def test_identical_new_tool_calls_reuse_cached_tool_result(
 
 - [x] **Step 6: Extend stdio tool calls**
 
-In `tests/test_mcp_stdio.py::_assert_all_public_tools_call_successfully`, add calls for the five new tools. Use the generated-debug fixture for member, assignment, trace, and connection tools, and the broken fixture for diagnostic grouping.
+In `tests/test_mcp_stdio.py::_assert_all_public_tools_call_successfully`, add calls for the five new tools. Use the synthetic debug fixture for member, assignment, trace, and connection tools, and the broken fixture for diagnostic grouping.
 
 - [x] **Step 7: Run protocol tests**
 
@@ -2780,7 +2780,7 @@ git commit -m "test: cover new MCP tool contracts"
 - Supported claim: Public docs and skill prompts describe implemented tool behavior and limitations.
 - Unsupported claim: Docs alone prove tool behavior without tests.
 
-- [ ] **Step 1: Update README tool table**
+- [x] **Step 1: Update README tool table**
 
 Add rows:
 
@@ -2792,7 +2792,7 @@ Add rows:
 | Group diagnostics by code | `pyslang_summarize_diagnostics_by_code` |
 ```
 
-- [ ] **Step 2: Add README usage examples**
+- [x] **Step 2: Add README usage examples**
 
 Add a short section:
 
@@ -2810,7 +2810,7 @@ formal proof, CDC/RDC signoff, timing signoff, or a complete netlist-level
 driver/load database.
 ```
 
-- [ ] **Step 3: Update `AGENTS.md` public tool surface**
+- [x] **Step 3: Update `AGENTS.md` public tool surface**
 
 Add the five new tool names to the Product Scope list:
 
@@ -2822,7 +2822,7 @@ Add the five new tool names to the Product Scope list:
 - `pyslang_summarize_diagnostics_by_code`
 ```
 
-- [ ] **Step 4: Update architecture docs**
+- [x] **Step 4: Update architecture docs**
 
 In `docs/architecture.md`, update:
 
@@ -2832,7 +2832,7 @@ server.py<br/>FastMCP instance<br/>15 @mcp.tool defs
 
 and add the new core functions to the `analysis.py` node and extension-point text.
 
-- [ ] **Step 5: Update skill workflow**
+- [x] **Step 5: Update skill workflow**
 
 In `skills/pyslang-verilog-context/SKILL.md`, add:
 
@@ -2852,7 +2852,7 @@ prove functional behavior, complete fanin/fanout, CDC/RDC safety, multiple-drive
 cleanliness, synthesis quality, or timing closure.
 ```
 
-- [ ] **Step 6: Add or update one deterministic eval case**
+- [x] **Step 6: Add or update one deterministic eval case**
 
 Add a manifest case using `fixtures/pyslang-mcp-tests` or a copied public-safe fixture. The expected evidence list should include at least:
 
@@ -2867,9 +2867,9 @@ Add a manifest case using `fixtures/pyslang-mcp-tests` or a copied public-safe f
 ]
 ```
 
-The prompt should ask a realistic generated-net question and require the answer to state the structural-evidence limitation.
+The prompt should ask a realistic structural-connectivity question and require the answer to state the structural-evidence limitation.
 
-- [ ] **Step 7: Run docs and skill validation commands**
+- [x] **Step 7: Run docs and skill validation commands**
 
 Run:
 
@@ -2901,7 +2901,7 @@ git commit -m "docs: document Verilog debug MCP tools"
 - Supported claim: The repository's normal quality gates pass locally, and HDL/eval validation has been run or explicitly reported as unavailable.
 - Unsupported claim: Passing these tests proves proprietary project behavior, timing closure, CDC/RDC closure, synthesis quality, or simulation correctness.
 
-- [ ] **Step 1: Run formatting**
+- [x] **Step 1: Run formatting**
 
 ```bash
 ./.venv/bin/ruff format src tests scripts
@@ -2909,7 +2909,7 @@ git commit -m "docs: document Verilog debug MCP tools"
 
 Expected: command exits with status 0.
 
-- [ ] **Step 2: Run lint**
+- [x] **Step 2: Run lint**
 
 ```bash
 ./.venv/bin/ruff check src tests scripts
@@ -2917,7 +2917,7 @@ Expected: command exits with status 0.
 
 Expected: command exits with status 0.
 
-- [ ] **Step 3: Run type checking**
+- [x] **Step 3: Run type checking**
 
 ```bash
 ./.venv/bin/pyright
@@ -2925,7 +2925,7 @@ Expected: command exits with status 0.
 
 Expected: command exits with status 0.
 
-- [ ] **Step 4: Run full pytest suite**
+- [x] **Step 4: Run full pytest suite**
 
 ```bash
 ./.venv/bin/pytest --cov=src/pyslang_mcp --cov-report=term-missing:skip-covered -q
@@ -2933,7 +2933,7 @@ Expected: command exits with status 0.
 
 Expected: tests pass with coverage report.
 
-- [ ] **Step 5: Run security regression target**
+- [x] **Step 5: Run security regression target**
 
 ```bash
 ./.venv/bin/pytest -q -m security
@@ -2941,7 +2941,7 @@ Expected: tests pass with coverage report.
 
 Expected: tests pass.
 
-- [ ] **Step 6: Run MCP stdio protocol smoke**
+- [x] **Step 6: Run MCP stdio protocol smoke**
 
 ```bash
 ./.venv/bin/pytest -q tests/test_mcp_stdio.py
@@ -2949,7 +2949,7 @@ Expected: tests pass.
 
 Expected: tests pass and stderr contains no traceback.
 
-- [ ] **Step 7: Run HDL example validation**
+- [x] **Step 7: Run HDL example validation**
 
 ```bash
 ./.venv/bin/python scripts/validate_hdl_examples.py
@@ -2957,7 +2957,7 @@ Expected: tests pass and stderr contains no traceback.
 
 Expected: command exits with status 0 when Verilator and local dependencies are available.
 
-- [ ] **Step 8: Run full skill/eval validation required by `AGENTS.md`**
+- [x] **Step 8: Run full skill/eval validation required by `AGENTS.md`**
 
 Run:
 
@@ -2971,7 +2971,7 @@ Run:
 
 Expected: commands complete successfully. If one cannot run because of unavailable local tooling, credentials, or runtime dependencies, record the exact command, error, and downgraded validation status in the PR notes.
 
-- [ ] **Step 9: Inspect git diff**
+- [x] **Step 9: Inspect git diff**
 
 ```bash
 git diff --stat

@@ -26,6 +26,11 @@ The public tool surface is:
 - `pyslang_describe_design_unit`
 - `pyslang_get_hierarchy`
 - `pyslang_find_symbol`
+- `pyslang_find_member`
+- `pyslang_get_assignments`
+- `pyslang_trace_connectivity`
+- `pyslang_get_instance_connections`
+- `pyslang_summarize_diagnostics_by_code`
 - `pyslang_dump_syntax_tree_summary`
 - `pyslang_preprocess_files`
 - `pyslang_get_project_summary`

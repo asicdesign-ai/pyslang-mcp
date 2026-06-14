@@ -1,0 +1,4253 @@
+{
+  "case_count": 20,
+  "cases": [
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "sync_fifo.u_sync_fifo_mem",
+            "sync_fifo.u_sync_fifo_mem",
+            "sync_fifo.u_sync_fifo_mem"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_get_hierarchy"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "sync_fifo.u_sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 23.236,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:70-81 instantiates sync_fifo_mem as u_sync_fifo_mem under top module sync_fifo."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "functions.wait",
+                "multi_tool_use.parallel"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 36736,
+                "input_tokens": 56180,
+                "output_tokens": 979,
+                "reasoning_output_tokens": 505
+              }
+            },
+            {
+              "answer": "sync_fifo.u_sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 14.281,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:70-81 instantiates sync_fifo_mem as u_sync_fifo_mem; it is the only module instance under sync_fifo."
+              ],
+              "limitations": [
+                "Determined by text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 23168,
+                "input_tokens": 33269,
+                "output_tokens": 567,
+                "reasoning_output_tokens": 162
+              }
+            },
+            {
+              "answer": "sync_fifo.u_sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.725,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:70-81 instantiates sync_fifo_mem as u_sync_fifo_mem; no other child modules are instantiated by sync_fifo."
+              ],
+              "limitations": [
+                "Determined by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 33620,
+                "output_tokens": 683,
+                "reasoning_output_tokens": 214
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "sync_fifo.u_sync_fifo_mem",
+            "sync_fifo.u_sync_fifo_mem",
+            "sync_fifo.u_sync_fifo_mem"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_get_hierarchy"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "sync_fifo.u_sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.787,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reported one child under sync_fifo with this hierarchical_path."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 19712,
+                "input_tokens": 36382,
+                "output_tokens": 284,
+                "reasoning_output_tokens": 81
+              }
+            },
+            {
+              "answer": "sync_fifo.u_sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.743,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reported exactly one child under sync_fifo with this hierarchical_path."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 19712,
+                "input_tokens": 36422,
+                "output_tokens": 318,
+                "reasoning_output_tokens": 114
+              }
+            },
+            {
+              "answer": "sync_fifo.u_sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.873,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reported one child under sync_fifo with hierarchical_path sync_fifo.u_sync_fifo_mem."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; this is not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36456,
+                "output_tokens": 349,
+                "reasoning_output_tokens": 131
+              }
+            }
+          ]
+        }
+      },
+      "expected": "sync_fifo.u_sync_fifo_mem",
+      "id": "sync_child_path",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "What is the hierarchical_path of the only child instance under the top instance sync_fifo?",
+      "required_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "title": "Resolved child instance path"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "sync_fifo_mem",
+            "sync_fifo_mem",
+            "sync_fifo_mem"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_get_hierarchy"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.547,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv instantiates `sync_fifo_mem #(...) u_sync_fifo_mem`.",
+                "project/sync_fifo_mem.sv defines module `sync_fifo_mem`."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 21120,
+                "input_tokens": 32585,
+                "output_tokens": 434,
+                "reasoning_output_tokens": 83
+              }
+            },
+            {
+              "answer": "sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 16.058,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv instantiates sync_fifo_mem as u_sync_fifo_mem.",
+                "project/sync_fifo_mem.sv defines module sync_fifo_mem."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 23680,
+                "input_tokens": 33424,
+                "output_tokens": 652,
+                "reasoning_output_tokens": 251
+              }
+            },
+            {
+              "answer": "sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 13.044,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:70-74 instantiates sync_fifo_mem as u_sync_fifo_mem.",
+                "project/sync_fifo_mem.sv:1 declares module sync_fifo_mem."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32089,
+                "output_tokens": 505,
+                "reasoning_output_tokens": 110
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "sync_fifo_mem",
+            "sync_fifo_mem",
+            "sync_fifo_mem"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_get_hierarchy"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 24.025,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reports sync_fifo.u_sync_fifo_mem with definition sync_fifo_mem."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; this does not prove simulation, synthesis, timing, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 51328,
+                "input_tokens": 56940,
+                "output_tokens": 946,
+                "reasoning_output_tokens": 614
+              }
+            },
+            {
+              "answer": "sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.041,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "Hierarchy identifies sync_fifo.u_sync_fifo_mem with definition sync_fifo_mem."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; not simulation, synthesis, formal, CDC, or timing proof."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36439,
+                "output_tokens": 336,
+                "reasoning_output_tokens": 134
+              }
+            },
+            {
+              "answer": "sync_fifo_mem",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 27.207,
+              "event_tools": [
+                "pyslang_get_diagnostics",
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reports sync_fifo.u_sync_fifo_mem with definition sync_fifo_mem; frontend diagnostics were clean."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not prove simulation behavior, synthesis quality, timing, or CDC/RDC correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_diagnostics",
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 38528,
+                "input_tokens": 57565,
+                "output_tokens": 1233,
+                "reasoning_output_tokens": 804
+              }
+            }
+          ]
+        }
+      },
+      "expected": "sync_fifo_mem",
+      "id": "sync_child_definition",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "What module definition is instantiated by the child instance u_sync_fifo_mem?",
+      "required_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "title": "Child instance module definition"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "4",
+            "4",
+            "4"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "4",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 13.586,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:15-18 declares four output ports: data_o, full_o, empty_o, and level_o."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "exec_command"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 12544,
+                "input_tokens": 21389,
+                "output_tokens": 430,
+                "reasoning_output_tokens": 148
+              }
+            },
+            {
+              "answer": "4",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.598,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv lines 15-18 declare data_o, full_o, empty_o, and level_o as outputs."
+              ],
+              "limitations": [
+                "Determined by text inspection only, as requested."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 18688,
+                "input_tokens": 21369,
+                "output_tokens": 357,
+                "reasoning_output_tokens": 90
+              }
+            },
+            {
+              "answer": "4",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.026,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv lines 15-18 declare data_o, full_o, empty_o, and level_o as outputs."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 18688,
+                "input_tokens": 22183,
+                "output_tokens": 331,
+                "reasoning_output_tokens": 39
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "4",
+            "4",
+            "4"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "4",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 28.571,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found four output ports: data_o, full_o, empty_o, and level_o. Frontend diagnostics reported no errors or warnings."
+              ],
+              "limitations": [
+                "Read-only compiler frontend evidence only; no simulation, synthesis, timing, CDC/RDC, or formal verification."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 78208,
+                "input_tokens": 98287,
+                "output_tokens": 1007,
+                "reasoning_output_tokens": 577
+              }
+            },
+            {
+              "answer": "4",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.485,
+              "event_tools": [
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit reports four output ports: data_o, full_o, empty_o, and level_o."
+              ],
+              "limitations": [
+                "Frontend structural evidence only; this does not prove simulation behavior, synthesis quality, timing, or CDC/RDC correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_describe_design_unit"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36601,
+                "output_tokens": 374,
+                "reasoning_output_tokens": 143
+              }
+            },
+            {
+              "answer": "4",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 26.45,
+              "event_tools": [
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit reports four output ports: data_o, full_o, empty_o, and level_o.",
+                "The project frontend reported zero diagnostics for project/project.f with sync_fifo as top."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not prove simulation behavior, synthesis quality, timing, or CDC correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 38528,
+                "input_tokens": 57758,
+                "output_tokens": 1108,
+                "reasoning_output_tokens": 715
+              }
+            }
+          ]
+        }
+      },
+      "expected": "4",
+      "id": "sync_output_ports",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "How many output ports does the sync_fifo design unit expose?",
+      "required_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "title": "sync_fifo output port count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "6",
+            "6",
+            "6"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_get_project_summary"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 28.511,
+              "event_tools": [],
+              "evidence": [
+                "project.f tracks rtl.f and include/; rtl.f tracks three .sv files; both includes resolve to one unique fifo_defs.svh path, yielding six unique files total."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 33280,
+                "input_tokens": 47586,
+                "output_tokens": 1283,
+                "reasoning_output_tokens": 764
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 26.34,
+              "event_tools": [],
+              "evidence": [
+                "The six tracked files are project.f, rtl.f, three SystemVerilog sources, and include/fifo_defs.svh."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 33339,
+                "output_tokens": 1098,
+                "reasoning_output_tokens": 684
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 14.951,
+              "event_tools": [],
+              "evidence": [
+                "project.f references rtl.f; rtl.f lists 3 RTL files; 2 RTL files include the same normalized include/fifo_defs.svh path. Including both filelists gives 6 unique tracked paths."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 27264,
+                "input_tokens": 31871,
+                "output_tokens": 635,
+                "reasoning_output_tokens": 260
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "6",
+            "6",
+            "6"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_get_project_summary"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 8.859,
+              "event_tools": [
+                "pyslang_get_project_summary"
+              ],
+              "evidence": [
+                "pyslang_get_project_summary returned 6 normalized tracked_paths."
+              ],
+              "limitations": [
+                "Read-only compiler frontend evidence; it does not establish simulation, synthesis, timing, CDC/RDC, formal, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_project_summary"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36410,
+                "output_tokens": 244,
+                "reasoning_output_tokens": 55
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.232,
+              "event_tools": [
+                "pyslang_get_project_summary"
+              ],
+              "evidence": [
+                "pyslang_get_project_summary returned 6 normalized tracked_paths."
+              ],
+              "limitations": [
+                "Read-only compiler frontend evidence; not simulation, synthesis, formal, CDC/RDC, or timing signoff."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_project_summary"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36472,
+                "output_tokens": 296,
+                "reasoning_output_tokens": 107
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.46,
+              "event_tools": [
+                "pyslang_get_project_summary"
+              ],
+              "evidence": [
+                "pyslang_get_project_summary returned 6 normalized tracked_paths."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; not simulation, synthesis, formal, CDC/RDC, or timing signoff."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_project_summary"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36439,
+                "output_tokens": 274,
+                "reasoning_output_tokens": 82
+              }
+            }
+          ]
+        }
+      },
+      "expected": "6",
+      "id": "sync_tracked_paths",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "How many normalized tracked_paths are in the loaded project?",
+      "required_tools": [
+        "pyslang_get_project_summary"
+      ],
+      "title": "Normalized tracked path count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "project/sync_fifo_pkg.sv",
+            "project/sync_fifo_pkg.sv",
+            "project/sync_fifo_pkg.sv"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 0,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_dump_syntax_tree_summary"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "project/sync_fifo_pkg.sv",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 24.238,
+              "event_tools": [],
+              "evidence": [
+                "It includes fifo_defs.svh and contains only the sync_fifo_pkg package declaration at top level."
+              ],
+              "limitations": [
+                "Verified by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 21632,
+                "input_tokens": 32232,
+                "output_tokens": 595,
+                "reasoning_output_tokens": 164
+              }
+            },
+            {
+              "answer": "project/sync_fifo_pkg.sv",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 17.934,
+              "event_tools": [],
+              "evidence": [
+                "Line 1 includes fifo_defs.svh; lines 3-21 contain one package declaration and no other top-level member."
+              ],
+              "limitations": [
+                "Determined by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 21632,
+                "input_tokens": 32341,
+                "output_tokens": 646,
+                "reasoning_output_tokens": 178
+              }
+            },
+            {
+              "answer": "project/sync_fifo_pkg.sv",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 17.294,
+              "event_tools": [],
+              "evidence": [
+                "Line 1 includes fifo_defs.svh; lines 3-21 contain one package declaration."
+              ],
+              "limitations": [
+                "Text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32243,
+                "output_tokens": 608,
+                "reasoning_output_tokens": 148
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "sync_fifo_pkg.sv",
+            "sync_fifo_pkg.sv",
+            "sync_fifo_pkg.sv"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_dump_syntax_tree_summary"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "sync_fifo_pkg.sv",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.756,
+              "event_tools": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "evidence": [
+                "Includes fifo_defs.svh and top_level_members is exactly [\"PackageDeclaration\"]."
+              ],
+              "limitations": [
+                "Frontend syntax evidence only; no simulation, synthesis, formal, timing, or CDC analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 19712,
+                "input_tokens": 38129,
+                "output_tokens": 329,
+                "reasoning_output_tokens": 120
+              }
+            },
+            {
+              "answer": "sync_fifo_pkg.sv",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.357,
+              "event_tools": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "evidence": [
+                "Syntax-tree summary shows fifo_defs.svh in include_directives and [\"PackageDeclaration\"] as the sole top-level member."
+              ],
+              "limitations": [
+                "Frontend syntax evidence only; no simulation, synthesis, timing, CDC, or formal verification."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 38094,
+                "output_tokens": 338,
+                "reasoning_output_tokens": 117
+              }
+            },
+            {
+              "answer": "sync_fifo_pkg.sv",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.104,
+              "event_tools": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "evidence": [
+                "Syntax-tree summary lists fifo_defs.svh as an include and PackageDeclaration as the sole top-level member."
+              ],
+              "limitations": [
+                "Frontend syntax evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 38078,
+                "output_tokens": 334,
+                "reasoning_output_tokens": 117
+              }
+            }
+          ]
+        }
+      },
+      "expected": "sync_fifo_pkg.sv",
+      "id": "sync_package_include",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "Which file includes fifo_defs.svh and has PackageDeclaration as its only top-level member?",
+      "required_tools": [
+        "pyslang_dump_syntax_tree_summary"
+      ],
+      "title": "Package file that includes fifo_defs.svh"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "unknown",
+            "write",
+            "read"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": false,
+          "correct_trials": 0,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "unknown",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 38.288,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv contains push_fire references but no reference_kind metadata."
+              ],
+              "limitations": [
+                "The reported classification cannot be proven from RTL text alone."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 40448,
+                "input_tokens": 45830,
+                "output_tokens": 1090,
+                "reasoning_output_tokens": 651
+              }
+            },
+            {
+              "answer": "write",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 28.118,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:36 uses push_fire on the left-hand side of an assignment."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32735,
+                "output_tokens": 1343,
+                "reasoning_output_tokens": 916
+              }
+            },
+            {
+              "answer": "read",
+              "confidence": "medium",
+              "correct": false,
+              "elapsed_seconds": 30.442,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo.sv:46,62,76 use push_fire as a read value."
+              ],
+              "limitations": [
+                "Inferred from RTL text only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 27776,
+                "input_tokens": 33033,
+                "output_tokens": 1455,
+                "reasoning_output_tokens": 1066
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "named_value",
+            "named_value",
+            "named_value"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "named_value",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.193,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_kind \"named_value\" for push_fire at sync_fifo.sv:36."
+              ],
+              "limitations": [
+                "Frontend evidence only; this does not establish simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29440,
+                "input_tokens": 36487,
+                "output_tokens": 451,
+                "reasoning_output_tokens": 208
+              }
+            },
+            {
+              "answer": "named_value",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.619,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_kind \"named_value\" for push_fire at sync_fifo.sv:36."
+              ],
+              "limitations": [
+                "Read-only compiler frontend evidence; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36430,
+                "output_tokens": 385,
+                "reasoning_output_tokens": 163
+              }
+            },
+            {
+              "answer": "named_value",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.733,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reports push_fire at sync_fifo.sv:36 with reference_kind named_value."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; no simulation, synthesis, timing, CDC, or formal analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36481,
+                "output_tokens": 419,
+                "reasoning_output_tokens": 182
+              }
+            }
+          ]
+        }
+      },
+      "expected": "named_value",
+      "id": "push_fire_reference_kind",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "For symbol push_fire, what reference_kind is reported for its named-value reference?",
+      "required_tools": [
+        "pyslang_find_symbol"
+      ],
+      "title": "push_fire named reference classification"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "9",
+            "9",
+            "9"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "9",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 15.888,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_core.sv lines 3-13 declare 7 inputs and 2 outputs."
+              ],
+              "limitations": [
+                "Counted from checked-in RTL text only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32528,
+                "output_tokens": 643,
+                "reasoning_output_tokens": 188
+              }
+            },
+            {
+              "answer": "9",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.127,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_core.sv declares 7 input ports and 2 output ports."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 28800,
+                "input_tokens": 31834,
+                "output_tokens": 328,
+                "reasoning_output_tokens": 58
+              }
+            },
+            {
+              "answer": "9",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 14.684,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_core.sv:3-13 declares seven input ports and two output ports."
+              ],
+              "limitations": [
+                "Counted from checked-in RTL text only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32799,
+                "output_tokens": 513,
+                "reasoning_output_tokens": 118
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "9",
+            "9",
+            "9"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "9",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.861,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found timer_core and reported 9 ports.",
+                "The project parsed with zero diagnostics or unresolved references."
+              ],
+              "limitations": [
+                "Frontend structural evidence only; this does not prove simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 17152,
+                "input_tokens": 37286,
+                "output_tokens": 436,
+                "reasoning_output_tokens": 142
+              }
+            },
+            {
+              "answer": "9",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 22.076,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found timer_core and returned 9 ports: 7 inputs and 2 outputs.",
+                "The project filelist parsed with zero diagnostics or unresolved references."
+              ],
+              "limitations": [
+                "Compiler frontend structural evidence only; this does not prove simulation behavior, synthesis quality, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 72576,
+                "input_tokens": 97955,
+                "output_tokens": 848,
+                "reasoning_output_tokens": 367
+              }
+            },
+            {
+              "answer": "9",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 13.685,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found timer_core and reported 9 ports: 7 inputs and 2 outputs.",
+                "The project parsed with zero diagnostics or unresolved references."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not prove simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 37312,
+                "output_tokens": 538,
+                "reasoning_output_tokens": 197
+              }
+            }
+          ]
+        }
+      },
+      "expected": "9",
+      "id": "timer_core_ports",
+      "project": "apb_timer",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "How many total ports does timer_core expose?",
+      "required_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "title": "timer_core total port count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "apb_timer.u_timer_core.tick",
+            "apb_timer.u_timer_core.tick",
+            "apb_timer.u_timer_core.tick"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "apb_timer.u_timer_core.tick",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 21.568,
+              "event_tools": [],
+              "evidence": [
+                "timer_core.sv:16 declares tick; apb_timer.sv:52 instantiates timer_core as u_timer_core under top module apb_timer."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 38912,
+                "input_tokens": 45184,
+                "output_tokens": 781,
+                "reasoning_output_tokens": 149
+              }
+            },
+            {
+              "answer": "apb_timer.u_timer_core.tick",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 16.836,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_core.sv:16 declares tick; project/apb_timer.sv:52 instantiates timer_core as u_timer_core under top apb_timer."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 34130,
+                "output_tokens": 628,
+                "reasoning_output_tokens": 129
+              }
+            },
+            {
+              "answer": "apb_timer.u_timer_core.tick",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 18.696,
+              "event_tools": [],
+              "evidence": [
+                "timer_core.sv declares tick; apb_timer.sv instantiates timer_core as u_timer_core."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 34252,
+                "output_tokens": 670,
+                "reasoning_output_tokens": 164
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "apb_timer.u_timer_core.tick",
+            "apb_timer.u_timer_core.tick",
+            "apb_timer.u_timer_core.tick"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "apb_timer.u_timer_core.tick",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 23.74,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported one exact Variable declaration for tick with this hierarchical_path and no frontend diagnostics."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; no simulation, synthesis, timing, CDC/RDC, or formal proof."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_find_symbol"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 56814,
+                "output_tokens": 881,
+                "reasoning_output_tokens": 545
+              }
+            },
+            {
+              "answer": "apb_timer.u_timer_core.tick",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.779,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol found one Variable declaration named tick with this hierarchical_path."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; no simulation, synthesis, timing, CDC/RDC, or formal analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36139,
+                "output_tokens": 338,
+                "reasoning_output_tokens": 115
+              }
+            },
+            {
+              "answer": "apb_timer.u_timer_core.tick",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.409,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol found one Variable declaration for tick."
+              ],
+              "limitations": [
+                "Frontend evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36166,
+                "output_tokens": 349,
+                "reasoning_output_tokens": 130
+              }
+            }
+          ]
+        }
+      },
+      "expected": "apb_timer.u_timer_core.tick",
+      "id": "tick_hier_path",
+      "project": "apb_timer",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "What hierarchical_path is reported for the tick variable declaration?",
+      "required_tools": [
+        "pyslang_find_symbol"
+      ],
+      "title": "tick declaration hierarchical path"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "2",
+            "2",
+            "2"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 21.976,
+              "event_tools": [],
+              "evidence": [
+                "`apb_timer.sv:23` declares `logic [7:0] prescale_q;`.",
+                "`timer_core.sv:15` declares `logic [7:0] prescale_q;`."
+              ],
+              "limitations": [
+                "Counted by text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 34114,
+                "output_tokens": 684,
+                "reasoning_output_tokens": 147
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 20.96,
+              "event_tools": [],
+              "evidence": [
+                "project/rtl.f includes timer_core.sv and apb_timer.sv; each contains one `logic [7:0] prescale_q;` declaration."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 21120,
+                "input_tokens": 32893,
+                "output_tokens": 624,
+                "reasoning_output_tokens": 219
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 20.61,
+              "event_tools": [],
+              "evidence": [
+                "project/apb_timer.sv:23 declares prescale_q.",
+                "project/timer_core.sv:15 declares prescale_q."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "functions.wait",
+                "multi_tool_use.parallel"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 37888,
+                "input_tokens": 45654,
+                "output_tokens": 707,
+                "reasoning_output_tokens": 241
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "2",
+            "2",
+            "2"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 14.157,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "Exact symbol lookup reported declaration_count 2, with no truncation or diagnostics."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; not simulation, synthesis, timing, CDC/RDC, or formal analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36457,
+                "output_tokens": 569,
+                "reasoning_output_tokens": 351
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.101,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported declaration_count 2 with no truncation."
+              ],
+              "limitations": [
+                "Frontend evidence only; this is not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36222,
+                "output_tokens": 297,
+                "reasoning_output_tokens": 134
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 13.517,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported declaration_count=2 with no truncation."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36331,
+                "output_tokens": 353,
+                "reasoning_output_tokens": 140
+              }
+            }
+          ]
+        }
+      },
+      "expected": "2",
+      "id": "prescale_q_count",
+      "project": "apb_timer",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "How many prescale_q declarations are reported?",
+      "required_tools": [
+        "pyslang_find_symbol"
+      ],
+      "title": "prescale_q declaration count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "0 parse diagnostics and 0 semantic diagnostics",
+            "0 parse diagnostics, 0 semantic diagnostics",
+            "unknown"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": false,
+          "correct_trials": 0,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_get_diagnostics"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "0 parse diagnostics and 0 semantic diagnostics",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 41.41,
+              "event_tools": [],
+              "evidence": [
+                "All file-list entries resolve, syntax is valid, and referenced packages, types, modules, ports, macros, and signals are defined consistently."
+              ],
+              "limitations": [
+                "Count derived by text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 33402,
+                "output_tokens": 1204,
+                "reasoning_output_tokens": 856
+              }
+            },
+            {
+              "answer": "0 parse diagnostics, 0 semantic diagnostics",
+              "confidence": "medium",
+              "correct": false,
+              "elapsed_seconds": 35.024,
+              "event_tools": [],
+              "evidence": [
+                "All listed SystemVerilog files are syntactically valid; referenced packages, types, modules, ports, macros, and parameters resolve consistently by textual inspection."
+              ],
+              "limitations": [
+                "No compiler frontend was used; functional timer bugs would not necessarily produce diagnostics."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 27776,
+                "input_tokens": 33449,
+                "output_tokens": 1614,
+                "reasoning_output_tokens": 1202
+              }
+            },
+            {
+              "answer": "unknown",
+              "confidence": "low",
+              "correct": false,
+              "elapsed_seconds": 24.479,
+              "event_tools": [],
+              "evidence": [
+                "Inspected project.f, rtl.f, and all listed SystemVerilog sources as text."
+              ],
+              "limitations": [
+                "Exact parse and semantic diagnostic counts require a compiler frontend, which was prohibited."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 27264,
+                "input_tokens": 33432,
+                "output_tokens": 833,
+                "reasoning_output_tokens": 486
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "0",
+            "0",
+            "0"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_get_diagnostics"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "0",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.954,
+              "event_tools": [
+                "pyslang_get_diagnostics"
+              ],
+              "evidence": [
+                "pyslang_get_diagnostics reported total=0, error_count=0, and warning_count=0 for project/project.f with top apb_timer."
+              ],
+              "limitations": [
+                "Frontend evidence only; this does not prove simulation behavior, synthesis quality, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 56566,
+                "output_tokens": 727,
+                "reasoning_output_tokens": 394
+              }
+            },
+            {
+              "answer": "0",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 16.598,
+              "event_tools": [
+                "pyslang_get_diagnostics"
+              ],
+              "evidence": [
+                "pyslang_get_diagnostics reported total=0, error_count=0, warning_count=0 for project/project.f with top apb_timer."
+              ],
+              "limitations": [
+                "Frontend evidence only; this does not prove simulation behavior, synthesis quality, timing, CDC/RDC safety, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 56273,
+                "output_tokens": 627,
+                "reasoning_output_tokens": 298
+              }
+            },
+            {
+              "answer": "0",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.662,
+              "event_tools": [
+                "pyslang_get_diagnostics"
+              ],
+              "evidence": [
+                "pyslang_get_diagnostics reported total=0, with 0 errors and 0 warnings."
+              ],
+              "limitations": [
+                "Frontend evidence only; this does not prove behavioral correctness, synthesis quality, timing, CDC/RDC safety, or formal correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29440,
+                "input_tokens": 36038,
+                "output_tokens": 420,
+                "reasoning_output_tokens": 210
+              }
+            }
+          ]
+        }
+      },
+      "expected": "0",
+      "id": "buggy_apb_diagnostics",
+      "project": "apb_timer_irq_race_bug",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "How many parse and semantic diagnostics are reported for the buggy APB timer project?",
+      "required_tools": [
+        "pyslang_get_diagnostics"
+      ],
+      "title": "Buggy APB parse and semantic diagnostic count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 0,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_get_diagnostics"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "unknown",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 10.177,
+              "event_tools": [],
+              "evidence": [
+                "project/broken.sv contains an unresolved reference to missing_symbol, but no project_status.status value."
+              ],
+              "limitations": [
+                "Text inspection alone cannot prove the exact reported status."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 18688,
+                "input_tokens": 20929,
+                "output_tokens": 383,
+                "reasoning_output_tokens": 160
+              }
+            },
+            {
+              "answer": "unknown",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 12.08,
+              "event_tools": [],
+              "evidence": [
+                "project/broken.sv contains an unresolved identifier, but no project_status output is present."
+              ],
+              "limitations": [
+                "Text inspection alone cannot prove the reported status value."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 17152,
+                "input_tokens": 20933,
+                "output_tokens": 394,
+                "reasoning_output_tokens": 192
+              }
+            },
+            {
+              "answer": "unknown",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 11.184,
+              "event_tools": [],
+              "evidence": [
+                "project/broken.sv contains an unresolved reference to missing_symbol but no project_status.status value."
+              ],
+              "limitations": [
+                "Text inspection alone cannot prove the status reported by project_status."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 18688,
+                "input_tokens": 20926,
+                "output_tokens": 418,
+                "reasoning_output_tokens": 204
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "incomplete",
+            "incomplete",
+            "incomplete"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_get_diagnostics"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "incomplete",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 19.138,
+              "event_tools": [
+                "pyslang_get_diagnostics"
+              ],
+              "evidence": [
+                "pyslang_get_diagnostics reported project_status.status as \"incomplete\" for project/broken.sv."
+              ],
+              "limitations": [
+                "Frontend evidence only; no simulation, synthesis, formal, timing, or CDC/RDC analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 56486,
+                "output_tokens": 675,
+                "reasoning_output_tokens": 345
+              }
+            },
+            {
+              "answer": "incomplete",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 26.051,
+              "event_tools": [
+                "pyslang_get_diagnostics"
+              ],
+              "evidence": [
+                "pyslang_get_diagnostics reported project_status.status as \"incomplete\" for project/broken.sv."
+              ],
+              "limitations": [
+                "Frontend evidence only; this does not establish simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 56696,
+                "output_tokens": 829,
+                "reasoning_output_tokens": 489
+              }
+            },
+            {
+              "answer": "incomplete",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.994,
+              "event_tools": [
+                "pyslang_get_diagnostics"
+              ],
+              "evidence": [
+                "pyslang_get_diagnostics reported project_status.status as incomplete."
+              ],
+              "limitations": [
+                "Frontend evidence only; no simulation, synthesis, timing, CDC, or formal analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_diagnostics"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36112,
+                "output_tokens": 332,
+                "reasoning_output_tokens": 148
+              }
+            }
+          ]
+        }
+      },
+      "expected": "incomplete",
+      "id": "broken_project_status",
+      "project": "tests/fixtures/broken",
+      "project_args": {
+        "files": [
+          "broken.sv"
+        ],
+        "top_modules": [
+          "broken"
+        ]
+      },
+      "question": "What project_status.status is reported for the broken fixture?",
+      "required_tools": [
+        "pyslang_get_diagnostics"
+      ],
+      "title": "Broken fixture project status"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.3333333333333333,
+          "answers": [
+            "unknown",
+            "unknown",
+            "declared_type"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": false,
+          "correct_trials": 1,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "unknown",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 26.23,
+              "event_tools": [],
+              "evidence": [
+                "project/top.sv uses data_t as the declared type of payload."
+              ],
+              "limitations": [
+                "Project text does not define or report the reference_kind taxonomy."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 37376,
+                "input_tokens": 43114,
+                "output_tokens": 1098,
+                "reasoning_output_tokens": 569
+              }
+            },
+            {
+              "answer": "unknown",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 26.354,
+              "event_tools": [],
+              "evidence": [
+                "project/pkg.sv declares data_t as a typedef; project/top.sv uses data_t as payload's declared type, but no text file states the reported reference_kind."
+              ],
+              "limitations": [
+                "Exact reporting terminology cannot be proven from project text without the prohibited analysis tooling."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 37888,
+                "input_tokens": 43169,
+                "output_tokens": 1176,
+                "reasoning_output_tokens": 627
+              }
+            },
+            {
+              "answer": "declared_type",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 29.813,
+              "event_tools": [],
+              "evidence": [
+                "project/pkg.sv declares data_t as a typedef; project/top.sv uses it as the declared type of payload."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 28800,
+                "input_tokens": 31989,
+                "output_tokens": 1443,
+                "reasoning_output_tokens": 1001
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "declared_type",
+            "declared_type",
+            "declared_type"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "declared_type",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 22.836,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_kind \"declared_type\" for data_t."
+              ],
+              "limitations": [
+                "Frontend evidence only; this is not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_find_symbol"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 46720,
+                "input_tokens": 56988,
+                "output_tokens": 883,
+                "reasoning_output_tokens": 552
+              }
+            },
+            {
+              "answer": "declared_type",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.749,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_kind \"declared_type\" for data_t."
+              ],
+              "limitations": [
+                "Read-only compiler frontend evidence; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36341,
+                "output_tokens": 295,
+                "reasoning_output_tokens": 131
+              }
+            },
+            {
+              "answer": "declared_type",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 8.823,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_kind \"declared_type\" for data_t."
+              ],
+              "limitations": [
+                "Frontend evidence only; no simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36307,
+                "output_tokens": 275,
+                "reasoning_output_tokens": 113
+              }
+            }
+          ]
+        }
+      },
+      "expected": "declared_type",
+      "id": "data_t_reference_kind",
+      "project": "tests/fixtures/multi_file",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "top"
+        ]
+      },
+      "question": "For symbol data_t, what reference_kind is reported for a declared-type use?",
+      "required_tools": [
+        "pyslang_find_symbol"
+      ],
+      "title": "data_t declared-type reference classification"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "8",
+            "8",
+            "8"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 0,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_preprocess_files"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "8",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 15.348,
+              "event_tools": [],
+              "evidence": [
+                "project/project.f:2 sets +define+WIDTH=8; no override or undef exists under project."
+              ],
+              "limitations": [
+                "Text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 27264,
+                "input_tokens": 32437,
+                "output_tokens": 623,
+                "reasoning_output_tokens": 191
+              }
+            },
+            {
+              "answer": "8",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 16.939,
+              "event_tools": [],
+              "evidence": [
+                "project/project.f defines WIDTH as 8; no text under project overrides or undefines it."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 27776,
+                "input_tokens": 32304,
+                "output_tokens": 704,
+                "reasoning_output_tokens": 170
+              }
+            },
+            {
+              "answer": "8",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 14.09,
+              "event_tools": [],
+              "evidence": [
+                "project/project.f sets +define+WIDTH=8; no later WIDTH redefinition or undef exists."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32323,
+                "output_tokens": 544,
+                "reasoning_output_tokens": 160
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "8",
+            "8",
+            "8"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 0,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_preprocess_files"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "8",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 10.595,
+              "event_tools": [
+                "pyslang_preprocess_files"
+              ],
+              "evidence": [
+                "pyslang_preprocess_files reported effective_defines.WIDTH as \"8\"."
+              ],
+              "limitations": [
+                "Frontend preprocessing metadata only; not simulation, synthesis, formal, CDC, or timing evidence."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_preprocess_files"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36373,
+                "output_tokens": 295,
+                "reasoning_output_tokens": 110
+              }
+            },
+            {
+              "answer": "8",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 9.018,
+              "event_tools": [
+                "pyslang_preprocess_files"
+              ],
+              "evidence": [
+                "pyslang_preprocess_files reported effective_defines.WIDTH as \"8\" for project/project.f."
+              ],
+              "limitations": [
+                "Frontend preprocessing metadata only; it does not prove simulation, synthesis, timing, or functional behavior."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_preprocess_files"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36406,
+                "output_tokens": 304,
+                "reasoning_output_tokens": 95
+              }
+            },
+            {
+              "answer": "8",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 11.191,
+              "event_tools": [
+                "pyslang_preprocess_files"
+              ],
+              "evidence": [
+                "pyslang_preprocess_files reported effective_defines.WIDTH = \"8\" for project/project.f with top module top."
+              ],
+              "limitations": [
+                "Frontend preprocessing metadata only; it does not prove simulation, synthesis, timing, CDC/RDC, or functional behavior."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_preprocess_files"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36415,
+                "output_tokens": 391,
+                "reasoning_output_tokens": 173
+              }
+            }
+          ]
+        }
+      },
+      "expected": "WIDTH=8",
+      "id": "multi_file_width_define",
+      "project": "tests/fixtures/multi_file",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "top"
+        ]
+      },
+      "question": "What effective WIDTH preprocessor define is reported?",
+      "required_tools": [
+        "pyslang_preprocess_files"
+      ],
+      "title": "Effective WIDTH preprocessor define"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "top.u_child",
+            "top.u_child",
+            "top.u_child"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_get_hierarchy"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "top.u_child",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 13.581,
+              "event_tools": [],
+              "evidence": [
+                "project/top.sv:10 instantiates child as u_child inside module top."
+              ],
+              "limitations": [
+                "Determined by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32538,
+                "output_tokens": 502,
+                "reasoning_output_tokens": 126
+              }
+            },
+            {
+              "answer": "top.u_child",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 37.396,
+              "event_tools": [],
+              "evidence": [
+                "project/top.sv instantiates child as u_child inside module top."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32210,
+                "output_tokens": 585,
+                "reasoning_output_tokens": 70
+              }
+            },
+            {
+              "answer": "top.u_child",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 14.607,
+              "event_tools": [],
+              "evidence": [
+                "project/top.sv declares child instance u_child inside module top."
+              ],
+              "limitations": [
+                "Determined by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32187,
+                "output_tokens": 572,
+                "reasoning_output_tokens": 104
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "top.u_child",
+            "top.u_child",
+            "top.u_child"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_get_hierarchy"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "top.u_child",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.45,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reports child u_child under top with hierarchical_path top.u_child."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; not simulation, synthesis, formal, CDC, or timing signoff."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29440,
+                "input_tokens": 36189,
+                "output_tokens": 378,
+                "reasoning_output_tokens": 173
+              }
+            },
+            {
+              "answer": "top.u_child",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.479,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reports child instance u_child under top with hierarchical_path top.u_child."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; not simulation, synthesis, formal, CDC, or timing signoff."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29440,
+                "input_tokens": 36170,
+                "output_tokens": 315,
+                "reasoning_output_tokens": 103
+              }
+            },
+            {
+              "answer": "top.u_child",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.568,
+              "event_tools": [
+                "pyslang_get_hierarchy"
+              ],
+              "evidence": [
+                "pyslang_get_hierarchy reports child u_child under top with hierarchical_path top.u_child."
+              ],
+              "limitations": [
+                "Frontend elaboration evidence only; not simulation, synthesis, formal, CDC/RDC, or timing signoff."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_hierarchy"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36160,
+                "output_tokens": 317,
+                "reasoning_output_tokens": 106
+              }
+            }
+          ]
+        }
+      },
+      "expected": "top.u_child",
+      "id": "multi_file_child_path",
+      "project": "tests/fixtures/multi_file",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "top"
+        ]
+      },
+      "question": "What is the hierarchical_path of the child instance under the top instance top?",
+      "required_tools": [
+        "pyslang_get_hierarchy"
+      ],
+      "title": "multi_file top child instance path"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "3",
+            "3",
+            "3"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_list_design_units"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.902,
+              "event_tools": [],
+              "evidence": [
+                "project.f includes rtl.f, which lists timer_pkg.sv, timer_core.sv, and apb_timer.sv. They declare one package and two modules."
+              ],
+              "limitations": [
+                "Counted declarations by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 33613,
+                "output_tokens": 680,
+                "reasoning_output_tokens": 247
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 18.184,
+              "event_tools": [],
+              "evidence": [
+                "project/rtl.f lists timer_pkg.sv, timer_core.sv, and apb_timer.sv.",
+                "These declare one package and two modules, respectively."
+              ],
+              "limitations": [
+                "Counted design-unit declarations by text inspection only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 27776,
+                "input_tokens": 33093,
+                "output_tokens": 771,
+                "reasoning_output_tokens": 317
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 24.306,
+              "event_tools": [],
+              "evidence": [
+                "project.f includes rtl.f, which lists timer_pkg.sv, timer_core.sv, and apb_timer.sv.",
+                "These declare one package and two modules: timer_pkg, timer_core, and apb_timer."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "tools.exec_command"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 51072,
+                "input_tokens": 55520,
+                "output_tokens": 967,
+                "reasoning_output_tokens": 389
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "3",
+            "3",
+            "3"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_list_design_units"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 14.897,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_list_design_units"
+              ],
+              "evidence": [
+                "pyslang_list_design_units reported 3 project-local units: 2 modules and 1 package, with no truncation or frontend diagnostics."
+              ],
+              "limitations": [
+                "Frontend evidence only; this does not establish simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_get_diagnostics",
+                "pyslang_list_design_units",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 37184,
+                "output_tokens": 465,
+                "reasoning_output_tokens": 167
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.634,
+              "event_tools": [
+                "pyslang_list_design_units"
+              ],
+              "evidence": [
+                "pyslang_list_design_units returned 3 project-local units: apb_timer, timer_core, and timer_pkg."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not establish simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_list_design_units"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36319,
+                "output_tokens": 316,
+                "reasoning_output_tokens": 160
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 22.179,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_list_design_units"
+              ],
+              "evidence": [
+                "pyslang_list_design_units reported 3 untruncated project-local units: 2 modules and 1 package.",
+                "The project parsed with zero diagnostics and zero unresolved references."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not prove simulation behavior, synthesis quality, timing, or CDC/RDC correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_get_diagnostics",
+                "pyslang_list_design_units",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 57918,
+                "output_tokens": 867,
+                "reasoning_output_tokens": 430
+              }
+            }
+          ]
+        }
+      },
+      "expected": "3",
+      "id": "apb_design_unit_total",
+      "project": "apb_timer",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "How many project-local design units are in the APB timer project?",
+      "required_tools": [
+        "pyslang_list_design_units"
+      ],
+      "title": "APB timer design-unit inventory"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "2",
+            "2",
+            "2"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.048,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo_pkg.sv contains FunctionDeclarations ptr_width at line 7 and count_width at line 14."
+              ],
+              "limitations": [
+                "Counted by plain-text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 27264,
+                "input_tokens": 32259,
+                "output_tokens": 688,
+                "reasoning_output_tokens": 160
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 15.628,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo_pkg.sv contains function declarations at lines 7 and 14, both inside sync_fifo_pkg."
+              ],
+              "limitations": [
+                "Counted from source text only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "tools.exec_command"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 27264,
+                "input_tokens": 32137,
+                "output_tokens": 615,
+                "reasoning_output_tokens": 172
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 20.496,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo_pkg.sv declares ptr_width at line 7 and count_width at line 14; both are inside sync_fifo_pkg."
+              ],
+              "limitations": [
+                "Counted by text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec (exec_command)"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 38400,
+                "input_tokens": 43286,
+                "output_tokens": 654,
+                "reasoning_output_tokens": 186
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "2",
+            "2",
+            "2"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 18.156,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit reported member_kind_counts.FunctionDeclaration = 2 for package sync_fifo_pkg.",
+                "The filelist parsed with zero diagnostics and zero unresolved references."
+              ],
+              "limitations": [
+                "Frontend structural evidence only; this does not prove simulation, synthesis, timing, CDC/RDC, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 65024,
+                "input_tokens": 74597,
+                "output_tokens": 661,
+                "reasoning_output_tokens": 297
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 34.542,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit reported member_kind_counts.FunctionDeclaration = 2 for sync_fifo_pkg.",
+                "project.f parsed with zero diagnostics."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; it does not establish simulation, synthesis, timing, or formal correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 46720,
+                "input_tokens": 57772,
+                "output_tokens": 1192,
+                "reasoning_output_tokens": 785
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.103,
+              "event_tools": [
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit reports member_kind_counts.FunctionDeclaration = 2 for sync_fifo_pkg."
+              ],
+              "limitations": [
+                "Read-only compiler frontend evidence; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_describe_design_unit"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 19712,
+                "input_tokens": 36042,
+                "output_tokens": 274,
+                "reasoning_output_tokens": 123
+              }
+            }
+          ]
+        }
+      },
+      "expected": "2",
+      "id": "sync_pkg_function_count",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "How many FunctionDeclaration members are in sync_fifo_pkg?",
+      "required_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "title": "sync_fifo_pkg function count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "6",
+            "6",
+            "6"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.675,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo_mem.sv declares five input ports and one output port."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 21120,
+                "input_tokens": 32580,
+                "output_tokens": 428,
+                "reasoning_output_tokens": 141
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 16.054,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo_mem.sv lines 6-11 declare five input ports and one output port."
+              ],
+              "limitations": [
+                "Counted from the checked-in RTL text only."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 17152,
+                "input_tokens": 21691,
+                "output_tokens": 424,
+                "reasoning_output_tokens": 156
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.372,
+              "event_tools": [],
+              "evidence": [
+                "project/sync_fifo_mem.sv lines 6-11 declare five input ports and one output port."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 27264,
+                "input_tokens": 32186,
+                "output_tokens": 401,
+                "reasoning_output_tokens": 66
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "6",
+            "6",
+            "6"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_describe_design_unit"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 19.855,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found sync_fifo_mem and reported six ports: clk, wr_en_i, wr_ptr_i, rd_ptr_i, wr_data_i, and rd_data_o.",
+                "The project filelist parsed with zero diagnostics and zero unresolved references."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not establish simulation behavior, synthesis quality, timing, CDC/RDC safety, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 46720,
+                "input_tokens": 57669,
+                "output_tokens": 804,
+                "reasoning_output_tokens": 432
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 24.627,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found six ports on sync_fifo_mem: clk, wr_en_i, wr_ptr_i, rd_ptr_i, wr_data_i, and rd_data_o.",
+                "project.f parsed with zero diagnostics or unresolved references."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; no simulation, synthesis, timing, CDC/RDC, or formal verification was performed."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 89984,
+                "input_tokens": 97850,
+                "output_tokens": 796,
+                "reasoning_output_tokens": 319
+              }
+            },
+            {
+              "answer": "6",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 20.842,
+              "event_tools": [
+                "pyslang_parse_filelist",
+                "pyslang_get_diagnostics",
+                "pyslang_describe_design_unit"
+              ],
+              "evidence": [
+                "pyslang_describe_design_unit found sync_fifo_mem and listed six ports.",
+                "The project parsed with zero frontend diagnostics."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this does not prove simulation, synthesis, timing, or functional correctness."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_describe_design_unit",
+                "pyslang_get_diagnostics",
+                "pyslang_parse_filelist"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 50816,
+                "input_tokens": 57837,
+                "output_tokens": 901,
+                "reasoning_output_tokens": 468
+              }
+            }
+          ]
+        }
+      },
+      "expected": "6",
+      "id": "sync_mem_port_count",
+      "project": "sync_fifo",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "sync_fifo"
+        ]
+      },
+      "question": "How many total ports does sync_fifo_mem expose?",
+      "required_tools": [
+        "pyslang_describe_design_unit"
+      ],
+      "title": "sync_fifo_mem port count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.0,
+          "answers": [
+            "1",
+            "1",
+            "1"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 0,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "1",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 24.468,
+              "event_tools": [],
+              "evidence": [
+                "`timer_ctrl_t` is declared in `project/timer_pkg.sv:11` and referenced once in `project/apb_timer.sv:22`."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 33211,
+                "output_tokens": 1011,
+                "reasoning_output_tokens": 504
+              }
+            },
+            {
+              "answer": "1",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 20.873,
+              "event_tools": [],
+              "evidence": [
+                "`timer_ctrl_t` is declared in `timer_pkg.sv:11` and referenced once in `apb_timer.sv:22`."
+              ],
+              "limitations": [
+                "Counted from project text only, excluding the declaration itself."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "tools.exec_command"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 33033,
+                "output_tokens": 903,
+                "reasoning_output_tokens": 485
+              }
+            },
+            {
+              "answer": "1",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 21.741,
+              "event_tools": [],
+              "evidence": [
+                "timer_pkg.sv:11 defines timer_ctrl_t; apb_timer.sv:22 contains its only reference."
+              ],
+              "limitations": [
+                "Counted exact textual symbol occurrences, excluding the definition."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "functions.wait",
+                "multi_tool_use.parallel"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 31744,
+                "input_tokens": 44384,
+                "output_tokens": 715,
+                "reasoning_output_tokens": 277
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "2",
+            "2",
+            "2"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_find_symbol"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.686,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_count=2 with no truncation."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 36428,
+                "output_tokens": 340,
+                "reasoning_output_tokens": 122
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 9.27,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_count 2 for timer_ctrl_t with no truncation and zero frontend diagnostics."
+              ],
+              "limitations": [
+                "Compiler frontend evidence only; this is not simulation, synthesis, formal, CDC/RDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_find_symbol"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 19712,
+                "input_tokens": 36387,
+                "output_tokens": 296,
+                "reasoning_output_tokens": 122
+              }
+            },
+            {
+              "answer": "2",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.407,
+              "event_tools": [
+                "pyslang_find_symbol"
+              ],
+              "evidence": [
+                "pyslang_find_symbol reported reference_count 2 with no truncation."
+              ],
+              "limitations": [
+                "Frontend evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "pyslang_find_symbol"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 46720,
+                "input_tokens": 56707,
+                "output_tokens": 700,
+                "reasoning_output_tokens": 366
+              }
+            }
+          ]
+        }
+      },
+      "expected": "2",
+      "id": "timer_ctrl_type_reference_count",
+      "project": "apb_timer",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "How many references are reported for timer_ctrl_t?",
+      "required_tools": [
+        "pyslang_find_symbol"
+      ],
+      "title": "timer_ctrl_t bound reference count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "3",
+            "3",
+            "3"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_dump_syntax_tree_summary"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 8.947,
+              "event_tools": [],
+              "evidence": [
+                "tap_delay_line.sv contains `for` keywords on lines 18, 23, and 30."
+              ],
+              "limitations": [
+                "Counted by text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "exec_command",
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 11008,
+                "input_tokens": 21364,
+                "output_tokens": 322,
+                "reasoning_output_tokens": 111
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.685,
+              "event_tools": [],
+              "evidence": [
+                "tap_delay_line.sv contains `for` keywords at lines 18, 23, and 30."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "exec_command"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 18688,
+                "input_tokens": 21323,
+                "output_tokens": 314,
+                "reasoning_output_tokens": 131
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 17.112,
+              "event_tools": [],
+              "evidence": [
+                "`tap_delay_line.sv` contains three explicit `for` statements at lines 18, 23, and 30."
+              ],
+              "limitations": [
+                "Counted by text inspection only, as required."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 27776,
+                "input_tokens": 32069,
+                "output_tokens": 494,
+                "reasoning_output_tokens": 210
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "3",
+            "3",
+            "3"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_dump_syntax_tree_summary"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 12.304,
+              "event_tools": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "evidence": [
+                "tap_delay_line.sv reports ForKeyword: 3; project status is ok with no diagnostics."
+              ],
+              "limitations": [
+                "Frontend syntax-tree evidence only; not simulation, synthesis, formal, or timing evidence."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 37298,
+                "output_tokens": 436,
+                "reasoning_output_tokens": 222
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 8.981,
+              "event_tools": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "evidence": [
+                "pyslang_dump_syntax_tree_summary reports ForKeyword: 3 for tap_delay_line.sv, with no diagnostics or truncation."
+              ],
+              "limitations": [
+                "Frontend syntax evidence only; this is not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 37151,
+                "output_tokens": 257,
+                "reasoning_output_tokens": 85
+              }
+            },
+            {
+              "answer": "3",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.26,
+              "event_tools": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "evidence": [
+                "pyslang_dump_syntax_tree_summary reports ForKeyword: 3 in tap_delay_line.sv."
+              ],
+              "limitations": [
+                "Frontend syntax evidence only; not simulation, synthesis, formal, CDC, or timing analysis."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_dump_syntax_tree_summary"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 37207,
+                "output_tokens": 308,
+                "reasoning_output_tokens": 92
+              }
+            }
+          ]
+        }
+      },
+      "expected": "3",
+      "id": "tap_delay_for_keyword_count",
+      "project": "tap_delay_line",
+      "project_args": {
+        "files": [
+          "tap_delay_line.sv"
+        ],
+        "top_modules": [
+          "tap_delay_line"
+        ]
+      },
+      "question": "How many ForKeyword syntax nodes are reported in tap_delay_line.sv?",
+      "required_tools": [
+        "pyslang_dump_syntax_tree_summary"
+      ],
+      "title": "tap_delay_line for-loop syntax count"
+    },
+    {
+      "arms": {
+        "no_skill_no_mcp": {
+          "accuracy": 0.6666666666666666,
+          "answers": [
+            "include/apb_timer_defs.svh",
+            "apb_timer_defs.svh",
+            "apb_timer_defs.svh"
+          ],
+          "arm": "no_skill_no_mcp",
+          "consistent": false,
+          "correct_trials": 2,
+          "required_tool_rate": 0.0,
+          "required_tool_trials": 0,
+          "required_tools": [
+            "pyslang_preprocess_files"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "include/apb_timer_defs.svh",
+              "confidence": "high",
+              "correct": false,
+              "elapsed_seconds": 20.405,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_pkg.sv includes \"apb_timer_defs.svh\".",
+                "project/project.f declares +incdir+include.",
+                "The header exists at project/include/apb_timer_defs.svh."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32044,
+                "output_tokens": 726,
+                "reasoning_output_tokens": 339
+              }
+            },
+            {
+              "answer": "apb_timer_defs.svh",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 27.322,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_pkg.sv contains `include \"apb_timer_defs.svh\"."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec",
+                "tools.exec_command"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 39936,
+                "input_tokens": 43169,
+                "output_tokens": 1151,
+                "reasoning_output_tokens": 741
+              }
+            },
+            {
+              "answer": "apb_timer_defs.svh",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 22.891,
+              "event_tools": [],
+              "evidence": [
+                "project/timer_pkg.sv:1 contains `include \"apb_timer_defs.svh\"."
+              ],
+              "limitations": [],
+              "status": "ok",
+              "tools_used": [
+                "functions.exec"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 29312,
+                "input_tokens": 32314,
+                "output_tokens": 772,
+                "reasoning_output_tokens": 384
+              }
+            }
+          ]
+        },
+        "skill_mcp": {
+          "accuracy": 1.0,
+          "answers": [
+            "apb_timer_defs.svh",
+            "apb_timer_defs.svh",
+            "apb_timer_defs.svh"
+          ],
+          "arm": "skill_mcp",
+          "consistent": true,
+          "correct_trials": 3,
+          "required_tool_rate": 1.0,
+          "required_tool_trials": 3,
+          "required_tools": [
+            "pyslang_preprocess_files"
+          ],
+          "successful_trials": 3,
+          "trial_count": 3,
+          "trials": [
+            {
+              "answer": "apb_timer_defs.svh",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.654,
+              "event_tools": [
+                "pyslang_preprocess_files"
+              ],
+              "evidence": [
+                "pyslang_preprocess_files reports timer_pkg.sv includes \"apb_timer_defs.svh\"."
+              ],
+              "limitations": [
+                "Frontend preprocessing metadata only; not simulation, synthesis, formal, CDC, or timing evidence."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_preprocess_files"
+              ],
+              "trial": 1,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 37920,
+                "output_tokens": 430,
+                "reasoning_output_tokens": 223
+              }
+            },
+            {
+              "answer": "apb_timer_defs.svh",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 11.273,
+              "event_tools": [
+                "pyslang_preprocess_files"
+              ],
+              "evidence": [
+                "pyslang_preprocess_files reports timer_pkg.sv includes \"apb_timer_defs.svh\"."
+              ],
+              "limitations": [
+                "Frontend preprocessing metadata only; no simulation or synthesis evidence."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_preprocess_files"
+              ],
+              "trial": 2,
+              "usage": {
+                "cached_input_tokens": 29440,
+                "input_tokens": 38698,
+                "output_tokens": 345,
+                "reasoning_output_tokens": 141
+              }
+            },
+            {
+              "answer": "apb_timer_defs.svh",
+              "confidence": "high",
+              "correct": true,
+              "elapsed_seconds": 10.43,
+              "event_tools": [
+                "pyslang_preprocess_files"
+              ],
+              "evidence": [
+                "timer_pkg.sv reports a non-system include directive with path apb_timer_defs.svh."
+              ],
+              "limitations": [
+                "Frontend preprocessing metadata only; no simulation, synthesis, timing, CDC, or formal evidence."
+              ],
+              "status": "ok",
+              "tools_used": [
+                "pyslang_preprocess_files"
+              ],
+              "trial": 3,
+              "usage": {
+                "cached_input_tokens": 32000,
+                "input_tokens": 38673,
+                "output_tokens": 329,
+                "reasoning_output_tokens": 120
+              }
+            }
+          ]
+        }
+      },
+      "expected": "apb_timer_defs.svh",
+      "id": "apb_timer_include_path",
+      "project": "apb_timer",
+      "project_args": {
+        "filelist": "project.f",
+        "top_modules": [
+          "apb_timer"
+        ]
+      },
+      "question": "Which include path is reported by the APB timer package file?",
+      "required_tools": [
+        "pyslang_preprocess_files"
+      ],
+      "title": "APB timer package include path"
+    }
+  ],
+  "generated_at": "2026-06-14T07:19:43.983659+00:00",
+  "methodology": "Isolated Codex homes and read-only temporary git workspaces, with unrelated apps and plugins disabled. The no-skill/no-MCP arm has no repo skill or MCP config and is instructed to inspect RTL text only. The skill+MCP arm installs the repo-local pyslang-verilog-context skill and configures the local read-only pyslang-mcp stdio server.",
+  "model": "gpt-5.5",
+  "reasoning_effort": "xhigh",
+  "repo_commit": "d36547e",
+  "summary": {
+    "no_skill_no_mcp": {
+      "accuracy": 0.65,
+      "case_count": 20,
+      "consistency_rate": 0.8,
+      "consistent_cases": 16,
+      "correct_trials": 39,
+      "required_tool_rate": 0.0,
+      "required_tool_trials": 0,
+      "total_trials": 60,
+      "trials_per_case": 3
+    },
+    "skill_mcp": {
+      "accuracy": 0.95,
+      "case_count": 20,
+      "consistency_rate": 1.0,
+      "consistent_cases": 20,
+      "correct_trials": 57,
+      "required_tool_rate": 1.0,
+      "required_tool_trials": 60,
+      "total_trials": 60,
+      "trials_per_case": 3
+    }
+  },
+  "trials_per_case": 3
+}

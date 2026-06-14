@@ -25,8 +25,8 @@ from .analysis import describe_design_unit as describe_design_unit_core
 from .analysis import dump_syntax_tree_summary as dump_syntax_tree_summary_core
 from .analysis import find_member as find_member_core
 from .analysis import find_symbol as find_symbol_core
-from .analysis import get_diagnostics as get_diagnostics_core
 from .analysis import get_assignments as get_assignments_core
+from .analysis import get_diagnostics as get_diagnostics_core
 from .analysis import get_hierarchy as get_hierarchy_core
 from .analysis import get_instance_connections as get_instance_connections_core
 from .analysis import get_project_summary as get_project_summary_core
@@ -57,9 +57,9 @@ from .schemas import (
     ProjectSummaryResult,
     SummarizeDiagnosticsByCodeResult,
     SyntaxTreeSummaryResult,
-    TraceConnectivityResult,
     ToolErrorDetail,
     ToolErrorResult,
+    TraceConnectivityResult,
 )
 from .types import ProjectConfig
 

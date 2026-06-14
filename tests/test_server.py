@@ -11,10 +11,10 @@ import pyslang_mcp.server as server_module
 from pyslang_mcp.cache import AnalysisCache
 from pyslang_mcp.server import (
     MAX_ASSIGNMENT_RESULTS,
+    MAX_CONNECTION_RESULTS,
     MAX_DIAGNOSTIC_EXAMPLES_PER_GROUP,
     MAX_DIAGNOSTIC_GROUPS,
     MAX_EXCERPT_LINES,
-    MAX_CONNECTION_RESULTS,
     MAX_HIERARCHY_CHILDREN,
     MAX_HIERARCHY_DEPTH,
     MAX_LIST_ITEMS,

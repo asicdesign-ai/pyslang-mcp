@@ -58,6 +58,16 @@ renames, or incomplete snippets where a compiler frontend cannot add much.
      instances.
    - Use `pyslang_get_hierarchy` for instance tree questions.
    - Use `pyslang_find_symbol` for declarations and references.
+   - Use `pyslang_summarize_diagnostics_by_code` before scanning long raw
+     diagnostics in large RTL projects.
+   - Use `pyslang_find_member` when the question is local to one design unit
+     and `pyslang_find_symbol` is too broad.
+   - Use `pyslang_get_assignments` for "what drives this signal" or "where is
+     this signal used on the RHS" questions.
+   - Use `pyslang_get_instance_connections` when one instance's port bindings
+     are needed without a full hierarchy dump.
+   - Use `pyslang_trace_connectivity` for bounded structural tracing through
+     assignments and instance port bindings.
    - Use `pyslang_preprocess_files` for include/define questions.
    - Use `pyslang_dump_syntax_tree_summary` for syntax-shape questions.
    - Use `pyslang_get_project_summary` when a compact overview is enough.
@@ -88,6 +98,10 @@ signoff tool, timing signoff tool, waveform analyzer, or formal engine.
 Clean frontend diagnostics mean the analyzed source set parsed and elaborated
 under this frontend. They do not prove behavioral correctness, timing closure,
 CDC safety, reset safety, or synthesis quality.
+
+`pyslang_trace_connectivity` is structural frontend evidence only. It does not
+prove functional behavior, complete fanin/fanout, CDC/RDC safety,
+multiple-driver cleanliness, synthesis quality, or timing closure.
 
 The MCP tools are read-only. Never present them as the mechanism that edits,
 formats, simulates, or synthesizes RTL.

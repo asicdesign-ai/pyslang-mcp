@@ -1,5 +1,5 @@
 {
-  "case_count": 12,
+  "case_count": 13,
   "cases": [
     {
       "fixture_root": "fixtures/rtl-workflow-fixtures/hdl-design-view",
@@ -388,6 +388,94 @@
         "query_text_hits": null,
         "regex_design_units": [
           "edge_detect"
+        ],
+        "source_file_count": 1
+      }
+    },
+    {
+      "fixture_root": "fixtures/pyslang-mcp-tests/verilog_debug",
+      "id": "verilog-debug-structural-evidence",
+      "prompt": "prompts/verilog-debug-structural-evidence.md",
+      "with_skill": {
+        "expected_tool_count": 7,
+        "mode": "with_skill_pyslang_mcp",
+        "successful_tool_count": 7,
+        "tool_runs": {
+          "pyslang_find_member": {
+            "found_design_unit": true,
+            "matched_names": [
+              "response__vld",
+              "response__vld"
+            ],
+            "member_total": 2,
+            "ok": true
+          },
+          "pyslang_get_assignments": {
+            "assignment_total": 1,
+            "by_assignment_kind": {
+              "continuous": 1
+            },
+            "found_design_unit": true,
+            "ok": true,
+            "signal": "response__vld"
+          },
+          "pyslang_get_diagnostics": {
+            "diagnostic_total": 0,
+            "ok": true,
+            "severity_counts": {},
+            "status": "ok"
+          },
+          "pyslang_get_instance_connections": {
+            "connection_total": 6,
+            "found": true,
+            "instance_path": "debug_top.u_stage",
+            "ok": true
+          },
+          "pyslang_parse_filelist": {
+            "diagnostic_count": 0,
+            "file_count": 1,
+            "ok": true,
+            "status": "ok"
+          },
+          "pyslang_summarize_diagnostics_by_code": {
+            "diagnostic_total": 0,
+            "group_total": 0,
+            "ok": true
+          },
+          "pyslang_trace_connectivity": {
+            "edge_count": 20,
+            "ok": true,
+            "path_count": 7,
+            "resolved_starts": [
+              "debug_top.ctrl_out__rdy"
+            ]
+          }
+        },
+        "tool_success_rate": 1.0
+      },
+      "without_skill": {
+        "capabilities": [
+          "text_read",
+          "regex_design_unit_scan",
+          "literal_query_count"
+        ],
+        "compiler_evidence_count": 0,
+        "compiler_evidence_rate": 0.0,
+        "expected_compiler_evidence_count": 7,
+        "line_count": 76,
+        "missing_capabilities": [
+          "compiler_diagnostics",
+          "elaborated_hierarchy",
+          "semantic_symbol_references",
+          "preprocessor_context"
+        ],
+        "mode": "without_skill_text_only",
+        "query": "response__vld",
+        "query_text_hits": 11,
+        "regex_design_units": [
+          "debug_sink",
+          "debug_stage",
+          "debug_top"
         ],
         "source_file_count": 1
       }
@@ -820,6 +908,6 @@
       }
     }
   ],
-  "generated_at": "2026-05-23T18:44:19.889907+00:00",
+  "generated_at": "2026-06-14T07:22:32.423248+00:00",
   "manifest": "skills/pyslang-verilog-context/evals/manifest.json"
 }

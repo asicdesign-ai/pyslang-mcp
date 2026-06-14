@@ -150,8 +150,7 @@ def test_verilog_debug_symbol_helpers_preserve_stable_metadata() -> None:
     response_symbol = next(
         symbol
         for symbol in symbols
-        if analysis_module._symbol_hierarchical_path(symbol)
-        == "debug_top.u_stage.response__vld"
+        if analysis_module._symbol_hierarchical_path(symbol) == "debug_top.u_stage.response__vld"
     )
 
     assert analysis_module._symbol_kind_name(response_symbol) == "Port"
@@ -259,9 +258,7 @@ def test_get_assignments_verilog_fixture() -> None:
         signal="sampled_data",
         role="both",
     )
-    assert {"continuous", "procedural"} <= set(
-        mixed_roles["summary"]["by_assignment_kind"]
-    )
+    assert {"continuous", "procedural"} <= set(mixed_roles["summary"]["by_assignment_kind"])
 
 
 def test_trace_connectivity_verilog_fixture() -> None:
@@ -282,9 +279,7 @@ def test_trace_connectivity_verilog_fixture() -> None:
 
     assert "debug_top.ctrl_out__rdy" in trace["resolved_starts"]
     assert trace["summary"]["path_count"] >= 1
-    flattened_targets = {
-        hop["target"] for path in trace["paths"] for hop in path["hops"]
-    }
+    flattened_targets = {hop["target"] for path in trace["paths"] for hop in path["hops"]}
     assert any(target.endswith("u_stage.ctrl_out__rdy") for target in flattened_targets)
     assert any(target.endswith("u_stage.response__vld") for target in flattened_targets)
 
