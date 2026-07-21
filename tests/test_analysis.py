@@ -310,6 +310,36 @@ def test_diagnostics_on_broken_fixture() -> None:
     assert hierarchy["project_status"]["status"] == "incomplete"
 
 
+def test_analysis_handles_unconnected_ports() -> None:
+    # An open port (`.out_data()`) produces a port connection whose expression is
+    # None. Indexing the hierarchy must not choke on it.
+    project = load_project_from_files(
+        project_root=FIXTURES / "open_port",
+        files=["open_port.sv"],
+    )
+    bundle = build_analysis(project)
+    assert bundle.index is not None
+
+    diagnostics = get_diagnostics(bundle)
+    assert diagnostics["project_status"]["status"] == "ok"
+
+    connections = analysis_module.get_instance_connections(
+        bundle,
+        instance_path_or_name="open_port_top.u_leaf",
+    )
+    assert connections["found"] is True
+    by_port = {connection["port"]: connection for connection in connections["connections"]}
+    assert by_port["out_data"]["expression_kind"] is None
+    assert by_port["out_data"]["connected_symbol"] is None
+    assert by_port["in_data"]["expression_kind"] is not None
+
+
+def test_read_line_returns_none_for_directory(tmp_path: Path) -> None:
+    # Synthetic locations can resolve to a directory; reading it should degrade to
+    # None instead of raising IsADirectoryError.
+    assert analysis_module._read_line(tmp_path, 1) is None
+
+
 def test_summarize_diagnostics_by_code_on_broken_fixture() -> None:
     project = load_project_from_files(
         project_root=FIXTURES / "broken",

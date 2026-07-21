@@ -1203,7 +1203,10 @@ def _serialize_location(bundle: AnalysisBundle, location: Any) -> dict[str, Any]
         full_path = Path(bundle.source_manager.getFullPath(location.buffer)).resolve(strict=False)
     except Exception:
         return None
-    if not full_path.exists():
+    # Synthetic buffers (macro expansions, compiler-generated symbols) can have
+    # an empty path that resolves to the project root itself. Require a real file
+    # so downstream excerpt reads don't hit a directory.
+    if not full_path.is_file():
         return None
     try:
         full_path.relative_to(bundle.project.project_root)
@@ -1236,7 +1239,7 @@ def _line_excerpt(bundle: AnalysisBundle, location: dict[str, Any] | None) -> st
 def _read_line(path: Path, line_number: int) -> str | None:
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
-    except FileNotFoundError:
+    except OSError:
         return None
     if line_number < 1 or line_number > len(lines):
         return None
@@ -1254,7 +1257,7 @@ def _read_leading_lines(path: Path, max_lines: int) -> str:
                 if not line:
                     break
                 lines.append(line.rstrip("\n"))
-    except FileNotFoundError:
+    except OSError:
         return ""
     return "\n".join(lines)
 
@@ -1422,8 +1425,15 @@ def _serialize_instance(bundle: AnalysisBundle, instance: Any) -> dict[str, Any]
         "port_connections": [
             {
                 "port": connection.port.name,
-                "expression_kind": connection.expression.kind.name,
-                "snippet": _source_snippet(bundle, connection.expression.sourceRange),
+                # An unconnected port (open `.port()`) has no expression.
+                "expression_kind": (
+                    connection.expression.kind.name if connection.expression is not None else None
+                ),
+                "snippet": (
+                    _source_snippet(bundle, connection.expression.sourceRange)
+                    if connection.expression is not None
+                    else None
+                ),
                 "symbol": getattr(getattr(connection.expression, "symbol", None), "name", None),
             }
             for connection in instance.portConnections
@@ -1464,13 +1474,20 @@ def _serialize_instance_connection(
             getattr(getattr(actual, "symbol", None), "location", None),
         )
         connected_symbol = _symbol_declaration_from_hit(first)
+    expression = connection.expression
     output = {
         "port": connection.port.name,
         "direction": _direction_name(connection.port),
-        "expression_kind": connection.expression.kind.name,
-        "expression_snippet": _source_snippet(bundle, connection.expression.sourceRange),
+        "expression_kind": expression.kind.name if expression is not None else None,
+        "expression_snippet": (
+            _source_snippet(bundle, expression.sourceRange) if expression is not None else None
+        ),
         "connected_symbol": connected_symbol,
-        "source_location": _serialize_range_location(bundle, connection.expression.sourceRange),
+        "source_location": (
+            _serialize_range_location(bundle, expression.sourceRange)
+            if expression is not None
+            else None
+        ),
     }
     return IndexedInstanceConnection(
         instance_path=str(instance.hierarchicalPath),
